@@ -1,0 +1,63 @@
+<h1 id="-">介绍</h1>
+<h2 id="bui-js-">Bui.js 是什么</h2>
+<p>Bui 是一套用于前端快速的<strong>完整体系框架</strong>。Bui提供完整的项目前端体系结构，您也可以直接使用libs中的Bui核心代码，自定义个性化项目目录。Bui中提供了整个页面的生命周期管理、（多套）控件层的<strong>注入</strong>等。我们不崇尚一个项目中过多的第三方库或框架的使用，这不仅增加学习成本，也增大了维护难度。</p>
+<p>框架推荐使用<strong>单页面形式</strong>进行开发，当然您也可以使用Bui完成多页面项目的开发。框架采用的是MVC开发模式，但提供MVVM的视图开发。</p>
+<p>框架采用<strong>AMD</strong>规范实现模块开发，现在对ES6 import、AMD的争论还在进行中，各有各的好处，在此不做更多的评价，本框架在浏览器没有支持import之前，项目仍然采用<strong>AMD规范</strong>进行开发，方便实现组件的异步加载，并通过<a href="http://requirejs.org/">reuqirejs</a>进行合并压缩。</p>
+<h2 id="-">起步</h2>
+<p>当你打开这个这个网页时，其实您已经在运行Bui的实例，在Bui框架中我们为您提供了这个简单Demo代码，您可以通过查看代码来进行初步的学习。</p>
+<p class="tip">框架本身提供一个完善的项目开发目录和开发规范指南。建议您优先采用框架推荐的开发目录进行开发学习，当对Bui有一定了解后，您会发现Bui的可配置/可扩展性，足够让您可以自定义完成一个个性化的大型项目开发。</p>
+<p>框架目录说明：</p>
+<pre><code>根目录
+├─ areas --区域/模块
+├─ commonWeb --公共代码
+│  ├─ components --公共组件
+│  │  ├─ commonPage --公共视图组件
+│  │  └─ layouts -- 公共布局方案
+│  ├─ datas --数据存放
+│  ├─ resource --公共资源存放处
+│  ├─ init.js -- 初始化脚本
+│  ├─ seed.js -- 启动脚本，内部包含地址映射，启动顺序等。
+│  └─ version.js -- 版本控制脚本
+├─ libs --Bui核心代码
+├─ vendor.js 第三方依赖
+└─ index.html ##启动页面##
+</code></pre><p>接下来我们具体看下Bui.js中的几个核心组件，请耐心看完，这是一个完整的入门章节，本章节最后我们会通过介绍这些核心组件的关系。</p>
+<h2 id="-router-js">路由 router.js</h2>
+<p>Bui.js中的路由是整个框架中的页面跳转核心处理组件，我们支持自定义路由解析方案，如果你接触过<strong>.Net MVC</strong>或其他服务端MVC框架，那么接下来的这个例子您会非常熟悉。</p>
+<pre><code class="lang-js">/* 
+实例：可由由App.router.addRouterMap方法指定
+{
+    role:&quot;{area}/{controller}/{action}&quot;,
+    exec:function () { },
+    path:{
+        area:区域地址 &lt;String/Function&gt; 默认：&#39;areas/区域名称&#39;
+        router:地址 &lt;String/Function&gt; 默认：&#39;areas/区域名称/Controller/router&#39;,
+        layout:布局地址 &lt;String/Function&gt; 默认：&#39;commonWeb/components/layouts&#39;
+    }
+}
+*/
+var defaultRouterMap = {
+    role: &quot;&quot;,
+    exec: undefined,
+    path: {}
+};
+</code></pre>
+<p>上面代码来自<code>libs/marionette/router.js</code>,下面我们举个例子来看下如何使用。</p>
+<pre><code class="lang-js">    //例如：
+    App.router.addRouterMap({
+        role:&quot;Api/{action}&quot;,
+        exec:function (param) {
+            param.area=&quot;Api&quot;,
+            param.controller=&quot;dome&quot;;
+
+            //do anything
+        },
+        path:{
+            area:&quot;apis&quot;,
+            router: (param)=&gt;{ /*...*/ }
+            //...
+        }
+    });
+</code></pre>
+<p>为了方便大部分的项目开发，我们默认会插入一个默认路由映射。<code>{ role: &quot;{area}/{controller}/{action}&quot; }</code></p>
+<h2 id="-controller-js">控制器 controller.js</h2>
