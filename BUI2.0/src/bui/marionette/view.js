@@ -1,4 +1,4 @@
-/**
+﻿/**
  *  作者：张传辉
  *  功能名称：视图组件基类、视图组件操作类
  *  描述信息：
@@ -233,7 +233,7 @@ class View {
         if (typeof view === "string") {
             let self = this;
 
-            import('../../' + view)
+            import('~' + view)
                 .then(ViewHandler => {
                     //判断选择符是否仍挂载DOM中
                     if (selector.parent().length) {
