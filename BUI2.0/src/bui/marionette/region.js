@@ -1,4 +1,4 @@
-﻿import log from '../common/log';
+import log from '../common/log';
 import EventHandler from '../common/event';
 import _ from '../common/utils';
 
@@ -57,7 +57,7 @@ class RegionItem extends EventHandler {
             let self = this;
 
             (function (viewPath, tempId) {
-                import('~'+viewPath)
+                import('~/'+viewPath)
                     .then(viewHandler => {
                         if (self && self._tempId === tempId) {
                             view = viewHandler.default.call(viewHandler.default);

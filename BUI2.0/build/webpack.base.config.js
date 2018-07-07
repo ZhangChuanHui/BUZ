@@ -12,7 +12,7 @@ module.exports = {
         bui: './bui/bui.js'
     },
     resolve: {
-        extensions: ['.js', '.css'],
+        extensions: ['.js','.css'],
         alias: {
             "~": resolve("src")
         }
