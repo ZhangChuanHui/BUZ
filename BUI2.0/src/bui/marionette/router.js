@@ -1,4 +1,4 @@
-import log from '../common/log';
+﻿import log from '../common/log';
 import EventHandler from '../common/event';
 import _ from '../common/utils';
 import { error, debug } from 'util';
@@ -151,7 +151,7 @@ class Router extends EventHandler {
         );
 
         log.info(LOGTAG, `准备装载区域配置文件：${areaPath}`);
-        import('../../' + areaPath)
+        import('~' + areaPath)
             .then(areaConfig => {
                 if (fragment.params.area !== self.fragment.params.area) {
                     log.warn(LOGTAG, "检测到区域加载变更，终止加载");
@@ -218,7 +218,7 @@ class Router extends EventHandler {
         );
 
         log.info(LOGTAG, `准备装载布局文件：${layoutPath}`);
-        import('../../' + layoutPath)
+        import('~' + layoutPath)
             .then(Layout => {
                 if (self.fragmentUrl !== fragmentUrl) {
                     log.warn(LOGTAG, "检测到地址变更，终止本次加载");
@@ -288,7 +288,7 @@ class Router extends EventHandler {
 
         log.info(LOGTAG, `准备装载路由文件：${routerPath}`);
 
-        import('../../' + routerPath)
+        import('~' + routerPath)
             .then(controller => {
                 if (fragmentUrl !== self.fragmentUrl) {
                     log.warn(LOGTAG, "检测到地址变更，终止本次加载");
