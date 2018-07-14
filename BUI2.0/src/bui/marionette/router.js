@@ -1,4 +1,4 @@
-import log from '../common/log';
+﻿import log from '../common/log';
 import EventHandler from '../common/event';
 import _ from '../common/utils';
 import { error, debug } from 'util';
@@ -95,7 +95,9 @@ class Router extends EventHandler {
                 }
                 return false;
             }
-        }, "a[href^='#']");
+        }, function (target) {
+            return target.attr("href").indexOf("#") === 0;
+        });
 
         //监听路由重载
         this.on("reload", (event) => {
@@ -199,7 +201,7 @@ class Router extends EventHandler {
         }
 
 
-      
+
 
         if (this.areaConfig.layout === areaConfig.layout) {
             this.areaConfig = areaConfig;

@@ -6,9 +6,7 @@
     "dev": "webpack-dev-server --inline --progress --mode development --config build/webpack.dev.config.js"
   },
   "author": "Zohar",
-  "dependencies": {
-
-  },
+  "dependencies": {},
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.4",

@@ -1,4 +1,4 @@
-/**
+﻿/**
 *  作者：张传辉
 *  功能名称：工具库
 *  描述信息：
@@ -103,6 +103,22 @@ class Utils {
         return function () {
             fun.apply(ref, arguments);
         }
+    }
+    /**
+     * DOM加载完毕
+     * @param callBack 回调 <Function>
+    */
+    static docReady(callBack) {
+        document.addEventListener("DOMContentLoaded", function () {
+            callBack();
+        });
+    }
+    /**
+     * 去除前后空格
+     * @param str 字符串 <String>
+    */
+    static rim(str = "") {
+        return str.replace(/(^\s*)|(\s*$)/g, "");
     }
 }
 
