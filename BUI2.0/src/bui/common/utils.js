@@ -13,12 +13,11 @@ class Utils {
     * @param  list 数据源 <Array>
     * @param value 值 <Any,Function> 值；若为Function 则根据true/false作为依据
     */
-    static without(list, value) {
-        var newList = [];
-        list = list || [];
+    static without(list = [], value) {
+        let newList = [];
 
         if (this.isFunction(value)) {
-            for (var i = 0; i < list.length; i++) {
+            for (let i = 0; i < list.length; i++) {
                 var item = list[i];
                 if (value(item) !== true) {
                     newList.push(item);
@@ -26,7 +25,7 @@ class Utils {
             }
         }
         else {
-            for (var i = 0; i < list.length; i++) {
+            for (let i = 0; i < list.length; i++) {
                 var item = list[i];
                 if (list[i] === value) {
                     newList.push(item);
@@ -34,6 +33,21 @@ class Utils {
             }
         }
         return newList;
+    }
+    /**
+     * 数组去重
+     * @param list 数组
+    */
+    static distinct(list = []) {
+        let result = [];
+
+        for (var item of list) {
+            if (result.indexOf(item) === -1) {
+                result.push(item);
+            }
+        }
+
+        return result;
     }
     /**
     * 检查值是否是一个方法类型
@@ -49,6 +63,9 @@ class Utils {
     */
     static isStrEmpty(value) {
         return value === undefined || value === "" || value === null;
+    }
+    static isObjEmpty(value) {
+        return isStrEmpty(value) || (typeof value === "object" && Object.keys().length === 0);
     }
     /**
      * 插入样式文件
