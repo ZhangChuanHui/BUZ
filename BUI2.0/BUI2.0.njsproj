@@ -49,6 +49,8 @@
     <Folder Include="src\bui\common\" />
     <Folder Include="src\bui\marionette\" />
     <Folder Include="src\areas\" />
+    <Folder Include="src\bui\storage\" />
+    <Folder Include="src\bui\requester\" />
     <Folder Include="src\layouts\" />
     <Folder Include="src\layouts\templetes\" />
     <Folder Include="src\static\" />
@@ -71,6 +73,12 @@
     <Compile Include="src\bui\marionette\region.js" />
     <Compile Include="src\bui\marionette\router.js" />
     <Compile Include="src\bui\marionette\view.js" />
+    <Compile Include="src\bui\requester\requester.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="src\bui\storage\storage.js">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="src\layouts\DemoLayout.js" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->

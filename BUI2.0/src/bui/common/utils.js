@@ -5,7 +5,7 @@
 */
 class Utils {
     constructor() {
-        /** 未guid做索引 */
+        /** 为guid做索引 */
         this._guidNum = 0;
     }
     /**
