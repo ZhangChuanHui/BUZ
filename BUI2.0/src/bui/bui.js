@@ -3,8 +3,7 @@ import utils from './common/utils';
 import Application from './marionette/application';
 import { Controller } from './marionette/controller';
 import { ViewHandler } from './marionette/view';
-import { debug } from "util";
-import selector from '../common/selector';
+import selector from './common/selector';
 
 window.$ = selector;
 window._ = utils;

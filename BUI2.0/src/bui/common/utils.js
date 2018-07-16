@@ -65,7 +65,7 @@ class Utils {
         return value === undefined || value === "" || value === null;
     }
     static isObjEmpty(value) {
-        return isStrEmpty(value) || (typeof value === "object" && Object.keys().length === 0);
+        return this.isStrEmpty(value) || (typeof value === "object" && Object.keys(value).length === 0);
     }
     /**
      * 插入样式文件

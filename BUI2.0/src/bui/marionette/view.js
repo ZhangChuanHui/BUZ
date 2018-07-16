@@ -1,4 +1,4 @@
-/**
+﻿/**
  *  作者：张传辉
  *  功能名称：视图组件基类、视图组件操作类
  *  描述信息：
@@ -245,7 +245,7 @@ class View {
                     }
                 })
                 .catch(e => {
-                    log.error(LOGTAG, `子视图脚本加载失败：${e.message}`);
+                    log.error(LOGTAG, `子视图脚本加载失败`,e);
                 });
         }
         else {

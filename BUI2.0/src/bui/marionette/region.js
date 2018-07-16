@@ -1,4 +1,4 @@
-import log from '../common/log';
+﻿import log from '../common/log';
 import EventHandler from '../common/event';
 import _ from '../common/utils';
 
@@ -69,7 +69,7 @@ class RegionItem extends EventHandler {
                         }
                     })
                     .catch(e => {
-                        log.error(LOGTAG, `视图文件请求失败：${e.message}`);
+                        log.error(LOGTAG, `视图文件请求失败`,e);
                         self._breakInit();
                     });
             })(view, this._tempId);

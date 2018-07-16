@@ -166,7 +166,7 @@ class Router extends EventHandler {
                 //延迟加载异常不阻塞，不进行反馈
                 if (fragment.params.area !== self.fragment.params.area) return;
 
-                log.error(LOGTAG, `区域配置文件未成功加载：${areaPath}`);
+                log.error(LOGTAG, `区域配置文件未成功加载：${areaPath}`,e);
                 self.trigger("break");
 
                 //跳转首页，判断是否当前所在是否是首页，如果不是则跳转，防止死循环
@@ -235,7 +235,7 @@ class Router extends EventHandler {
             })
             .catch(e => {
                 self.trigger("break");
-                log.error(LOGTAG, `${areaConfig.layout}未能加载成功;${e.message}`);
+                log.error(LOGTAG, `${areaConfig.layout}未能加载成功;`, e);
             });
     }
     /**
@@ -304,7 +304,7 @@ class Router extends EventHandler {
             })
             .catch(e => {
                 self.trigger("break");
-                log.error(LOGTAG, `路由文件加载失败，${e.message}`);
+                log.error(LOGTAG, `路由文件加载失败`,e);
             });
     }
     /**

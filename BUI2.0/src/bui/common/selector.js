@@ -6,28 +6,26 @@ import log from '../common/log';
  *  描述信息：
 */
 function Selector(strOrElement) {
-    return BET(strOrElement);
+    return new BET(strOrElement);
 }
 
 
-Object.assign(Selector.prototype, {
-    parseXML: function (data) {
-        if (data && typeof data === "string") {
-            var xml;
-            // Support: IE 9 - 11 only
-            try {
-                xml = (new window.DOMParser()).parseFromString(data, "text/xml");
-            } catch (e) { }
+Selector.parseXML = function (data) {
+    if (data && typeof data === "string") {
+        var xml;
+        // Support: IE 9 - 11 only
+        try {
+            xml = (new window.DOMParser()).parseFromString(data, "text/xml");
+        } catch (e) { }
 
-            if (xml && xml.getElementsByTagName("parsererror").length === 0) {
-                return xml.children;
-            }
+        if (xml && xml.getElementsByTagName("parsererror").length === 0) {
+            return xml.children;
         }
-
-        log.error("选择工具", "错误的HTML片段，造成转换DOM失败");
-        return [];
     }
-});
+
+    log.error("选择工具", "错误的HTML片段，造成转换DOM失败");
+    return [];
+}
 
 /**
  *  作者：张传辉
@@ -47,7 +45,7 @@ class BET {
      * @param callBack 回调 <Function> 传入Element
     */
     each(callBack) {
-        for (let index = 0; index < this.nodeList.length; i++) {
+        for (let index = 0; index < this.nodeList.length; index++) {
             let elem = this.nodeList[index];
             if (callBack(elem, index) === false) break;
         }
@@ -55,13 +53,13 @@ class BET {
     }
     /**
      * 追加Element
-     * @param elemOrBETItem 追加对象 <Element/BETItem>
+     * @param strOrElement 追加对象 <Element/BETItem>
     */
-    add(elemOrBETItem) {
+    add(strOrElement) {
         switch (typeof strOrElement) {
             case "string":
                 if (strOrElement.indexOf("<") > -1) {
-                    this.nodeList = this.nodeList.concat(Selector.parseXML(elemOrBETItem));
+                    this.nodeList = this.nodeList.concat(Selector.parseXML(strOrElement));
                 }
                 else {
                     this.nodeList = document.querySelectorAll(strOrElement);
@@ -318,7 +316,7 @@ class BET {
      * @param isText 是否读取文本 <Boolean> 默认False
     */
     html(content, isText) {
-        for (let index = 0; index < this.nodeList.length; i++) {
+        for (let index = 0; index < this.nodeList.length; index++) {
             let elem = this.nodeList[index];
 
             if (typeof content === "string") {
@@ -344,7 +342,7 @@ class BET {
     */
     val(value) {
         var special = ["checkbox", "radio"];
-        for (let index = 0; index < this.nodeList.length; i++) {
+        for (let index = 0; index < this.nodeList.length; index++) {
             let elem = this.nodeList[index];
             let isSpecial = special.indexOf(elem.type) > -1;
 
@@ -381,7 +379,7 @@ class BET {
      * @param value 值
     */
     width(value) {
-        for (let index = 0; index < this.nodeList.length; i++) {
+        for (let index = 0; index < this.nodeList.length; index++) {
             let elem = this.nodeList[index];
 
             if (typeof value === undefined) {
@@ -398,7 +396,7 @@ class BET {
      * @param value 值
     */
     height(value) {
-        for (let index = 0; index < this.nodeList.length; i++) {
+        for (let index = 0; index < this.nodeList.length; index++) {
             let elem = this.nodeList[index];
 
             if (typeof value === undefined) {
@@ -415,7 +413,7 @@ class BET {
      * @param containMargin 是否包含外边距 <Boolean>
     */
     outerHeight(containMargin) {
-        for (let index = 0; index < this.nodeList.length; i++) {
+        for (let index = 0; index < this.nodeList.length; index++) {
             let elem = this.nodeList[index];
             let computeStyle = window.getComputedStyle(elem)
             return parseFloat(elem.offsetHeight) +
@@ -427,7 +425,7 @@ class BET {
      * @param containMargin 是否包含外边距 <Boolean>
     */
     outerWidth(containMargin) {
-        for (let index = 0; index < this.nodeList.length; i++) {
+        for (let index = 0; index < this.nodeList.length; index++) {
             let elem = this.nodeList[index];
             let computeStyle = window.getComputedStyle(elem)
             return parseFloat(elem.offsetWidth) +

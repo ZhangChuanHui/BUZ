@@ -10,7 +10,7 @@ var LogOption = {
     *   日志标志 <String>
     *   日志内容 <String，Object，Int，Boolean>
     */
-    writeLog: function (type, tag, content) {
+    writeLog: function (type, tag, content,error) {
         if (window.console && window.console[type]) {
 
             //若是分组标签等级保持和info平级
@@ -25,6 +25,7 @@ var LogOption = {
             tag = " ----" + tag + "---- ";
 
             console[type](timer + tag + content);
+            if (error) console.error(error);
         }
     },
     /**
@@ -74,9 +75,10 @@ class LogHandler {
     * 输出错误日志信息
     * @param tag 日志标志 <String>
     * @param content 日志内容 <String,Object,Int,Boolean>
+    * @param error 错误堆栈 <Error>
     */
-    static error(tag, content) {
-        LogOption.writeLog("error", tag, content);
+    static error(tag, content, error) {
+        LogOption.writeLog("error", tag, content, error);
     }
     /**
     * 输出警告日志信息
