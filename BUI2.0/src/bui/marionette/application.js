@@ -1,4 +1,4 @@
-import log from '../common/log';
+﻿import log from '../common/log';
 import EventHandler from '../common/event';
 import Router from './router';
 import { BaseController } from './controller';

@@ -49,6 +49,7 @@
     <Folder Include="src\bui\common\" />
     <Folder Include="src\bui\marionette\" />
     <Folder Include="src\areas\" />
+    <Folder Include="src\bui\property\" />
     <Folder Include="src\bui\storage\" />
     <Folder Include="src\bui\requester\" />
     <Folder Include="src\layouts\" />
@@ -73,6 +74,9 @@
     <Compile Include="src\bui\marionette\region.js" />
     <Compile Include="src\bui\marionette\router.js" />
     <Compile Include="src\bui\marionette\view.js" />
+    <Compile Include="src\bui\property\observer.js">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="src\bui\requester\requester.js">
       <SubType>Code</SubType>
     </Compile>
