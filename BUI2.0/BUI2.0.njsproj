@@ -70,6 +70,9 @@
     <Compile Include="src\bui\common\log.js" />
     <Compile Include="src\bui\common\utils.js" />
     <Compile Include="src\bui\marionette\application.js" />
+    <Compile Include="src\bui\marionette\compile.js">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="src\bui\marionette\controller.js" />
     <Compile Include="src\bui\marionette\region.js" />
     <Compile Include="src\bui\marionette\router.js" />
