@@ -104,6 +104,9 @@ class CompileOrder extends EventHandler {
             },
             class: (node, data, exp) => {
                 this.bind(node, data, exp, "class");
+            },
+            event: (node, data, exp, eventName) => {
+                
             }
         };
     }
@@ -113,12 +116,13 @@ class CompileOrder extends EventHandler {
      * @param node 节点 <Element>
      * @param data 数据 <Object>
      * @param exp 表达式 <String> 
+     * @param parma 其余参数 <Any> 扩展使用
     */
-    static exec(orderName, node, data, exp) {
+    static exec(orderName, node, data, exp, ...param) {
         let order = this.orders[orderName];
         //TODO:缺少 exp表达式处理
         if (order) {
-            order(node, data, exp);
+            order(node, data, exp, ...param);
         }
         else {
             log.error(LOGTAG, `未找到${orderName}指令名`);
