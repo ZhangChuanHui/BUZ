@@ -120,6 +120,30 @@ class Utils {
     static trim(str = "") {
         return str.replace(/(^\s*)|(\s*$)/g, "");
     }
+    /**
+     * 判断是否已指定字符串开始
+     * @param str 字符串 <String>
+     * @param key 关键字 <String>
+    */
+    static startWith(str = "", key) {
+        return str.indexOf(key) === 0;
+    }
+    /**
+     * 判断是否已指定字符串结尾
+     * @param str 字符串 <String>
+     * @param key 关键字 <String>
+    */
+    static endWith(str = "", key = "") {
+        return str.lastIndexOf(key) == str.length - key.length;
+    }
+    /**
+     * 判断是否已包含指定字符串
+     * @param str 字符串 <String>
+     * @param key 关键字 <String>
+    */
+    static contains(str = "", key) {
+        return str.indexOf(key) > -1;
+    }
 }
 
 export default Utils;

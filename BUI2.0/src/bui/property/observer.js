@@ -1,4 +1,4 @@
-﻿import _ from '../common/utils';
+import _ from '../common/utils';
 
 /**
  *  作者：张传辉
@@ -93,11 +93,19 @@ Dep.target = null;
  *  描述信息：
 */
 class Watcher {
-    constructor(data,name,callBack) {
+    constructor(data, expOrFn, callBack) {
         this.data = data;
-        this.name = name;
+        this.expOrFn = expOrFn;
         this.deps = {};
         this.callBack = callBack;
+
+        if (typeof expOrFn === "function") {
+            this.getter = expOrFn;
+        }
+        else {
+            this.getter = this.transformGetter(expOrFn);
+        }
+
         this.value = this.get();
     }
     update() {
@@ -118,8 +126,30 @@ class Watcher {
     }
     get() {
         Dep.target = this;
-        let value = this.data[this.name];
+        let value = this.getter.call(this.data, this.data);
         Dep.target = undefined;
         return value;
     }
+    transformGetter(exp) {
+        //过滤非正常属性
+        if (/[^\w.$]/.test(exp)) return;
+
+        let exps = exp.split('.');
+
+        return function (data) {
+            let result = data;
+            exps.forEach((key) => {
+                if (!result) return;
+
+                result = result[key];
+            });
+
+            return result;
+        }
+    }
+}
+
+export default {
+    Observer,
+    Watcher
 }
