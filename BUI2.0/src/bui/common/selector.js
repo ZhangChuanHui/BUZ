@@ -1,4 +1,4 @@
-﻿import _ from './utils';
+import _ from './utils';
 import log from '../common/log';
 /**
  *  作者：张传辉
@@ -19,7 +19,7 @@ Selector.parseXML = function (data) {
         } catch (e) { }
 
         if (xml && xml.getElementsByTagName("parsererror").length === 0) {
-            return xml.children[0];
+            return xml.children;
         }
     }
 
@@ -122,7 +122,7 @@ class BET {
                         if (delegate(e.target) !== true) return;
                     }
 
-                    if (callBack.call(elem, e) === false) {
+                    if (callBack.call(elem,e) === false) {
                         e.preventDefault();
                         e.stopPropagation();
                     }
@@ -322,7 +322,7 @@ class BET {
             if (typeof content === "string") {
                 elem.innerHTML = content;
             }
-            else if (content === undefined) {
+            else {
                 return isText ? elem.textContent : elem.innerHTML;
             }
         }

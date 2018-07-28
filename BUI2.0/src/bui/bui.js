@@ -14,4 +14,4 @@ window.Bui = {
     View: ViewHandler
 }
 
-export default window.Bui;
+export default window.Bui
