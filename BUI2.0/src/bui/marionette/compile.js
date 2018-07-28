@@ -1,4 +1,4 @@
-import _ from "../common/utils";
+﻿import _ from "../common/utils";
 import EventHandler from '../common/event';
 import log from '../common/log';
 import observer from '../property/observer';
@@ -36,11 +36,17 @@ class Compile {
                 let htmlReg = /\{\{\{(.*)\}\}\}/;
                 if (htmlReg.test(node.textContent)) {
                     let exp = htmlReg.exec(node.textContent)[1];
-                    CompileOrder.exec("html", node, this.data, exp);
+                    CompileOrder.exec("html", node, this.data, {
+                        view: this.view,
+                        exp: exp
+                    });
                 }
                 else if (textReg.test(node.textContent)) {
                     let exp = textReg.exec(node.textContent)[1];
-                    CompileOrder.exec("text", node, this.data, exp);
+                    CompileOrder.exec("text", node, this.data, {
+                        view: this.view,
+                        exp: exp
+                    });
                 }
             }
 
@@ -70,23 +76,31 @@ class Compile {
 
         nodeAttrs.forEach((attr) => {
             let attrName = attr.name;
+            let exp = attr.value;
 
             if (_.startWith(attrName, "b-")) {
-                let value = attr.value;
                 let order = attrName.substring(2);
 
+                let compileOption = {
+                    view: this.view,
+                    exp: exp,
+                    attName: order
+                }
+
                 if (_.startWith(order, "on:")) {
-                    let evnetName = order.substring("on:".length);
-                    CompileOrder.exec("event", node, this.data, value, this.view, order);
+                    compileOption.attName = order.substring("on:".length);
+                    CompileOrder.exec("event", node, this.data, compileOption);
                 }
                 else {
-                    CompileOrder.exec(order, node, this.data, value);
+                    CompileOrder.exec(order, node, this.data, compileOption);
                 }
 
                 node.removeAttribute(attrName);
             }
             else if (_.startWith(attrName, ":")) {
-
+                compileOption.attName = attrName.substring(1);
+                CompileOrder.exec("attr", node, this.data, compileOption);
+                node.removeAttribute(attrName);
             }
         });
     }
@@ -102,23 +116,26 @@ class CompileOrder extends EventHandler {
         super();
         /** 指令集 */
         this.orders = {
-            text: (node, data, exp) => {
-                this.bind(node, data, exp, "text");
+            text: (node, data, option) => {
+                this.bind(node, "text", data, option);
             },
-            html: (node, data, exp) => {
-                this.bind(node, data, exp, "html");
+            html: (node, data, option) => {
+                this.bind(node, "html", data, option);
             },
-            class: (node, data, exp) => {
-                this.bind(node, data, exp, "class");
+            class: (node, data, option) => {
+                this.bind(node, "class", data, option);
             },
-            event: (node, data, exp, view, eventName) => {
-                var eventFn = view[exp];
+            event: (node, data, option) => {
+                var eventFn = view[option.exp];
 
-                if (eventName && eventFn) {
+                if (option.attName && eventFn) {
                     $(node).on({
-                        [eventName]: _.bind(eventFn, view)
+                        [option.attName]: _.bind(eventFn, option.view)
                     });
                 }
+            },
+            attr: (node, data, option) => {
+                this.bind(node, "attr", data, option);
             }
         };
     }
@@ -127,14 +144,17 @@ class CompileOrder extends EventHandler {
      * @param orderName 指令名称 <String>
      * @param node 节点 <Element>
      * @param data 数据 <Object>
-     * @param exp 表达式 <String> 
-     * @param parma 其余参数 <Any> 扩展使用
+     * @param option 配置项 <Object> 
     */
-    static exec(orderName, node, data, exp, ...param) {
+    static exec(orderName, node, data, option = {
+        view: undefined,
+        exp: undefined,
+        attName: undefined
+    }) {
         let order = this.orders[orderName];
         //TODO:缺少 exp表达式处理
         if (order) {
-            order(node, data, exp, ...param);
+            order(node, data, option);
         }
         else {
             log.error(LOGTAG, `未找到${orderName}指令名`);
@@ -143,58 +163,51 @@ class CompileOrder extends EventHandler {
     /**
      * 绑定视图数据
      * @param node 节点 <Element>
-     * @param data 数据 <Any>
-     * @param exp 表达式 <String>
      * @param type 更新类型 <String>
+     * @param data 数据 <Any>
+     * @param option 配置项 <Object> 参考exec option配置项
     */
-    bind(node, data, exp, type) {
-        let updater = this[`${type}Updater`];
+    bind(node, type, data, option) {
+        let updater = option.updater || this[`${type}Updater`];
 
         if (updater) {
-            let modelValue = this.getModelValue(data, exp);
-            updater(node, modelValue);
+            let modelValue = this._getModelValue(option.data, option.exp);
+            updater(node, option, modelValue, );
 
-            new observer.Watcher(data, value, (value, oldValue) => {
-                updater(node, modelValue, oldValue);
+            new observer.Watcher(option.data, option.exp, (value, oldValue) => {
+                updater(node, option, modelValue, oldValue);
             });
         }
         else {
             log.warn(LOGTAG, `找不到指定的${type}更新器`);
         }
     }
-    getModelValue(data, exp = "") {
-        let result = data;
-
-        exp = exp.split('.');
-        exp.forEach((key) => {
-            result = result[key];
-        });
-
-        return result;
-    }
     /**
      * 文本更新
      * @param node 节点 <Element>
+     * @param option 配置项 <Object> 参考exec option配置项
      * @param value 值 <Any>
     */
-    textUpdater(node, value) {
+    textUpdater(node, option, value) {
         node.textContent = _.isStrEmpty(value) ? "" : value;
     }
     /**
      * 节点DOM更新
      * @param node 节点 <Element>
+     * @param option 配置项 <Object> 参考exec option配置项
      * @param value 值 <Any>
     */
-    htmlUpdater(node, value) {
+    htmlUpdater(node, option, value) {
         node.innerHTML = _.isStrEmpty(value) ? "" : value;
     }
     /**
      * 更新Class
      * @param node 节点 <Element>
+     * @param option 配置项 <Object> 参考exec option配置项
      * @param value 值 <String>
      * @param oldValue 旧值 <String>
     */
-    classUpdater(node, value, oldValue) {
+    classUpdater(node, option, value, oldValue) {
         let className = node.className;
 
         className = className.replace(oldValue, "")
@@ -204,5 +217,25 @@ class CompileOrder extends EventHandler {
             && _.isStrEmpty(value) ? "" : " ";
 
         node.className = className + space + value;
+    }
+    /**
+     * 更改节点属性
+     * @param node 节点 <Element>
+     * @param option 配置项 <Object> 参考exec option配置项
+     * @param value 值 <String>
+     * @param oldValue 旧值 <String>
+    */
+    attrUpdater(node, option, value) {
+        node.attr(option.attName, value);
+    }
+    _getModelValue(data, exp = "") {
+        let result = data;
+
+        exp = exp.split('.');
+        exp.forEach((key) => {
+            result = result[key];
+        });
+
+        return result;
     }
 };
