@@ -2,6 +2,7 @@ import _ from "../common/utils";
 import EventHandler from '../common/event';
 import log from '../common/log';
 import observer from '../property/observer';
+import $ from '../common/selector';
 
 const LOGTAG = "页面渲染";
 
@@ -11,8 +12,9 @@ const LOGTAG = "页面渲染";
  *  描述信息：
 */
 class Compile {
-    constructor(el, data) {
+    constructor(el, view, data) {
         this.el = this.isElementNode(el) ? el : document.querySelector(el);
+        this.view = view;
         this.data = data;
 
         if (this.el) {
@@ -73,14 +75,18 @@ class Compile {
                 let value = attr.value;
                 let order = attrName.substring(2);
 
-                if (_.startWith(order, "on")) {
-
+                if (_.startWith(order, "on:")) {
+                    let evnetName = order.substring("on:".length);
+                    CompileOrder.exec("event", node, this.data, value, this.view, order);
                 }
                 else {
                     CompileOrder.exec(order, node, this.data, value);
                 }
 
                 node.removeAttribute(attrName);
+            }
+            else if (_.startWith(attrName, ":")) {
+
             }
         });
     }
@@ -105,8 +111,14 @@ class CompileOrder extends EventHandler {
             class: (node, data, exp) => {
                 this.bind(node, data, exp, "class");
             },
-            event: (node, data, exp, eventName) => {
-                
+            event: (node, data, exp, view, eventName) => {
+                var eventFn = view[exp];
+
+                if (eventName && eventFn) {
+                    $(node).on({
+                        [eventName]: _.bind(eventFn, view)
+                    });
+                }
             }
         };
     }

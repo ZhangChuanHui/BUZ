@@ -1,4 +1,4 @@
-﻿import _ from './utils';
+import _ from './utils';
 import log from '../common/log';
 /**
  *  作者：张传辉
@@ -122,7 +122,7 @@ class BET {
                         if (delegate(e.target) !== true) return;
                     }
 
-                    if (callBack(e) === false) {
+                    if (callBack.call(elem,e) === false) {
                         e.preventDefault();
                         e.stopPropagation();
                     }
