@@ -51,7 +51,8 @@ class BaseView extends EventHandler {
         }
 
         if (view.noTemplete === false) {
-            selector.html(view.$el);
+            selector.empty();
+            selector.append(view.$el);
         }
 
         if (_.isFunction(view.onShow)) {

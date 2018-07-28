@@ -1,8 +1,8 @@
-import templete from  './templetes/index.html';
+﻿import templete from  './templetes/index.html';
 
 export default Bui.View({
     templete: templete,
     onShow: () => {
-        
+        alert(1);
     }
 });
