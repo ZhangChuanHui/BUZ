@@ -8,8 +8,9 @@
 
 import log from '../common/log';
 import EventHandler from '../common/event';
+import Compile from './compile';
 import _ from '../common/utils';
-
+import observer from '../property/observer';
 const LOGTAG = "视图组件";
 
 /**
@@ -26,16 +27,17 @@ class BaseView extends EventHandler {
      * 初始化视图组件
      * @param selector 选择器 <jQuery Selector>
      * @param view 视图组件 <View类>
-     * @param viewData 视图数据 <Any>
+     * @param pageParam 视图参数 <Any>
     */
-    initView(selector, view, viewData) {
+    async initView(selector, view, pageParam) {
         this.trigger("before:initView", {
             selector: selector,
             view: view
         });
 
         view.$container = selector;
-        view.viewData = viewData;
+        view.pageParam = pageParam;
+        view.data = view.data || {};
 
         //克隆一个基础版本，用于视图组件独立reload
         view.__baseView = Object.assign({}, view);
@@ -47,7 +49,7 @@ class BaseView extends EventHandler {
             : this.renderTemplete(view);
 
         if (_.isFunction(view.onRender)) {
-            view.onRender.call(view);
+            await view.onRender.call(view);
         }
 
         if (view.noTemplete === false) {
@@ -55,8 +57,13 @@ class BaseView extends EventHandler {
             selector.append(view.$el);
         }
 
+        if (view.noCompile != true) {
+            new observer.Observer(view.data);
+            new Compile(view.$el.nodeList[0], view, view.data);
+        }
+
         if (_.isFunction(view.onShow)) {
-            view.onShow();
+            await view.onShow();
         }
 
         this.trigger("after:initView", {
@@ -80,13 +87,13 @@ class BaseView extends EventHandler {
      * @param selector 选择器 <jQuerySelector>
      * @param name 子视图名称 <String>
      * @param View 子视图组件 <View类>
-     * @param viewData 视图数据 <Any>
+     * @param pageParam 视图参数 <Any>
     */
-    initChildrenView(parentView, selector, name, view, viewData) {
+    initChildrenView(parentView, selector, name, view, pageParam) {
         view.parent = parentView;
         view.__viewName = name;
 
-        this.initView(selector, view, viewData);
+        this.initView(selector, view, pageParam);
         parentView.childrens[name] = view;
 
         selector.attr("data-view-name", name);
@@ -134,13 +141,13 @@ function ViewHandler(option, ...args) {
         });
     }
 
-    return (viewData) => {
-        return new View(option, viewData);
+    return (pageParam) => {
+        return new View(option, pageParam);
     }
 }
 
 class View {
-    constructor(option, viewData) {
+    constructor(option, pageParam) {
         /**页面样式名称，配置后追加app-page之后*/
         this.pageClassName = "";
         /**页面模板 */
@@ -161,8 +168,8 @@ class View {
 
         //合并视图配置信息
         Object.assign(this, option);
-        /**视图数据 */
-        this.viewData = viewData;
+        /**视图参数 */
+        this.pageParam = pageParam;
     }
     /**
      * 注册全局观察者模式
@@ -202,10 +209,10 @@ class View {
         //若为子视图则执行父视图的attachChild
         if (baseView.parent) {
             baseView.parent.attachChild(baseView.$container,
-                baseView.__viewName, baseView, baseView.viewData);
+                baseView.__viewName, baseView, baseView.pageParam);
         }
         else {
-            this._app.baseView.initView(baseView.$container, baseView.viewData);
+            this._app.baseView.initView(baseView.$container, baseView.pageParam);
         }
 
         //返回baseView，方便对其新功能操作交替转换
@@ -216,9 +223,9 @@ class View {
      * @param selector 选择器 <jQuerySelector,String>
      * @param name 子视图名称 <String>
      * @param view 视图组件 <View类>
-     * @param viewData 视图数据 <Any>
+     * @param pageParam 视图参数 <Any>
     */
-    attachChild(selector, name, view, viewData) {
+    attachChild(selector, name, view, pageParam) {
         if (this.childrens[name]) {
             this.teardownChild(name);
             log.info(LOGTAG, `${name}:完成子视图卸载`);
@@ -239,18 +246,18 @@ class View {
                     //判断选择符是否仍挂载DOM中
                     if (selector.parent().length) {
                         self._app.view.initChildrenView(
-                            self, selector, name, new ViewHandler(), viewData);
+                            self, selector, name, new ViewHandler(), pageParam);
                     }
                     else {
                         log.warn(LOGTAG, `${name}: 子视图元素被卸载，终止异步加载子视图`);
                     }
                 })
                 .catch(e => {
-                    log.error(LOGTAG, `子视图脚本加载失败`,e);
+                    log.error(LOGTAG, `子视图脚本加载失败`, e);
                 });
         }
         else {
-            this._app.view.initChildrenView(this, selector, name, view, viewData);
+            this._app.view.initChildrenView(this, selector, name, view, pageParam);
         }
     }
     /**

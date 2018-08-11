@@ -1,4 +1,4 @@
-import _ from '../common/utils';
+﻿import _ from '../common/utils';
 
 /**
  *  作者：张传辉
@@ -62,8 +62,8 @@ class Dep {
         this.subs = [];
     }
     depend() {
-        //如果有代理目标则插入订阅者
-        Dep.target && Dep.target.addSub(this);
+        //如果有代理目标则插入订阅者,建立关系
+        Dep.target && Dep.target.addDep(this);
     }
     addSub(sub) {
         this.subs.push(sub);

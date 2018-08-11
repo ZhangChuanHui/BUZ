@@ -10,17 +10,15 @@ function Selector(strOrElement) {
 }
 
 
-Selector.parseXML = function (data) {
+Selector.parseHTML = function (data) {
     if (data && typeof data === "string") {
-        var xml;
-        // Support: IE 9 - 11 only
         try {
-            xml = (new window.DOMParser()).parseFromString(data, "text/xml");
-        } catch (e) { }
+            var tempContainer = document.createElement("div");
 
-        if (xml && xml.getElementsByTagName("parsererror").length === 0) {
-            return xml.children[0];
-        }
+            tempContainer.innerHTML = data;
+
+            return tempContainer.children;
+        } catch (e) { }
     }
 
     log.error("选择工具", "错误的HTML片段，造成转换DOM失败");
@@ -59,7 +57,9 @@ class BET {
         switch (typeof strOrElement) {
             case "string":
                 if (strOrElement.indexOf("<") > -1) {
-                    this.nodeList = this.nodeList.concat(Selector.parseXML(strOrElement));
+                    for (let elem of Selector.parseHTML(strOrElement)) {
+                        this.nodeList.push(elem);
+                    }
                 }
                 else {
                     this.nodeList = document.querySelectorAll(strOrElement);
@@ -346,7 +346,7 @@ class BET {
             let elem = this.nodeList[index];
             let isSpecial = special.indexOf(elem.type) > -1;
 
-            if (typeof content === "string") {
+            if (_.isStrEmpty(value) === false) {
                 isSpecial ? elem.checked = !!value : elem.value = value;
             }
             else {
