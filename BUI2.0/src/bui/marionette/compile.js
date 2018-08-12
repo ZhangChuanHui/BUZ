@@ -129,6 +129,15 @@ var CompileOrder = {
 
             $(node).on({
                 input: function (e) {
+                    //{if($event.target.composing)return 
+                    //el.addEventListener('compositionstart', onCompositionStart);
+                    //el.addEventListener('compositionend', onCompositionEnd);
+                    // Safari < 10.2 & UIWebView doesn't fire compositionend when
+                    // switching focus before confirming composition choice
+                    // this also fixes the issue where some browsers e.g. iOS Chrome
+                    // fires "change" instead of "input" on autocomplete.
+                    //el.addEventListener('change', onCompositionEnd);
+
                     var newValue = $(this).val();
 
                     if (newValue === value) return;
