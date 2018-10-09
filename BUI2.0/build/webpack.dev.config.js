@@ -39,7 +39,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     },
     plugins: [
         new webpack.DefinePlugin({
-            'process.env': "dev"
+            "process": require('./options/devConfig')
         }),
         //模块热替换
         new webpack.HotModuleReplacementPlugin(),

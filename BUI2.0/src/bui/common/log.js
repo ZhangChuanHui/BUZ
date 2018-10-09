@@ -1,5 +1,3 @@
-﻿import config from './config';
-
 var LogOption = {
     /**日志权重*/
     levels: ["info", "warn", "error"],
@@ -18,7 +16,7 @@ var LogOption = {
             if (leve === -1 && type.indexOf('group') === 0) leve = 0;
 
             //判断日志输出等级
-            if (leve < this.levels[config.logLevel]) return;
+            if (leve < this.levels[process.logLevel]) return;
 
             content = this.transformContent(content);
             var timer = this._getTimer();
