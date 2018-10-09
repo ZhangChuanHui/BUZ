@@ -1,4 +1,4 @@
-﻿import _ from "../common/utils";
+import _ from "../common/utils";
 import EventHandler from '../common/event';
 import log from '../common/log';
 import observer from '../property/observer';
@@ -121,33 +121,6 @@ var CompileOrder = {
         html: function (node, data, option) {
             this.bind(node, "html", data, option);
         },
-        model: function (node, data, option) {
-            this.bind(node, "model", data, option);
-
-            let self = this;
-            let value = this._getModelValue(data, option.exp);
-
-            $(node).on({
-                input: function (e) {
-                    //{if($event.target.composing)return 
-                    //el.addEventListener('compositionstart', onCompositionStart);
-                    //el.addEventListener('compositionend', onCompositionEnd);
-                    // Safari < 10.2 & UIWebView doesn't fire compositionend when
-                    // switching focus before confirming composition choice
-                    // this also fixes the issue where some browsers e.g. iOS Chrome
-                    // fires "change" instead of "input" on autocomplete.
-                    //el.addEventListener('change', onCompositionEnd);
-
-                    var newValue = $(this).val();
-
-                    if (newValue === value) return;
-
-                    value = newValue;
-
-                    self._setModelValue(data, option.exp, value);
-                }
-            });
-        },
         class: function (node, data, option) {
             this.bind(node, "class", data, option);
         },
@@ -265,20 +238,6 @@ var CompileOrder = {
         });
 
         return result;
-    },
-    _setModelValue: function (data, exp = "", value) {
-        let result = data;
-
-        exp = exp.split('.');
-        exp.forEach((key, i) => {
-            //递归寻找最后一层属性
-            if (i < exp.length - 1) {
-                result = result[key];
-            }
-            else {
-                result[key] = value;
-            }
-        });
     }
 };
 
