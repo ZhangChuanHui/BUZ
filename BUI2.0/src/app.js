@@ -1,4 +1,4 @@
-import Bui from './bui/bui';
+import Bui from './core/bui';
 
 _.docReady(() => {
     Bui.log.info("核心组件", "开始初始化Application");

@@ -46,8 +46,8 @@
     <Folder Include="src\areas\Demo\" />
     <Folder Include="src\areas\Demo\index\" />
     <Folder Include="src\areas\Demo\index\templetes\" />
-    <Folder Include="src\bui\" />
-    <Folder Include="src\bui\common\" />
+    <Folder Include="src\core\" />
+    <Folder Include="src\core\common\" />
     <Folder Include="src\bui\marionette\" />
     <Folder Include="src\areas\" />
     <Folder Include="src\bui\property\" />
@@ -55,6 +55,7 @@
     <Folder Include="src\bui\requester\" />
     <Folder Include="src\layouts\" />
     <Folder Include="src\layouts\templetes\" />
+    <Folder Include="src\commonWeb\" />
     <Folder Include="src\static\" />
   </ItemGroup>
   <ItemGroup>

@@ -9,10 +9,10 @@ module.exports = {
     context: path.resolve(__dirname, '../src'),
     entry: {
         app: './app.js',
-        bui: './bui/bui.js'
+        bui: './core/bui.js'
     },
     resolve: {
-        extensions: ['.js','.css'],
+        extensions: ['.js', '.css'],
         alias: {
             "~": resolve("src")
         }
@@ -26,6 +26,21 @@ module.exports = {
             {
                 test: /\.js$/,
                 loader: 'babel-loader'
+            },
+            {
+                test: "/\.css$/",
+                use: [
+                    'style-loader',
+                    { loader: 'css-loader', options: { sourceMap: true } }
+                ]
+            },
+            {
+                test: /\.less$/,
+                use: [
+                    'style-loader',
+                    { loader: 'css-loader', options: { sourceMap: true, importLoaders: 1 } },
+                    { loader: 'less-loader', options: { sourceMap: true } }
+                ]
             }
         ]
     }
