@@ -1,4 +1,4 @@
-﻿import log from '../common/log';
+import log from '../common/log';
 import EventHandler from '../common/event';
 import _ from '../common/utils';
 import { error, debug } from 'util';
@@ -216,7 +216,7 @@ class Router extends EventHandler {
         let layoutPath = this._getRoleParamPath(
             "layout",
             fragment,
-            `layouts/${areaConfig.layout || ""}`
+            `commonWeb/layouts/${areaConfig.layout || ""}`
         );
 
         log.info(LOGTAG, `准备装载布局文件：${layoutPath}`);
