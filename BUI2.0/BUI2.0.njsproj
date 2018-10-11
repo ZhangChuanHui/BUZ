@@ -36,6 +36,9 @@
     <Content Include="package.json" />
     <Content Include="src\areas\Demo\index\templetes\index.html" />
     <Content Include="src\bui\common\selector.js" />
+    <Content Include="src\commonWeb\resource\base.less">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="src\index.html" />
     <Content Include="src\layouts\templetes\demo-layout.html" />
   </ItemGroup>
@@ -48,6 +51,7 @@
     <Folder Include="src\areas\Demo\index\templetes\" />
     <Folder Include="src\bui\" />
     <Folder Include="src\bui\common\" />
+    <Folder Include="src\commonWeb\resource\" />
     <Folder Include="src\core\" />
     <Folder Include="src\core\common\" />
     <Folder Include="src\bui\marionette\" />
