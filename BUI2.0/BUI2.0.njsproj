@@ -35,8 +35,7 @@
     <Content Include=".babelrc" />
     <Content Include="package.json" />
     <Content Include="src\areas\Demo\index\templetes\index.html" />
-    <Content Include="src\bui\common\selector.js" />
-    <Content Include="src\commonWeb\resource\base.less">
+    <Content Include="src\resource\base.less">
       <SubType>Code</SubType>
     </Content>
     <Content Include="src\index.html" />
@@ -49,23 +48,18 @@
     <Folder Include="src\areas\Demo\" />
     <Folder Include="src\areas\Demo\index\" />
     <Folder Include="src\areas\Demo\index\templetes\" />
-    <Folder Include="src\bui\" />
-    <Folder Include="src\bui\common\" />
-    <Folder Include="src\commonWeb\resource\" />
+    <Folder Include="src\components\" />
+    <Folder Include="src\components\regions\" />
+    <Folder Include="src\resource\" />
     <Folder Include="src\core\" />
     <Folder Include="src\core\common\" />
-    <Folder Include="src\bui\marionette\" />
     <Folder Include="src\areas\" />
-    <Folder Include="src\bui\property\" />
-    <Folder Include="src\bui\storage\" />
-    <Folder Include="src\bui\requester\" />
     <Folder Include="src\core\marionette\" />
     <Folder Include="src\core\property\" />
     <Folder Include="src\core\requester\" />
     <Folder Include="src\core\storage\" />
     <Folder Include="src\layouts\" />
     <Folder Include="src\layouts\templetes\" />
-    <Folder Include="src\commonWeb\" />
     <Folder Include="src\static\" />
   </ItemGroup>
   <ItemGroup>
@@ -79,27 +73,6 @@
     <Compile Include="src\areas\Demo\config.js" />
     <Compile Include="src\areas\Demo\index\Index.js" />
     <Compile Include="src\areas\Demo\index\router.js" />
-    <Compile Include="src\bui\bui.js" />
-    <Compile Include="src\bui\common\event.js" />
-    <Compile Include="src\bui\common\log.js" />
-    <Compile Include="src\bui\common\utils.js" />
-    <Compile Include="src\bui\marionette\application.js" />
-    <Compile Include="src\bui\marionette\compile.js">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="src\bui\marionette\controller.js" />
-    <Compile Include="src\bui\marionette\region.js" />
-    <Compile Include="src\bui\marionette\router.js" />
-    <Compile Include="src\bui\marionette\view.js" />
-    <Compile Include="src\bui\property\observer.js">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="src\bui\requester\requester.js">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="src\bui\storage\storage.js">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="src\core\bui.js" />
     <Compile Include="src\core\common\env.js" />
     <Compile Include="src\core\common\event.js" />
