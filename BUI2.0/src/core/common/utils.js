@@ -74,9 +74,7 @@ class Utils {
     */
     static insertStyle(styles = []) {
         styles.forEach((item) => {
-            if ($(`link[data-url='${item}']`).length) return;
-
-            $("head").append(`<link rel="stylesheet" href="${item}" data-url="${item}"></link>`);
+            item.use();
         });
     }
     /**
@@ -85,7 +83,7 @@ class Utils {
     */
     static removeStyle(styles = []) {
         styles.forEach((item) => {
-            $(`link[data-url='${item}']`).remove();
+            item.unuse();
         });
     }
     /**

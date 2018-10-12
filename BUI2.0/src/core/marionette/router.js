@@ -200,9 +200,6 @@ class Router extends EventHandler {
             this.trigger("after:initArea");
         }
 
-
-
-
         if (this.areaConfig.layout === areaConfig.layout) {
             this.areaConfig = areaConfig;
             log.info(LOGTAG, `${areaConfig.layout}模板未发生改变，执行路由加载`);

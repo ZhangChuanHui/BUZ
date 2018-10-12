@@ -1,0 +1,191 @@
+/*------------------------------公共变量------------------------------*/
+@fontColor: #333;
+@fontSize: 14px;
+
+/*------------------------------公共函数------------------------------*/
+.size(@w, @h) {
+    width: @w;
+    height: @h;
+}
+
+.center(@w, @h) {
+    .size(@w, @h);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -(@w / 2);
+    margin-left: -(@h / 2);
+}
+
+.center(x, @w) {
+    width: @w;
+    position: absolute;
+    left: 50%;
+    margin-left: -(@w / 2);
+}
+
+.center(y, @h) {
+    height: @h;
+    position: absolute;
+    top: 50%;
+    margin-top: -(@h / 2);
+}
+
+// 遮罩层, 全屏遮罩、区域遮罩
+.over-screen(fixed) {
+    position:fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.over-screen(absolute) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+
+.color(@color, @hovercolor) {
+    color: @color;
+
+    &:hover {
+        color: @hovercolor;
+    }
+}
+
+// 辅助性文字（灰色）
+.assist-font(@color: #b0b0b0, @fz: 14px) {
+    color: @color;
+    font-size: @fz;
+}
+
+// 禁止换行, 文本溢出省略号显示 (一行)
+.ellipsis() {
+    white-space: normal;
+    word-wrap: break-word;
+    word-break: break-all;
+    text-overflow: ellipsis;
+    overflow:hidden;
+}
+
+// 文本溢出省略号显示 (多行)
+// 只支持 webkit 浏览器, 解决方案：高度 = 行高*行数
+// height: 90px; line-height: 30px; -webkit-line-clamp: 3;
+.ellipsis-mult(@n: 3) {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: @n;
+    word-break: break-all;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+
+// 全屏大图背景
+.fullscreen-bg(@url) {
+    width: 100vw;
+    height: 100vh;
+    background: url(@url) no-repeat 50% 50%;
+    background-size: cover;
+}
+
+// 隔行换色
+.zebra-lists(odd, @color) {
+    &.odd {
+        > li:nth-child(odd) {
+            background-color: @color;
+        }
+    }
+}
+
+.zebra-lists(even, @color) {
+    &.even {
+        > li:nth-child(even) {
+            background: @color;
+        }
+    }
+}
+
+.arrow(top, @color, @w: 10px, @x: 50%) {
+    position: relative;
+
+    &:before {
+        position: absolute;
+        bottom: 100%;
+        left: @x;
+        content: " ";
+        height: 0;
+        width: 0;
+        pointer-events: none;
+        border-style: solid;
+        border-color: transparent;
+        border-bottom-color: @color;
+        border-width: unit(@w, px);
+        @margin: -@w;
+        margin-left: unit(@margin, px);
+    }
+}
+
+.arrow(right, @color, @w: 10px, @y: 50%) {
+    position: relative;
+
+    &:before {
+        position: absolute;
+        left: 100%;
+        top: @y;
+        content: " ";
+        height: 0;
+        width: 0;
+        pointer-events: none;
+        border-style: solid;
+        border-color: transparent;
+        border-left-color: @color;
+        border-width: unit(@w, px);
+        @margin: -@w;
+        margin-top: unit(@margin, px);
+    }
+}
+
+.arrow(bottom, @color, @w: 10px, @x: 50%) {
+    position: relative;
+
+    &:before {
+        position: absolute;
+        top: 100%;
+        left: @x;
+        content: " ";
+        height: 0;
+        width: 0;
+        pointer-events: none;
+        border-style: solid;
+        border-color: transparent;
+        border-top-color: @color;
+        border-width: unit(@w, px);
+        @margin: -@w;
+        margin-left: unit(@margin, px);
+    }
+}
+
+.arrow(left, @color, @w: 10px,  @y: 50%) {
+    position: relative;
+
+    &:before {
+        position: absolute;
+        right: 100%;
+        top: @y;
+        content: " ";
+        height: 0;
+        width: 0;
+        pointer-events: none;
+        border-style: solid;
+        border-color: transparent;
+        border-right-color: @color;
+        border-width: unit(@w, px);
+        @margin: -@w;
+        margin-top: unit(@margin, px);
+    }
+}

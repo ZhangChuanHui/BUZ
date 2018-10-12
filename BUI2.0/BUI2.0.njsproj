@@ -35,11 +35,17 @@
     <Content Include=".babelrc" />
     <Content Include="package.json" />
     <Content Include="src\areas\Demo\index\templetes\index.html" />
+    <Content Include="src\areas\Demo\resource\demo.less">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="src\commonWeb\resource\base.less">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="src\commonWeb\resource\common.less">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="src\index.html" />
-    <Content Include="src\commonWeb\layouts\templetes\demo-layout.html" />
+    <Content Include="src\commonWeb\layouts\templetes\default-layout.html" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="build\" />
@@ -48,13 +54,17 @@
     <Folder Include="src\areas\Demo\" />
     <Folder Include="src\areas\Demo\index\" />
     <Folder Include="src\areas\Demo\index\templetes\" />
+    <Folder Include="src\areas\Demo\resource\" />
     <Folder Include="src\commonWeb\" />
     <Folder Include="src\commonWeb\views\" />
     <Folder Include="src\commonWeb\resource\" />
     <Folder Include="src\core\" />
     <Folder Include="src\core\common\" />
     <Folder Include="src\areas\" />
+    <Folder Include="src\core\compile\orders\" />
+    <Folder Include="src\core\compile\parser\" />
     <Folder Include="src\core\marionette\" />
+    <Folder Include="src\core\compile\" />
     <Folder Include="src\core\property\" />
     <Folder Include="src\core\requester\" />
     <Folder Include="src\core\storage\" />
@@ -79,8 +89,36 @@
     <Compile Include="src\core\common\log.js" />
     <Compile Include="src\core\common\selector.js" />
     <Compile Include="src\core\common\utils.js" />
+    <Compile Include="src\core\compile\orders\attr.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="src\core\compile\orders\class-name.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="src\core\compile\orders\event.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="src\core\compile\orders\html.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="src\core\compile\orders\index.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="src\core\compile\parser\base.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="src\core\compile\parser\elem-parser.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="src\core\compile\parser\index.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="src\core\compile\parser\html-parser.js" />
+    <Compile Include="src\core\compile\parser\text-parser.js">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="src\core\marionette\application.js" />
-    <Compile Include="src\core\marionette\compile.js" />
+    <Compile Include="src\core\compile\index.js" />
     <Compile Include="src\core\marionette\controller.js" />
     <Compile Include="src\core\marionette\region.js" />
     <Compile Include="src\core\marionette\router.js" />
@@ -88,7 +126,7 @@
     <Compile Include="src\core\property\observer.js" />
     <Compile Include="src\core\requester\requester.js" />
     <Compile Include="src\core\storage\storage.js" />
-    <Compile Include="src\commonWeb\layouts\DemoLayout.js" />
+    <Compile Include="src\commonWeb\layouts\DefaultLayout.js" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />

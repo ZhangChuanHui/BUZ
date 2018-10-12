@@ -1,11 +1,10 @@
-﻿import templete from './templetes/index.html';
-import { setTimeout } from 'timers';
+import templete from './templetes/index.html';
 
 export default Bui.View({
     templete: templete,
     data: {
         demoText: 1,
-        demoText2:"等待输入内容"
+        demoTip:"我是固定提示"
     },
     clickFun: function () {
         this.data.demoText++;

@@ -1,4 +1,4 @@
-﻿/**
+/**
  *  作者：张传辉
  *  功能名称：视图组件基类、视图组件操作类
  *  描述信息：
@@ -8,7 +8,7 @@
 
 import log from '../common/log';
 import EventHandler from '../common/event';
-import Compile from './compile';
+import Compile from '../compile/index';
 import _ from '../common/utils';
 import observer from '../property/observer';
 const LOGTAG = "视图组件";

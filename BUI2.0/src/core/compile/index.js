@@ -3,7 +3,8 @@ import EventHandler from '../common/event';
 import log from '../common/log';
 import observer from '../property/observer';
 import $ from '../common/selector';
-import { debug } from "util";
+import parser from './parser/index';
+import orders from './orders/index';
 
 const LOGTAG = "页面渲染";
 
@@ -14,12 +15,13 @@ const LOGTAG = "页面渲染";
 */
 class Compile {
     constructor(el, view, data) {
-        this.el = this.isElementNode(el) ? el : document.querySelector(el);
+        this.el = el;
         this.view = view;
         this.data = data;
 
         if (this.el) {
             this.fragment = this.nodeFragment(this.el);
+
             this.compileNodes(this.fragment);
 
             this.el.appendChild(this.fragment);
@@ -29,38 +31,12 @@ class Compile {
         let childNodes = el.childNodes;
 
         childNodes.forEach((node) => {
-            if (this.isElementNode(node)) {
-                this.compile(node);
-            }
-            else if (this.isTextNode(node)) {
-                let textReg = /\{\{(.*)\}\}/;
-                let htmlReg = /\{\{\{(.*)\}\}\}/;
-                if (htmlReg.test(node.textContent)) {
-                    let exp = htmlReg.exec(node.textContent)[1];
-                    CompileOrder.exec("html", node, this.data, {
-                        view: this.view,
-                        exp: exp
-                    });
-                }
-                else if (textReg.test(node.textContent)) {
-                    let exp = textReg.exec(node.textContent)[1];
-                    CompileOrder.exec("text", node, this.data, {
-                        view: this.view,
-                        exp: exp
-                    });
-                }
-            }
+            let tokens = new parser(node);
 
             if (node.childNodes && node.childNodes.length) {
                 this.compileNodes(node);
             }
         });
-    }
-    isElementNode(node) {
-        return node.nodeType === 1;
-    }
-    isTextNode(node) {
-        return node.nodeType === 3;
     }
     nodeFragment(el) {
         let fragment = document.createDocumentFragment();
@@ -71,39 +47,6 @@ class Compile {
         }
 
         return fragment;
-    }
-    compile(node) {
-        let nodeAttrs = node.attributes;
-
-        for (let attr of nodeAttrs) {
-            let attrName = attr.name;
-            let exp = attr.value;
-
-            if (_.startWith(attrName, "b-")) {
-                let order = attrName.substring(2);
-
-                let compileOption = {
-                    view: this.view,
-                    exp: exp,
-                    attName: order
-                }
-
-                if (_.startWith(order, "on:")) {
-                    compileOption.attName = order.substring("on:".length);
-                    CompileOrder.exec("event", node, this.data, compileOption);
-                }
-                else {
-                    CompileOrder.exec(order, node, this.data, compileOption);
-                }
-
-                node.removeAttribute(attrName);
-            }
-            else if (_.startWith(attrName, ":")) {
-                compileOption.attName = attrName.substring(1);
-                CompileOrder.exec("attr", node, this.data, compileOption);
-                node.removeAttribute(attrName);
-            }
-        }
     }
 }
 
@@ -242,3 +185,10 @@ var CompileOrder = {
 };
 
 export default Compile;
+
+export var  CompileOrder = {
+    orderList: {},
+    addOrder: function (orderName, exec) {
+        this.orderList[orderName] = exec;
+    }
+}

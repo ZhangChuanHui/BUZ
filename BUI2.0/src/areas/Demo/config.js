@@ -1,4 +1,7 @@
+import demoCss from "~/areas/Demo/resource/demo.less"
+
 export default {
-    layout: "DemoLayout",
-    defaultPath:"index"
+    layout: "DefaultLayout",
+    defaultPath: "index",
+    styles: [ demoCss ]
 }

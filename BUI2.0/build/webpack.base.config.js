@@ -30,15 +30,17 @@ module.exports = {
             {
                 test: "/\.css$/",
                 use: [
-                    'style-loader',
-                    { loader: 'css-loader', options: { sourceMap: true } }
+                    'style-loader/useable',
+                    { loader: 'css-loader', options: { sourceMap: true } },
+                    { loader: 'postcss-loader', options: { sourceMap: true, plugins: [require("autoprefixer")("last 100 versions")] } },
                 ]
             },
             {
                 test: /\.less$/,
                 use: [
-                    'style-loader',
+                    'style-loader/useable',
                     { loader: 'css-loader', options: { sourceMap: true, importLoaders: 1 } },
+                    { loader: 'postcss-loader', options: { sourceMap: true, plugins: [require("autoprefixer")("last 100 versions")] } },
                     { loader: 'less-loader', options: { sourceMap: true } }
                 ]
             }
