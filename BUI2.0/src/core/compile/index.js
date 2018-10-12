@@ -1,10 +1,11 @@
-import _ from "../common/utils";
+﻿import _ from "../common/utils";
 import EventHandler from '../common/event';
 import log from '../common/log';
 import observer from '../property/observer';
 import $ from '../common/selector';
 import parser from './parser/index';
 import orders from './orders/index';
+import CompileOrder from './order';
 
 const LOGTAG = "页面渲染";
 
@@ -33,6 +34,12 @@ class Compile {
         childNodes.forEach((node) => {
             let tokens = new parser(node);
 
+            CompileOrder.exec(node, tokens, {
+                view: this.view,
+                data: this.data,
+                refNode: this.el
+            });
+
             if (node.childNodes && node.childNodes.length) {
                 this.compileNodes(node);
             }
@@ -55,31 +62,8 @@ class Compile {
  *  功能名称：页面渲染指令集管理
  *  描述信息：
 */
-var CompileOrder = {
-    /** 指令集 */
-    orders: {
-        text: function (node, data, option) {
-            this.bind(node, "text", data, option);
-        },
-        html: function (node, data, option) {
-            this.bind(node, "html", data, option);
-        },
-        class: function (node, data, option) {
-            this.bind(node, "class", data, option);
-        },
-        event: function (node, data, option) {
-            var eventFn = option.view[option.exp];
+var CompileOrder11 = {
 
-            if (option.attName && eventFn) {
-                $(node).on({
-                    [option.attName]: _.bind(eventFn, option.view)
-                });
-            }
-        },
-        attr: function (node, data, option) {
-            this.bind(node, "attr", data, option);
-        }
-    },
     /**
      * 执行指令
      * @param orderName 指令名称 <String>
@@ -123,55 +107,7 @@ var CompileOrder = {
             log.warn(LOGTAG, `找不到指定的${type}更新器`);
         }
     },
-    /**
-     * 文本更新
-     * @param node 节点 <Element>
-     * @param option 配置项 <Object> 参考exec option配置项
-     * @param value 值 <Any>
-    */
-    textUpdater: function (node, option, value) {
-        node.textContent = _.isStrEmpty(value) ? "" : value;
-    },
-    /**
-     * 节点DOM更新
-     * @param node 节点 <Element>
-     * @param option 配置项 <Object> 参考exec option配置项
-     * @param value 值 <Any>
-    */
-    htmlUpdater: function (node, option, value) {
-        node.innerHTML = _.isStrEmpty(value) ? "" : value;
-    },
-    modelUpdater: function (node, option, value) {
-        $(node).val(value);
-    },
-    /**
-     * 更新Class
-     * @param node 节点 <Element>
-     * @param option 配置项 <Object> 参考exec option配置项
-     * @param value 值 <String>
-     * @param oldValue 旧值 <String>
-    */
-    classUpdater: function (node, option, value, oldValue) {
-        let className = node.className;
 
-        className = className.replace(oldValue, "")
-            .replace(/\s$/, "");
-
-        var space = className
-            && _.isStrEmpty(value) ? "" : " ";
-
-        node.className = className + space + value;
-    },
-    /**
-     * 更改节点属性
-     * @param node 节点 <Element>
-     * @param option 配置项 <Object> 参考exec option配置项
-     * @param value 值 <String>
-     * @param oldValue 旧值 <String>
-    */
-    attrUpdater: function (node, option, value) {
-        node.attr(option.attName, value);
-    },
     _getModelValue: function (data, exp = "") {
         let result = data;
 
@@ -184,11 +120,6 @@ var CompileOrder = {
     }
 };
 
-export default Compile;
 
-export var  CompileOrder = {
-    orderList: {},
-    addOrder: function (orderName, exec) {
-        this.orderList[orderName] = exec;
-    }
-}
+
+export default Compile;

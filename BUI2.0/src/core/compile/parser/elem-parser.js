@@ -1,5 +1,4 @@
-import Base from './base';
-import { attrUpdater } from '../updater';
+﻿import Base from './base';
 
 export const TAGREGEXP = /^b-((?:.*|\n)+?)/;
 export const ONREGEXP = /^on:((?:.*|\n)+?)/;
@@ -34,7 +33,7 @@ export default class Handler extends Base {
                 this.node.removeAttribute(attrNm);
             }
             else if (ONREGEXP.test(attrNm)) {
-                let param = TAGREGEXP.exec(attrNm)[1];
+                let param = ONREGEXP.exec(attrNm)[1];
                 this.result.push(Object.assign(baseItem, {
                     order: "event",
                     param: param

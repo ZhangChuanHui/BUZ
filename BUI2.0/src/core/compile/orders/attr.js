@@ -1,4 +1,4 @@
-import { CompileOrder } from '../index';
+﻿import  CompileOrder  from '../order';
 
 CompileOrder.addOrder({
     name: "attr",
