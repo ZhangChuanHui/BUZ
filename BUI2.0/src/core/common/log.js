@@ -1,4 +1,4 @@
-var LogOption = {
+﻿var LogOption = {
     /**日志权重*/
     levels: ["info", "warn", "error"],
     /**

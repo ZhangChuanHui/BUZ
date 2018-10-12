@@ -1,4 +1,4 @@
-import Base from './base';
+﻿import Base from './base';
 export const TAGREGEXP = /\{\{((?:.|\n)+?)\}\}/g;
 
 /**
@@ -16,7 +16,6 @@ export default class Handler extends Base {
         if (TAGREGEXP.test(content)) {
             let match, index,
                 params = [],
-                exps=[],
                 lastIndex = TAGREGEXP.lastIndex = 0;
 
             while (match = TAGREGEXP.exec(content)) {
@@ -36,13 +35,11 @@ export default class Handler extends Base {
                     content: exp
                 });
 
-                exps.push(exp);
-
                 lastIndex = index + match[0].length;
             }
 
             this.result.push({
-                exp: exps,
+                exp: content,
                 cause: content,
                 order: "text",
                 param: params

@@ -320,7 +320,7 @@ class BET {
             let elem = this.nodeList[index];
 
             if (typeof content === "string") {
-                elem.innerHTML = content;
+                isText ? (elem.textContent = content) : (elem.innerHTML = content);
             }
             else if (content === undefined) {
                 return isText ? elem.textContent : elem.innerHTML;

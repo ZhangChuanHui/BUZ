@@ -107,6 +107,9 @@
     <Compile Include="src\core\compile\orders\index.js">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="src\core\compile\orders\text.js">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="src\core\compile\parser\base.js">
       <SubType>Code</SubType>
     </Compile>

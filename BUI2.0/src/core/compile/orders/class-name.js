@@ -2,15 +2,15 @@
 
 CompileOrder.addOrder({
     name: "class",
-    exc: function (option, nv, ov) {
+    exec: function (option, nv, ov) {
         let className = option.node.className;
 
         className = className.replace(ov, "")
             .replace(/\s$/, "");
 
         let space = className
-            && _.isStrEmpty(nv) ? "" : " ";
+            && _.isStrEmpty(value) ? "" : " ";
 
-        option.node.className = className + space + nv;
+        option.node.className = className + space + value;
     }
 })
