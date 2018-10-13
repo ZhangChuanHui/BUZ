@@ -1,4 +1,4 @@
-﻿import _ from './utils';
+import _ from './utils';
 import log from '../common/log';
 /**
  *  作者：张传辉
@@ -70,6 +70,11 @@ class BET {
                     this.nodeList = this.nodeList.concat(strOrElement);
                     break;
                 }
+                else if (strOrElement.toString() === HTMLCollection.prototype.toString()) {
+                    for (var item of strOrElement) {
+                        this.nodeList.push(item);
+                    }
+                }
                 else if (strOrElement.nodeList) {
                     this.nodeList = this.nodeList.concat(strOrElement.nodeList);
                     break;
@@ -116,18 +121,7 @@ class BET {
 
                 if (_.isFunction(callBack) === false) continue;
 
-                elem.addEventListener(name, function (e) {
-
-                    if (_.isFunction(delegate) === false) {
-                        if (delegate(e.target) !== true) return;
-                    }
-
-                    if (callBack.call(elem, e) === false) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                    }
-
-                }, false);
+                elem.addEventListener(name, callBack, false);
             }
         });
 
@@ -142,7 +136,10 @@ class BET {
         if (_.isStrEmpty(eventName)) return this;
 
         this.each(function (elem) {
-            elem.removeEventListener(eventName, func);
+            if (func)
+                elem.removeEventListener(eventName, func);
+            else
+                elem.removeEventListener(eventName);
         });
 
         return this;
@@ -188,7 +185,7 @@ class BET {
      * @param strOrObject 字符串时读取属性，对象设置属性<String/Object>
     */
     attr(strOrObject) {
-        for (let index = 0; index < this.nodeList.length; i++) {
+        for (let index = 0; index < this.nodeList.length; index++) {
             let elem = this.nodeList[index];
 
             if (typeof strOrObject === "string") {
@@ -232,13 +229,20 @@ class BET {
      * @param param 移除内容 参考BET <String,Element,BET>
     */
     remove(param) {
-        let $el = new BET(param);
+        if (param) {
+            let $el = new BET(param);
 
-        this.each(function (elem) {
-            $el.each((rItem) => {
-                elem.parentNode && elem.parentNode.removeChild(rItem);
+            this.each(function (elem) {
+                $el.each((rItem) => {
+                    elem.parentNode && elem.parentNode.removeChild(rItem);
+                });
             });
-        });
+        }
+        else {
+            this.each(function (elem) {
+                elem.parentNode && elem.parentNode.removeChild(elem);
+            });
+        }
 
         return this;
     }
@@ -253,6 +257,35 @@ class BET {
         });
 
         return result;
+    }
+    /**
+     * 向前插入内容
+    */
+    before(content, returnInsert) {
+        let insertElem = new BET(content);
+        this.each(function (elem) {
+            let parent = elem.parentNode;
+
+            insertElem.each((item) => {
+                parent.insertBefore(item, elem);
+            });
+        });
+        return returnInsert ? insertElem : this;
+    }
+    /**
+     * 向后插入内容
+    */
+    after(content, returnInsert) {
+        let insertElem = new BET(content);
+        this.each(function (elem) {
+            let parent = elem.parentNode;
+
+            insertElem.each((item) => {
+                parent.insertBefore(item, elem.nextSibling);
+            });
+        });
+
+        return returnInsert ? insertElem : this;
     }
     /**
      * 获取下一个元素

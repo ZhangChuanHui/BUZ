@@ -1,5 +1,5 @@
 import Base from './base';
-export const TAGREGEXP = /\{\{\{((?:.|\n)+?)\}\}\}/g;
+export const TAGREGEXP = /\{\{\{((?:.|\n)+?)\}\}\}/;
 
 /**
  *  作者：张传辉
@@ -14,10 +14,10 @@ export default class Handler extends Base {
         let content = this.node.textContent;
 
         if (TAGREGEXP.test(content)) {
-            let exp = TAGREGEXP.exec(content)[1];
+            let exp = TAGREGEXP.exec(content.trim())[1];
 
             this.result.push({
-                exp: exps,
+                exp: exp,
                 cause: content,
                 order: "html"
             });

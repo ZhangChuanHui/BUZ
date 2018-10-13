@@ -88,15 +88,15 @@ class Router extends EventHandler {
         $(document).on({
             "click": (e) => {
                 let href = $(this).attr("href");
-
-                if (href === self.fragmentUrl) {
+                if (e.target.tagName === "A" && e.target.attr("href").indexOf("#") === 0) {
+                    if (href === self.fragmentUrl) {
+                        e.preventDefault();
+                        self.hasChange(self.fragmentUrl);
+                    }
                     e.preventDefault();
-                    self.hasChange(self.fragmentUrl);
+                    e.stopPropagation();
                 }
-                return false;
             }
-        }, function (target) {
-            return target.attr("href").indexOf("#") === 0;
         });
 
         //监听路由重载

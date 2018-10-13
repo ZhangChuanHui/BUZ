@@ -1,19 +1,31 @@
 @import "../../../commonWeb/resource/common.less";
 
-h1{
-    font-size:20px;
-    font-weight:bold;
-    text-shadow:3px 3px 5px red; 
-    transform:translateX( 10px );
-    color:#b6ff00;
+h1 {
+    font-size: 20px;
+    font-weight: bold;
+    text-shadow: 3px 3px 5px red;
+    transform: translateX( 10px );
+    color: #b6ff00;
+    line-height: 40px;
 }
 
-button{
-    padding:3px 10px;
-    border:solid 1px #ccc;
-    border-radius:5px;
-    display:block;
-    .size(100px,50px);
-    .arrow(right,#ccc);
+button {
+    padding: 3px 20px;
+    border: solid 1px #ccc;
+    border-radius: 5px;
+    display: block;
 }
-    
+
+.baseCss {
+    display: inline-block;
+    padding: 3px 10px;
+    border: solid 1px #ccc;
+
+    &.class1 {
+        background: green;
+    }
+
+    &.class2 {
+        background: red;
+    }
+}

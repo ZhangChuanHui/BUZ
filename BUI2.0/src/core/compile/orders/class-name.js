@@ -1,4 +1,4 @@
-﻿import CompileOrder from '../order';
+import CompileOrder from '../order';
 
 CompileOrder.addOrder({
     name: "class",
@@ -9,8 +9,8 @@ CompileOrder.addOrder({
             .replace(/\s$/, "");
 
         let space = className
-            && _.isStrEmpty(value) ? "" : " ";
+            && _.isStrEmpty(nv) ? "" : " ";
 
-        option.node.className = className + space + value;
+        option.node.className = className + space + nv;
     }
 })

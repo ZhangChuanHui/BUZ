@@ -1,4 +1,4 @@
-﻿import log from "../common/log";
+import log from "../common/log";
 import observer from '../property/observer';
 
 const LOGTAG = "页面渲染";
@@ -56,11 +56,16 @@ export default {
                 // transform express
                 let value = order.runExpress(token, refs, option);
 
-                let _exec = (nv, othen, ov) => {
+                let _exec = (nv, othen) => {
+                    if (nv === token.oldValue) return;
+
                     order.exec(Object.assign({
                         node: node,
-                        $node: $(node)
-                    }, token, option, othen), nv);
+                        $node: $(node),
+                        token: token
+                    }, token, option, othen), nv, token.oldValue);
+
+                    token.oldValue = nv;
                 }
 
                 _exec(value);
@@ -75,7 +80,7 @@ export default {
                                 nv: nv,
                                 ov: ov
                             },
-                        }, ov);
+                        });
                     });
                 });
             }

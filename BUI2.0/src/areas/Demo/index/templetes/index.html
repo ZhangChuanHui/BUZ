@@ -1,6 +1,13 @@
-﻿<h1>单项绑定测试</h1>
-<button on:click="clickFun">点我</button>
-<p>点我增加{{demoText}},我是{{demoTip}}；再来一次增加demoText{{demoText}}</p>
-<p>哈哈{{demoText}}</p>
+<button on:click="clickFun">【计数器{{demoText}}】</button>
+<h1>基础渲染</h1>
+<p>点我增加{{demoText}},哈哈，{{demoTip}}；再来一次增加demoText{{demoText}}</p>
 <p>{{demoText+"哈哈哈"+demoTip}}</p>
 <p>1+{{demoText}}={{demoText+1}}</p>
+
+<h1>事件切换</h1>
+<button on:click="demoText%2===0?'click1':'click2'">计数器%2切换事件</button>
+<div b-class="demoText%2===0?'class1':'class2'" class="baseCss">计数器%2切换样式</div>
+<h1>HTML渲染</h1>
+<button on:click="demoText%2===0?'click3':'click4'">计数器%2切换插入文本</button>
+{{{htmlcard}}}
+<a :href="demoText">ssss</a>
