@@ -16,7 +16,6 @@ Selector.parseHTML = function (data) {
             var tempContainer = document.createElement("div");
 
             tempContainer.innerHTML = data;
-
             return tempContainer.children;
         } catch (e) { }
     }
