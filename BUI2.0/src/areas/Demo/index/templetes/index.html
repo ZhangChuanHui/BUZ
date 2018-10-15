@@ -1,4 +1,4 @@
-<button on:click="clickFun">【计数器{{demoText}}】</button>
+﻿<button on:click="clickFun">【计数器{{demoText}}】</button>
 <h1>基础渲染</h1>
 <p>点我增加{{demoText}},哈哈，{{demoTip}}；再来一次增加demoText{{demoText}}</p>
 <p>{{demoText+"哈哈哈"+demoTip}}</p>
@@ -10,5 +10,16 @@
 <h1>HTML渲染</h1>
 <button on:click="demoText%2===0?'click3':'click4'">计数器%2切换插入文本</button>
 {{{htmlcard}}}
+<h1>Attr测试</h1>
 <a :href="demoText">ssss</a>
-dsadsadsa111
+
+<h1>if条件</h1>
+<p b-if="demoText%2===0">除2取余等于0</p>
+<p b-else-if="demoText%2!==0">除2取余不等于0</p>
+
+<p b-if="demoText%2===0">同级除2取余等于0</p>
+<p b-else>同级else除2取余不等于0</p>
+
+<h1>display（show/hide）</h1>
+<p b-show="demoText%2===0">除2取余等于0Show</p>
+<p b-hide="demoText%2===0">除2取余等于0Hide</p>

@@ -101,6 +101,9 @@
     <Compile Include="src\core\compile\orders\condition.js">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="src\core\compile\orders\display.js">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="src\core\compile\orders\event.js">
       <SubType>Code</SubType>
     </Compile>
