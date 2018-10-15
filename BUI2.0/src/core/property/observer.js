@@ -1,4 +1,30 @@
 ﻿import _ from '../common/utils';
+import Utils from '../common/utils';
+
+
+let arrayProto = Array.prototype
+let arrayMethods = Object.create(arrayProto);
+[
+    'push',
+    'pop',
+    'shift',
+    'unshift',
+    'splice',
+    'sort',
+    'reverse'
+].forEach(function (item) {
+    Object.defineProperty(arrayMethods, item, {
+        value: function mutator() {
+            var original = arrayProto[item];
+            var args = Array.from(arguments);
+
+            original.apply(this, args);
+            new Observer(args);
+
+            this.dep && this.dep.notify();
+        }
+    });
+});
 
 /**
  *  作者：张传辉
@@ -17,20 +43,24 @@ class Observer {
     start() {
         let self = this;
 
+        if (Utils.isArray(this.data)) {
+            if (this.data.__proto__) {
+                this.data.__proto__ = arrayMethods;
+            }
+        }
+
         Object.keys(this.data).forEach((key) => {
             self.bindReactive(key, this.data[key]);
         });
     }
     bindReactive(key, value) {
         let dep = new Dep();
-        //遍历子集
-        new Observer(value);
-
+      
         Object.defineProperty(this.data, key, {
             //可枚举
             enumerable: true,
             //不可再定义
-            configurable: false,
+            configurable: true,
             get: () => {
                 //如果有人进行此属性访问，则开启订阅列队
                 dep.depend();
@@ -48,6 +78,9 @@ class Observer {
                 dep.notify();
             }
         });
+
+        //遍历子集
+        new Observer(value);
     }
 }
 

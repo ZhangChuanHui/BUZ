@@ -1,4 +1,4 @@
-import templete from './templetes/index.html';
+﻿import templete from './templetes/index.html';
 
 export default Bui.View({
     templete: templete,
@@ -6,7 +6,14 @@ export default Bui.View({
         demoText: 1,
         demoTip: "我是固定提示",
         eventName: "click1",
-        htmlcard: ""
+        htmlcard: "",
+        listData: [
+            { name: "张1", age: 10 },
+            { name: "张2", age: 11 },
+            { name: "张3", age: 12 },
+            { name: "张4", age: 13 },
+            { name: "张4", age: 134 }
+        ]
     },
     clickFun: function () {
         this.data.demoText++;
@@ -26,5 +33,10 @@ export default Bui.View({
         this.data.htmlcard =
             `<a href="javascript:void(0)">哈哈哈哈4</a>
             <div>哈哈我是div4</div>`;;
+    },
+    click5: function () {
+        this.data.listData.push({
+            name: "张1", age: 10
+        });
     }
 });

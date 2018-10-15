@@ -1,13 +1,11 @@
-/**
+﻿/**
 *  作者：张传辉
 *  功能名称：工具库
 *  描述信息：
 */
+let _guidNum = 0;
+
 class Utils {
-    constructor() {
-        /** 为guid做索引 */
-        this._guidNum = 0;
-    }
     /**
     * 从列表中移除某一项
     * @param  list 数据源 <Array>
@@ -90,7 +88,7 @@ class Utils {
      *生成唯一ID
     */
     static guid() {
-        return "guid_" + (this._guidNum++) + new Date().getTime() + Math.ceil(Math.random() * 1000);
+        return "guid_" + (_guidNum++) + new Date().getTime() + Math.ceil(Math.random() * 1000);
     }
     /**
      * 执行方法，并指定this
@@ -141,6 +139,12 @@ class Utils {
     */
     static contains(str = "", key) {
         return str.indexOf(key) > -1;
+    }
+    static isArray(value) {
+        return typeof value === "object" && Array.isArray(value);
+    }
+    static isObject(value) {
+        return typeof value === "object";
     }
 }
 

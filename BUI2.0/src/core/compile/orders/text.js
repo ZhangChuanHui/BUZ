@@ -11,7 +11,7 @@ CompileOrder.addOrder({
         for (let item of token.param) {
             if (item.tag === "text") result.push(item.content);
             else {
-                result.push(this.tryRun(item.content, refs, option.data));
+                result.push(this.tryRun(item.content, refs, option));
             }
         }
 

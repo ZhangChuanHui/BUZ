@@ -1,7 +1,6 @@
-import log from "../common/log";
+﻿import log from "../common/log";
 import observer from '../property/observer';
-
-const LOGTAG = "页面渲染";
+import { LOGTAG } from './index';
 
 /**
  *  作者：张传辉
@@ -18,16 +17,47 @@ export default {
             && param.name
             && param.exec
             && (this.orderList[param.name] = Object.assign({
+                breforeExec: function (token, option) { },
+                checkRef: function (token, option) {
+                    let data = option.data;
+                    if (token.exp in data) {
+                        return [token.exp];
+                    }
+
+                    var refs = [];
+                    for (let pro of Object.keys(data)) {
+                        new RegExp(pro, "g").test(token.exp)
+                            && refs.push(pro);
+                    }
+
+                    return refs;
+                },
                 runExpress: function (token, refs, option) {
                     return this.tryRun(token.exp, refs, option.data);
                 },
-                tryRun: function (exp, refs, data) {
+                tryRun: function (exp, refs, option) {
                     try {
-                        let fun = new Function(...refs, ` return (${exp});`);
+                        let paramNames = [].concat(refs);
+                        let orderDataValues = [];
+
+                        for (let tokenId in option.orderDatas) {
+                            for (let key in option.orderDatas[tokenId].datas) {
+                                if (paramNames.indexOf(key) === -1) {
+                                    paramNames.push(key);
+                                    orderDataValues.push(option.orderDatas[tokenId].datas[key]);
+                                }
+                            }
+                        }
+
+                        let fun = new Function(...paramNames, ` return (${exp});`);
 
                         let params = [];
                         for (let ref of refs) {
-                            params.push(data[ref]);
+                            params.push(option.data[ref]);
+                        }
+
+                        for (let value of orderDataValues) {
+                            params.push(value);
                         }
 
                         return fun(...params);
@@ -50,9 +80,14 @@ export default {
         for (let token of tokens) {
             let order = this.orderList[token.order];
 
+            token.node = node;
+            token.$node = $(node);
 
             if (order) {
-                let refs = this.checkRef(token, option.data);
+                //before Exec
+                order.breforeExec(token, option);
+                //check ref
+                let refs = order.checkRef(token, option);
                 // transform express
                 let value = order.runExpress(token, refs, option);
 
@@ -60,8 +95,7 @@ export default {
                     if (nv === token.oldValue) return;
 
                     order.exec(Object.assign({
-                        node: node,
-                        $node: $(node),
+                        //保留token把柄作为后期oder存放依据
                         token: token
                     }, token, option, othen), nv, token.oldValue);
 
@@ -88,18 +122,5 @@ export default {
                 log.error(LOGTAG, `未找到${token.order}指令名`);
             }
         }
-    },
-    checkRef: function (token, data) {
-        if (token.exp in data) {
-            return [token.exp];
-        }
-
-        var refs = [];
-        for (let pro of Object.keys(data)) {
-            new RegExp(pro, "g").test(token.exp)
-                && refs.push(pro);
-        }
-
-        return refs;
     }
 }

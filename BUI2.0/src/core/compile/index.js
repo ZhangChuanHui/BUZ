@@ -3,7 +3,25 @@ import parser from './parser/index';
 import orders from './orders/index';
 import CompileOrder from './order';
 
-const LOGTAG = "页面渲染";
+export const LOGTAG = "页面渲染";
+
+/**
+ * 节点渲染
+ * @param el 节点
+ * @param option 配置信息
+*/
+export function compileNodes(el, option) {
+    let tokens = new parser(el);
+
+    CompileOrder.exec(el, tokens, option);
+
+    let childNodes = el.childNodes;
+    if (childNodes && childNodes.length) {
+        childNodes.forEach((node) => {
+            compileNodes(node, option);
+        });
+    }
+}
 
 /**
  *  作者：张传辉
@@ -19,27 +37,18 @@ class Compile {
         if (this.el) {
             this.fragment = this.nodeFragment(this.el);
 
-            this.compileNodes(this.fragment);
+            let option = {
+                view: this.view,
+                data: this.data,
+                refNode: this.el,
+                //级联式指令数据存放处
+                orderDatas: {}
+            };
+
+            compileNodes(this.fragment, option);
 
             this.el.appendChild(this.fragment);
         }
-    }
-    compileNodes(el) {
-        let childNodes = el.childNodes;
-
-        childNodes.forEach((node) => {
-            let tokens = new parser(node);
-
-            CompileOrder.exec(node, tokens, {
-                view: this.view,
-                data: this.data,
-                refNode: this.el
-            });
-
-            if (node.childNodes && node.childNodes.length) {
-                this.compileNodes(node);
-            }
-        });
     }
     nodeFragment(el) {
         let fragment = document.createDocumentFragment();
