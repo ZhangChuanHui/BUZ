@@ -1,4 +1,4 @@
-import CompileOrder from '../order';
+﻿import CompileOrder from '../order';
 
 CompileOrder.addOrder({
     name: "text",

@@ -24,7 +24,7 @@ function observer(value) {
 class Observer {
     constructor(data) {
         if (!data || typeof data !== "object")
-            return;
+            return undefined;
 
         this.data = data;
         this.start();
@@ -87,7 +87,7 @@ class Observer {
                 //如果有人进行此属性访问，则开启订阅列队
                 dep.depend();
 
-                if (childrenOb) {
+                if (childrenOb && childrenOb.dep) {
                     childrenOb.dep.depend();
 
                     if (Utils.isArray(value)) {

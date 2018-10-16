@@ -16,6 +16,11 @@ export default Bui.View({
             other:"山东"
         }
     },
+    onShow: function () {
+        this.$watch("demoText", (nv, ov) => {
+            console.log(`#######内部监听demoText：${ov}=>${nv}`);
+        });
+    },
     clickFun: function () {
         this.data.demoText++;
     },

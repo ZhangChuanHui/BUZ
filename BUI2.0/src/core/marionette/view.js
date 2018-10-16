@@ -1,4 +1,4 @@
-/**
+﻿/**
  *  作者：张传辉
  *  功能名称：视图组件基类、视图组件操作类
  *  描述信息：
@@ -11,6 +11,7 @@ import EventHandler from '../common/event';
 import Compile from '../compile/index';
 import _ from '../common/utils';
 import observer from '../property/observer';
+import Utils from '../common/utils';
 const LOGTAG = "视图组件";
 
 /**
@@ -23,6 +24,7 @@ class BaseView extends EventHandler {
         super();
         this.app = app;
     }
+
     /**
      * 初始化视图组件
      * @param selector 选择器 <jQuery Selector>
@@ -38,6 +40,14 @@ class BaseView extends EventHandler {
         view.$container = selector;
         view.pageParam = pageParam;
         view.data = view.data || {};
+        /**
+         * 主动监听属性变化
+         * @param path 属性地址
+         * @param callBack 回调处理事件
+        */
+        view.$watch = function (path, callBack) {
+            new observer.Watcher(view.data, path, Utils.bind(callBack, view));
+        }
 
         //克隆一个基础版本，用于视图组件独立reload
         view.__baseView = Object.assign({}, view);

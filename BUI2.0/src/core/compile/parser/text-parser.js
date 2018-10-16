@@ -19,6 +19,7 @@ export default class Handler extends Base {
                 lastIndex = TAGREGEXP.lastIndex = 0;
 
             while (match = TAGREGEXP.exec(content)) {
+        
                 index = match.index;
 
                 if (index > lastIndex) {
@@ -36,6 +37,13 @@ export default class Handler extends Base {
                 });
 
                 lastIndex = index + match[0].length;
+
+                if (lastIndex < content.length) {
+                    params.push({
+                        tag: "text",
+                        content: content.slice(lastIndex)
+                    });
+                }
             }
 
             this.result.push({
