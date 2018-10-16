@@ -53,5 +53,8 @@ export default Bui.View({
             { name: "李3", age: 14 },
             { name: "李4", age: 15 }
         ];
+    },
+    click7: function () {
+        this.data.listData[0].age = 1000;
     }
 });

@@ -1,4 +1,4 @@
-/**
+﻿/**
 *  作者：张传辉
 *  功能名称：工具库
 *  描述信息：
@@ -171,16 +171,23 @@ class Utils {
         });
     }
     /**
-     * 对象自身属性中是否具有指定的属性
+     * 对象自身属性中是否具有指定的属性，支持属性索引
     */
-    static hasOwn(obj, key) {
-        return Object.prototype.hasOwnProperty.call(obj, key)
+    static hasOwn(obj, key = "") {
+        let paths = key.split('.');
+        let tempObj = obj;
+        paths.forEach((path) => {
+            Object.prototype.hasOwnProperty.call(tempObj, path)
+                && (tempObj = tempObj[path]);
+        });
+
+        return true;
     }
     /**
      * 判断指定参数是否是一个纯粹的对象
     */
     static isPlainObject(obj) {
-        return _toString.call(obj) ==='[object Object]'
+        return _toString.call(obj) === '[object Object]'
     }
 }
 
