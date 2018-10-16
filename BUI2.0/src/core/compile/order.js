@@ -1,6 +1,7 @@
-import log from "../common/log";
+﻿import log from "../common/log";
 import observer from '../property/observer';
 import { LOGTAG } from './index';
+import Utils from "../common/utils";
 
 /**
  *  作者：张传辉
@@ -17,7 +18,24 @@ export default {
             && param.name
             && param.exec
             && (this.orderList[param.name] = Object.assign({
+                //是否跳过子集
+                isSkipChildren: false,
+                //是否开启指令数据
+                enableOrderData: false,
                 breforeExec: function (token, option) { },
+                initOrderData: function (token, option) {
+                    token.dataId = Utils.guid();
+                    option.orderDatas[token.dataId] = {
+                        datas: {},
+                        token: token
+                    };
+                },
+                clearOrderData: function (token, option) {
+                    option.orderDatas[token.dataId].datas = {};
+                },
+                setOrderData: function (token, option, value) {
+                    option.orderDatas[token.dataId].datas = value;
+                },
                 checkRef: function (token, option) {
                     let data = option.data;
                     if (token.exp in data) {
@@ -77,14 +95,18 @@ export default {
         data: undefined,
         refNode: undefined
     }) {
-       
-        for (let token of tokens) 
+        let isSkipChildren = false;
+        for (let token of tokens) {
             let order = this.orderList[token.order];
 
-            token.node = node;
-            token.$node = $(node);
+            if (order.isSkipChildren) isSkipChildren = true;
 
             if (node.parentNode && order) {
+                token.node = node;
+                token.$node = $(node);
+
+                if (order.enableOrderData) order.initOrderData(token, option);
+
                 //before Exec
                 order.breforeExec(token, option);
                 //check ref
@@ -101,6 +123,8 @@ export default {
                     }, token, option, othen), nv, token.oldValue);
 
                     token.oldValue = nv;
+
+                    if (order.enableOrderData) order.clearOrderData(token, option);
                 }
 
                 _exec(value);
@@ -123,5 +147,7 @@ export default {
                 log.error(LOGTAG, `未找到${token.order}指令名`);
             }
         }
+
+        return isSkipChildren;
     }
 }

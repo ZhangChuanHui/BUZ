@@ -1,4 +1,4 @@
-import _ from '../common/utils';
+﻿import _ from '../common/utils';
 import Utils from '../common/utils';
 import obArray from './array';
 
@@ -115,8 +115,6 @@ class Observer {
                 dep.notify();
             }
         });
-
-
     }
 }
 
