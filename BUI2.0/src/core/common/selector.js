@@ -41,10 +41,18 @@ class BET {
      * 遍历选择器
      * @param callBack 回调 <Function> 传入Element
     */
-    each(callBack) {
-        for (let index = 0; index < this.nodeList.length; index++) {
-            let elem = this.nodeList[index];
-            if (callBack(elem, index) === false) break;
+    each(callBack, desc) {
+        if (desc) {
+            for (let index = this.nodeList.length - 1; index >= 0; index--) {
+                let elem = this.nodeList[index];
+                if (callBack(elem, index) === false) break;
+            }
+        }
+        else {
+            for (let index = 0; index < this.nodeList.length; index++) {
+                let elem = this.nodeList[index];
+                if (callBack(elem, index) === false) break;
+            }
         }
         return this;
     }
@@ -267,7 +275,7 @@ class BET {
 
             insertElem.each((item) => {
                 parent.insertBefore(item, elem);
-            });
+            },true);
         });
         return returnInsert ? insertElem : this;
     }
@@ -281,7 +289,7 @@ class BET {
 
             insertElem.each((item) => {
                 parent.insertBefore(item, elem.nextSibling);
-            });
+            },true);
         });
 
         return returnInsert ? insertElem : this;

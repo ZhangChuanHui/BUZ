@@ -138,6 +138,9 @@
     <Compile Include="src\core\marionette\region.js" />
     <Compile Include="src\core\marionette\router.js" />
     <Compile Include="src\core\marionette\view.js" />
+    <Compile Include="src\core\property\array.js">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="src\core\property\observer.js" />
     <Compile Include="src\core\requester\requester.js" />
     <Compile Include="src\core\storage\storage.js" />

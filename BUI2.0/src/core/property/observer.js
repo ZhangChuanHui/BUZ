@@ -1,30 +1,20 @@
-﻿import _ from '../common/utils';
+import _ from '../common/utils';
 import Utils from '../common/utils';
+import obArray from './array';
 
+function observer(value) {
+    if (Utils.isObject(value) === false) return;
 
-let arrayProto = Array.prototype
-let arrayMethods = Object.create(arrayProto);
-[
-    'push',
-    'pop',
-    'shift',
-    'unshift',
-    'splice',
-    'sort',
-    'reverse'
-].forEach(function (item) {
-    Object.defineProperty(arrayMethods, item, {
-        value: function mutator() {
-            var original = arrayProto[item];
-            var args = Array.from(arguments);
-
-            original.apply(this, args);
-            new Observer(args);
-
-            this.dep && this.dep.notify();
-        }
-    });
-});
+    let ob;
+    if (Utils.hasOwn(value, '__ob__') && value.__ob__ instanceof Observer) {
+        ob = value.__ob__;
+    }
+    else if ((Utils.isArray(value) || Utils.isPlainObject(value))
+        && Object.isExtensible(value)) {
+        ob = new Observer(value);
+    }
+    return ob;
+}
 
 /**
  *  作者：张传辉
@@ -43,44 +33,90 @@ class Observer {
     start() {
         let self = this;
 
+        //生成主DEP，为其他驱动做操作依据
+        this.dep = new Dep();
+        Utils.def(this.data, '__ob__', this);
+
         if (Utils.isArray(this.data)) {
-            if (this.data.__proto__) {
-                this.data.__proto__ = arrayMethods;
-            }
+            obArray(this.data);
+            this.observeArray(this.data);
+        }
+        else {
+            Object.keys(this.data).forEach((key) => {
+                self.bindReactive(this.data, key);
+            });
+        }
+    }
+    dependArray(value) {
+        for (let i = 0; i < value.length; i++) {
+            let item = value[i];
+
+            item && item.__ob__ && item.__ob__.dep.depend();
+
+            if (Utils.isArray(item)) this.dependArray(item);
+        }
+    }
+    observeArray(array) {
+        for (let i = 0; i < array.length; i++) {
+            observer(array[i]);
+        }
+    }
+    bindReactive(obj, key) {
+        let dep = new Dep();
+        let val;
+
+        const property = Object.getOwnPropertyDescriptor(obj, key)
+        if (property && property.configurable === false) return;
+
+        const getter = property && property.get;
+        const setter = property && property.set;
+        if (!getter || !setter) {
+            val = obj[key];
         }
 
-        Object.keys(this.data).forEach((key) => {
-            self.bindReactive(key, this.data[key]);
-        });
-    }
-    bindReactive(key, value) {
-        let dep = new Dep();
-      
+        //遍历子集
+        let childrenOb = observer(val);
+
         Object.defineProperty(this.data, key, {
             //可枚举
             enumerable: true,
             //不可再定义
             configurable: true,
             get: () => {
+                const value = getter ? getter.call(obj) : val;
                 //如果有人进行此属性访问，则开启订阅列队
                 dep.depend();
 
+                if (childrenOb) {
+                    childrenOb.dep.depend();
+
+                    if (Utils.isArray(value)) {
+                        this.dependArray(value);
+                    }
+                }
                 return value;
             },
             set: (newVal) => {
-                if (newVal === value) return;
+                const value = getter ? getter.call(obj) : val;
 
-                value = newVal;
+                if (newVal === value || (newVal !== newVal && value !== value)) {
+                    return;
+                }
+
+                if (setter) {
+                    setter.call(obj, newVal)
+                } else {
+                    val = newVal;
+                }
 
                 //遍历子集
-                new Observer(value);
+                childrenOb = new Observer(value);
 
                 dep.notify();
             }
         });
 
-        //遍历子集
-        new Observer(value);
+
     }
 }
 
@@ -144,12 +180,10 @@ class Watcher {
     update() {
         let value = this.get()
         let oldValue = this.value;
-        //若值发生改变时触发订阅
-        if (value != oldValue) {
-            this.value = value;
+        //不可判断值相等，对于引用类型值始终相等
+        this.value = value;
+        this.callBack(value, oldValue);
 
-            this.callBack(value, oldValue);
-        }
     }
     addDep(dep) {
         if (!this.deps[dep.id]) {

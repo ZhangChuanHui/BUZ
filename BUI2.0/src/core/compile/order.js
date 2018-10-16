@@ -1,4 +1,4 @@
-﻿import log from "../common/log";
+import log from "../common/log";
 import observer from '../property/observer';
 import { LOGTAG } from './index';
 
@@ -77,13 +77,14 @@ export default {
         data: undefined,
         refNode: undefined
     }) {
-        for (let token of tokens) {
+       
+        for (let token of tokens) 
             let order = this.orderList[token.order];
 
             token.node = node;
             token.$node = $(node);
 
-            if (order) {
+            if (node.parentNode && order) {
                 //before Exec
                 order.breforeExec(token, option);
                 //check ref

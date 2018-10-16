@@ -1,4 +1,4 @@
-﻿import CompileOrder from '../order';
+import CompileOrder from '../order';
 import LogHandler from '../../common/log';
 import { LOGTAG, compileNodes } from '../index';
 import Utils from '../../common/utils';
@@ -14,9 +14,9 @@ CompileOrder.addOrder({
     },
     breforeExec: function (token, option) {
         token.forTag = token.$node.after(document.createTextNode(""), true);
+
         token.$node.remove();
 
-        //todo:for时终止其他token
         token.forId = Utils.guid();
         option.orderDatas[token.forId] = {
             datas: {},

@@ -1,9 +1,10 @@
-﻿/**
+/**
 *  作者：张传辉
 *  功能名称：工具库
 *  描述信息：
 */
 let _guidNum = 0;
+let _toString = Object.prototype.toString;
 
 class Utils {
     /**
@@ -140,11 +141,46 @@ class Utils {
     static contains(str = "", key) {
         return str.indexOf(key) > -1;
     }
+    /**
+     * 是否是数组
+    */
     static isArray(value) {
         return typeof value === "object" && Array.isArray(value);
     }
-    static isObject(value) {
-        return typeof value === "object";
+    /**
+     * 是否是对象
+    */
+    static isObject(object) {
+        return object !== null && typeof object === 'object'
+    }
+    /**
+     * 是否具有原型链
+    */
+    static hasProto(value) {
+        return !!value.__proto__;
+    }
+    /**
+     * 设置属性值
+    */
+    static def(obj, key, val, enumerable) {
+        Object.defineProperty(obj, key, {
+            value: val,
+            enumerable: !!enumerable,
+            writable: true,
+            configurable: true
+        });
+    }
+    /**
+     * 对象自身属性中是否具有指定的属性
+    */
+    static hasOwn(obj, key) {
+        return Object.prototype.hasOwnProperty.call(obj, key)
+    }
+    /**
+     * 判断指定参数是否是一个纯粹的对象
+    */
+    static isPlainObject(obj) {
+        return _toString.call(obj) ==='[object Object]'
     }
 }
 

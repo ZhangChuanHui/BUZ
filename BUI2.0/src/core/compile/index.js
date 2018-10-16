@@ -1,4 +1,4 @@
-﻿import log from '../common/log';
+import log from '../common/log';
 import parser from './parser/index';
 import orders from './orders/index';
 import CompileOrder from './order';
@@ -10,17 +10,23 @@ export const LOGTAG = "页面渲染";
  * @param el 节点
  * @param option 配置信息
 */
-export function compileNodes(el, option) {
+export function compileNodes(el, option, refMaps = []) {
     let tokens = new parser(el);
+    let map = {
+        el: el,
+        tokens: tokens,
+        childs: []
+    };
 
     CompileOrder.exec(el, tokens, option);
 
     let childNodes = el.childNodes;
     if (childNodes && childNodes.length) {
         childNodes.forEach((node) => {
-            compileNodes(node, option);
+            compileNodes(node, option, map.childs);
         });
     }
+    refMaps.push(map);
 }
 
 /**
