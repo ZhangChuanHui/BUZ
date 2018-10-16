@@ -37,13 +37,13 @@ export default class Handler extends Base {
                 });
 
                 lastIndex = index + match[0].length;
-
-                if (lastIndex < content.length) {
-                    params.push({
-                        tag: "text",
-                        content: content.slice(lastIndex)
-                    });
-                }
+                
+            }
+            if (lastIndex < content.length) {
+                params.push({
+                    tag: "text",
+                    content: content.slice(lastIndex)
+                });
             }
 
             this.result.push({
