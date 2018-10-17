@@ -1,4 +1,4 @@
-/**
+﻿/**
 *  作者：张传辉
 *  功能名称：工具库
 *  描述信息：
@@ -192,6 +192,22 @@ class Utils {
     static isPlainObject(obj) {
         return _toString.call(obj) === '[object Object]'
     }
+    /**
+     * 获取对象所有属性地址
+    */
+    static getObjectAllRefPath(obj, array = [], parentRef = "") {
+        if (this.isObject(obj)) {
+            obj.forEach((key) => {
+                let refPath = `${parentRef}.${key}`;
+                array.push(refPath);
+                
+                this.getObjectAllRefPath(obj[key], array, refPath);
+            });
+        }
+
+        return array;
+    }
+    static noop() {}
 }
 
 export default Utils;

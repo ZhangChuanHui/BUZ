@@ -89,6 +89,9 @@
     <Compile Include="src\core\common\log.js" />
     <Compile Include="src\core\common\selector.js" />
     <Compile Include="src\core\common\utils.js" />
+    <Compile Include="src\core\compile\expression.js">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="src\core\compile\order.js">
       <SubType>Code</SubType>
     </Compile>

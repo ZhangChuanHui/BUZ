@@ -1,4 +1,4 @@
-import _ from '../common/utils';
+﻿import _ from '../common/utils';
 import Utils from '../common/utils';
 import obArray from './array';
 
@@ -179,9 +179,13 @@ class Watcher {
         let value = this.get()
         let oldValue = this.value;
         //不可判断值相等，对于引用类型值始终相等
-        this.value = value;
-        this.callBack(value, oldValue);
-
+        if (
+            value !== oldValue ||
+            Utils.isObject(value)
+        ) {
+            this.value = value;
+            this.callBack(value, oldValue);
+        }
     }
     addDep(dep) {
         if (!this.deps[dep.id]) {

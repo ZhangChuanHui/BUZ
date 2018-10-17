@@ -5,16 +5,17 @@ CompileOrder.addOrder({
     exec: function (option, value) {
         option.node.textContent = value;
     },
-    runExpress(token, refs, option) {
+    runExpress(token, option) {
         var result = [];
 
         for (let item of token.param) {
             if (item.tag === "text") result.push(item.content);
             else {
-                result.push(this.tryRun(item.content, refs, option));
+                result.push(this.tryRun(item.content, option));
             }
         }
 
         return result.join('');
+
     }
 });

@@ -1,7 +1,9 @@
-import log from "../common/log";
+﻿import log from "../common/log";
 import observer from '../property/observer';
 import { LOGTAG } from './index';
 import Utils from "../common/utils";
+import expression from './expression';
+
 
 /**
  *  作者：张传辉
@@ -36,26 +38,12 @@ export default {
                 setOrderData: function (token, option, value) {
                     option.orderDatas[token.dataId].datas = value;
                 },
-                checkRef: function (token, option) {
-                    let data = option.data;
-                    if (token.exp in data) {
-                        return [token.exp];
-                    }
-
-                    var refs = [];
-                    for (let pro of Object.keys(data)) {
-                        new RegExp(pro, "g").test(token.exp)
-                            && refs.push(pro);
-                    }
-
-                    return refs;
+                runExpress: function (token, option) {
+                    this.tryRun(token.exp, option.data);
                 },
-                runExpress: function (token, refs, option) {
-                    return this.tryRun(token.exp, refs, option.data);
-                },
-                tryRun: function (exp, refs, option) {
+                tryRun: function (exp, option) {
                     try {
-                        let paramNames = [].concat(refs);
+                        let paramNames = [].concat(Object.keys(option.data));
                         let orderDataValues = [];
 
                         for (let tokenId in option.orderDatas) {
@@ -70,7 +58,7 @@ export default {
                         let fun = new Function(...paramNames, ` return (${exp});`);
 
                         let params = [];
-                        for (let ref of refs) {
+                        for (let ref of Object.keys(option.data)) {
                             params.push(option.data[ref]);
                         }
 
@@ -81,6 +69,7 @@ export default {
                         return fun(...params);
                     }
                     catch (ex) { return exp; }
+
                 }
             }, param));
     },
@@ -96,6 +85,7 @@ export default {
         refNode: undefined
     }) {
         let isSkipChildren = false;
+
         for (let token of tokens) {
             let order = this.orderList[token.order];
 
@@ -109,39 +99,29 @@ export default {
 
                 //before Exec
                 order.breforeExec(token, option);
-                //check ref
-                let refs = order.checkRef(token, option);
-                // transform express
-                let value = order.runExpress(token, refs, option);
 
-                let _exec = (nv, othen) => {
-                    if (nv === token.oldValue) return;
+                new observer.Watcher(option.data,
+                    function () {
+                        order.runExpress(token, option);
+                    },
+                    function (nv, ov) {
 
-                    order.exec(Object.assign({
-                        //保留token把柄作为后期oder存放依据
-                        token: token
-                    }, token, option, othen), nv, token.oldValue);
+                        if (nv === token.oldValue) return;
 
-                    token.oldValue = nv;
-
-                    if (order.enableOrderData) order.clearOrderData(token, option);
-                }
-
-                _exec(value);
-
-                refs.forEach((ref) => {
-                    new observer.Watcher(option.data, ref, (nv, ov) => {
-                        value = order.runExpress(token, refs, option);
-
-                        _exec(value, {
+                        order.exec(Object.assign({
+                            //保留token把柄作为后期oder存放依据
+                            token: token,
                             watch: {
                                 ref: ref,
                                 nv: nv,
                                 ov: ov
                             }
-                        });
+                        }, token, option, othen), nv, token.oldValue);
+
+                        token.oldValue = nv;
+
+                        if (order.enableOrderData) order.clearOrderData(token, option);
                     });
-                });
             }
             else {
                 log.error(LOGTAG, `未找到${token.order}指令名`);

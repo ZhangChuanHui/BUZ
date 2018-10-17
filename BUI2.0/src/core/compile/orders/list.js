@@ -19,7 +19,7 @@ CompileOrder.addOrder({
 
         token.$node.remove();
     },
-    runExpress: function (token, refs, option) {
+    runExpress: function (token, option) {
         if (token.exp.indexOf("in") === -1) {
             LogHandler.error(LOGTAG, `for指令错误，缺少in关键字`);
             return;
@@ -40,7 +40,7 @@ CompileOrder.addOrder({
         }
 
         let exp = params[1].trim();
-        let viewData = this.tryRun(exp, refs, option) || "";
+        let viewData = this.tryRun(exp,option) || "";
 
         let result = $();
         if (Utils.isArray(viewData)) {
