@@ -1,4 +1,4 @@
-﻿import log from "../common/log";
+import log from "../common/log";
 import observer from '../property/observer';
 import { LOGTAG } from './index';
 import Utils from "../common/utils";
@@ -138,7 +138,7 @@ export default {
                                 ref: ref,
                                 nv: nv,
                                 ov: ov
-                            },
+                            }
                         });
                     });
                 });

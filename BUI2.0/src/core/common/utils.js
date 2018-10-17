@@ -1,4 +1,4 @@
-﻿/**
+/**
 *  作者：张传辉
 *  功能名称：工具库
 *  描述信息：
@@ -32,6 +32,9 @@ class Utils {
             }
         }
         return newList;
+    }
+    static toStr(value) {
+        return value.toString();
     }
     /**
      * 数组去重

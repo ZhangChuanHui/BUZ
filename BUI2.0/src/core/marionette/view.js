@@ -1,4 +1,4 @@
-﻿/**
+/**
  *  作者：张传辉
  *  功能名称：视图组件基类、视图组件操作类
  *  描述信息：
@@ -14,6 +14,28 @@ import observer from '../property/observer';
 import Utils from '../common/utils';
 const LOGTAG = "视图组件";
 
+function bmSet(target, key, value) {
+    if (Utils.hasOwn(target, _.toStr(key))) {
+        target[key] = value;
+        new observer.Observer(target[key]);
+        debugger;
+        notifyChange(target);
+    }
+    else {
+        log.error(LOGTAG, `Bui.set传入Key值不在target中，请确认`);
+    }
+}
+
+function bmDelete(target, key) {
+
+}
+
+function notifyChange(target) {
+    target.__ob__
+        && target.__ob__.dep
+        && target.__ob__.dep.notify();
+}
+
 /**
  *  作者：张传辉
  *  功能名称：视图组件基类，用于Application中集体控制
@@ -24,7 +46,6 @@ class BaseView extends EventHandler {
         super();
         this.app = app;
     }
-
     /**
      * 初始化视图组件
      * @param selector 选择器 <jQuery Selector>
@@ -40,14 +61,6 @@ class BaseView extends EventHandler {
         view.$container = selector;
         view.pageParam = pageParam;
         view.data = view.data || {};
-        /**
-         * 主动监听属性变化
-         * @param path 属性地址
-         * @param callBack 回调处理事件
-        */
-        view.$watch = function (path, callBack) {
-            new observer.Watcher(view.data, path, Utils.bind(callBack, view));
-        }
 
         //克隆一个基础版本，用于视图组件独立reload
         view.__baseView = Object.assign({}, view);
@@ -182,6 +195,14 @@ class View {
         this.pageParam = pageParam;
     }
     /**
+     * 主动监听属性变化
+     * @param path 属性地址
+     * @param callBack 回调处理事件
+    */
+    $watch(path, callBack) {
+        new observer.Watcher(this.data, path, Utils.bind(callBack, this));
+    }
+    /**
      * 注册全局观察者模式
      * @param eventName 事件名称 <String>
      * @param callBack 回调事件 <Function>
@@ -286,5 +307,8 @@ class View {
 export {
     View,
     BaseView,
-    ViewHandler
+    ViewHandler,
+    bmSet,
+    bmDelete,
+    notifyChange
 }
