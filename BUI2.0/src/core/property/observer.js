@@ -25,7 +25,7 @@ function dependArray(value) {
         if (Utils.isArray(item)) dependArray(item);
     }
 }
-function observeArray(array) {
+export function observeArray(array) {
     for (let i = 0; i < array.length; i++) {
         observer(array[i]);
     }

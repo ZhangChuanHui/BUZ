@@ -11,7 +11,6 @@ CompileOrder.addOrder({
         for (let item of token.param) {
             if (item.tag === "text") result.push(item.content);
             else {
-                debugger;
                 result.push(this.tryRun(item.content, scope));
             }
         }

@@ -49,7 +49,6 @@ CompileOrder.addOrder({
             if (runParam.key) defineReactive($scope, runParam.key, key); 
             if (runParam.index) defineReactive($scope, runParam.index, index);  
 
-            debugger;
             compileNodes(newTemplete, option, $scope);
            
             result.add(newTemplete);

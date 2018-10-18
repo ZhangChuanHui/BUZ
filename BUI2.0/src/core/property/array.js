@@ -1,5 +1,5 @@
-﻿import Utils from "../common/utils";
-
+import Utils from "../common/utils";
+import { observeArray } from './observer';
 const arrayProto = Array.prototype;
 const arrayMethods = Object.create(arrayProto);
 const arrayKeys = Object.getOwnPropertyNames(arrayMethods);
@@ -33,7 +33,7 @@ methodsToPatch.forEach(function (method) {
                     break
             }
 
-            if (inserted) ob.observeArray(inserted);
+            if (inserted) observeArray(inserted);
 
             ob.dep.notify();
 
