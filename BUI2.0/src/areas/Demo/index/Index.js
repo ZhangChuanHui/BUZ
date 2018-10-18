@@ -64,6 +64,7 @@ export default Bui.View({
         //Bui.set(this.data.listData, 0, { name: "张2", age: 1011 });
 
         //3.
+        debugger;
         this.data.listData[0].age = "22222";
     }
 });

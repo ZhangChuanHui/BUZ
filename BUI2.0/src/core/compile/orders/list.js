@@ -1,7 +1,12 @@
-﻿import CompileOrder from '../order';
+import CompileOrder from '../order';
 import LogHandler from '../../common/log';
 import { LOGTAG, compileNodes } from '../index';
 import Utils from '../../common/utils';
+import { defineReactive } from '../../property/observer';
+
+const FORRE = /([^]*?)\s+(?:in|of)\s+([^]*)/;
+const FORITERATORRE = /,([^,\}\]]*)(?:,([^,\}\]]*))?$/;
+const STRIPPARENTSRE = /^\(|\)$/g;
 
 CompileOrder.addOrder({
     name: "for",
@@ -19,97 +24,61 @@ CompileOrder.addOrder({
 
         token.$node.remove();
     },
-    runExpress: function (token, option) {
-        if (token.exp.indexOf("in") === -1) {
+    runExpress: function (token, option, scope) {
+        const inMatch = token.exp.match(FORRE);
+        if (!inMatch) {
             LogHandler.error(LOGTAG, `for指令错误，缺少in关键字`);
             return;
         }
 
-        let params = token.exp.split(' in ');
-        if (params.length !== 2) {
-            LogHandler.error(LOGTAG, `for指令解析错误`);
-            return;
-        }
-
-        let forParam = params[0].trim();
-        let runParam = this.transformForParam(forParam);
-
-        if (Utils.isStrEmpty(runParam.value)) {
-            LogHandler.error(LOGTAG, `for指令解析错误=>${forParam}`);
-            return;
-        }
-
-        let exp = params[1].trim();
-        let viewData = this.tryRun(exp,option) || "";
+        let runParam = this.transformForParam(inMatch[1].trim());
+        let viewData = this.tryRun(inMatch[2].trim(), scope) || "";
 
         let result = $();
-        if (Utils.isArray(viewData)) {
-            viewData.forEach((value, index) => {
-                let orderData = {};
+        let index = 0; 
+        for (let key in viewData) {
+            let value = viewData[key];
+            let orderData = {};
+            let newTemplete = token.node.cloneNode(true);
+            let $scope = Object.create(scope);
 
-                orderData[runParam.value] = value;
+            $scope.$parentScope = scope;
 
-                if (runParam.key) orderData[runParam.key] = index;
-                if (runParam.index) orderData[runParam.index] = index;
+            defineReactive($scope, runParam.tagName , value);
 
-                this.setOrderData(token, option, orderData);
+            if (runParam.key) defineReactive($scope, runParam.key, key); 
+            if (runParam.index) defineReactive($scope, runParam.index, index);  
 
-                let newTemplete = token.node.cloneNode(true);
+            debugger;
+            compileNodes(newTemplete, option, $scope);
+           
+            result.add(newTemplete);
 
-                compileNodes(newTemplete, option);
-                result.add(newTemplete);
-            });
-        }
-        else if (Utils.isObject(viewData)) {
-            let index = 0;
-            for (let key in viewData) {
-
-                let orderData = {};
-
-                orderData[runParam.value] = viewData[key];
-
-                if (runParam.key) orderData[runParam.key] = key;
-                if (runParam.index) orderData[runParam.index] = index;
-
-                this.setOrderData(token, option, orderData);
-
-                let newTemplete = token.node.cloneNode(true);
-
-                compileNodes(newTemplete, option);
-                result.add(newTemplete);
-
-                index++;
-            }
-        }
-        else {
-            LogHandler.error(LOGTAG, 'for指令非法数据，无法解析');
+            index++;
         }
 
         return result;
     },
     transformForParam: function (forParam) {
-        const MULTIPARAMREG = /\(((?:.|\n)+?)\)/;
+
         let result = {
-            value: forParam,
+            tagName: forParam,
             key: undefined,
             index: undefined
         };
 
-        if (MULTIPARAMREG.test(forParam)) {
-            let content = MULTIPARAMREG.exec(forParam)[1];
-            let arrayParam = content.split(',');
-
-            result.value = (arrayParam[0] || "").trim();
-
-            result.key = arrayParam[1]
-                ? arrayParam[1].trim()
-                : undefined;
-
-            result.index = arrayParam[2]
-                ? arrayParam[2].trim()
-                : undefined;
-
+        const alias = forParam.replace(STRIPPARENTSRE, '');
+        const iteratorMatch = alias.match(FORITERATORRE);
+        if (iteratorMatch) {
+            result.tagName = alias.replace(FORITERATORRE, '')
+            result.key = iteratorMatch[1].trim()
+            if (iteratorMatch[2]) {
+                result.index = iteratorMatch[2].trim()
+            }
+        } else {
+            result.tagName = alias
         }
+
         return result;
     }
 });

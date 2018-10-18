@@ -1,17 +1,18 @@
-﻿import CompileOrder from '../order';
+import CompileOrder from '../order';
 
 CompileOrder.addOrder({
     name: "text",
     exec: function (option, value) {
         option.node.textContent = value;
     },
-    runExpress(token, option) {
+    runExpress(token, option, scope) {
         var result = [];
 
         for (let item of token.param) {
             if (item.tag === "text") result.push(item.content);
             else {
-                result.push(this.tryRun(item.content, option));
+                debugger;
+                result.push(this.tryRun(item.content, scope));
             }
         }
 

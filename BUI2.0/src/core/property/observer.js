@@ -1,4 +1,4 @@
-﻿import _ from '../common/utils';
+import _ from '../common/utils';
 import Utils from '../common/utils';
 import obArray from './array';
 
@@ -16,12 +16,83 @@ function observer(value) {
     return ob;
 }
 
+function dependArray(value) {
+    for (let i = 0; i < value.length; i++) {
+        let item = value[i];
+
+        item && item.__ob__ && item.__ob__.dep.depend();
+
+        if (Utils.isArray(item)) dependArray(item);
+    }
+}
+function observeArray(array) {
+    for (let i = 0; i < array.length; i++) {
+        observer(array[i]);
+    }
+}
+
+export function defineReactive(obj, key, val) {
+    let dep = new Dep();
+
+    const property = Object.getOwnPropertyDescriptor(obj, key)
+    if (property && property.configurable === false) return;
+
+    const getter = property && property.get;
+    const setter = property && property.set;
+
+    if ((!getter || setter) && arguments.length === 2) {
+        val = obj[key];
+    }
+
+    //遍历子集
+    let childrenOb = observer(val);
+
+    Object.defineProperty(obj, key, {
+        //可枚举
+        enumerable: true,
+        //不可再定义
+        configurable: true,
+        get: () => {
+            const value = getter ? getter.call(obj) : val;
+            //如果有人进行此属性访问，则开启订阅列队
+            dep.depend();
+
+            if (childrenOb && childrenOb.dep) {
+                childrenOb.dep.depend();
+
+                if (Utils.isArray(value)) {
+                    dependArray(value);
+                }
+            }
+            return value;
+        },
+        set: (newVal) => {
+            const value = getter ? getter.call(obj) : val;
+
+            if (newVal === value || (newVal !== newVal && value !== value)) {
+                return;
+            }
+
+            if (setter) {
+                setter.call(obj, newVal)
+            } else {
+                val = newVal;
+            }
+
+            //遍历子集
+            childrenOb = new Observer(value);
+
+            dep.notify();
+        }
+    });
+}
+
 /**
  *  作者：张传辉
  *  功能名称：属性检测，属性拦截
  *  描述信息：
 */
-class Observer {
+export class Observer {
     constructor(data) {
         if (!data || typeof data !== "object")
             return undefined;
@@ -39,83 +110,15 @@ class Observer {
 
         if (Utils.isArray(this.data)) {
             obArray(this.data);
-            this.observeArray(this.data);
+            observeArray(this.data);
         }
         else {
             Object.keys(this.data).forEach((key) => {
-                self.bindReactive(this.data, key);
+                defineReactive(this.data, key);
             });
         }
     }
-    dependArray(value) {
-        for (let i = 0; i < value.length; i++) {
-            let item = value[i];
 
-            item && item.__ob__ && item.__ob__.dep.depend();
-
-            if (Utils.isArray(item)) this.dependArray(item);
-        }
-    }
-    observeArray(array) {
-        for (let i = 0; i < array.length; i++) {
-            observer(array[i]);
-        }
-    }
-    bindReactive(obj, key) {
-        let dep = new Dep();
-        let val;
-
-        const property = Object.getOwnPropertyDescriptor(obj, key)
-        if (property && property.configurable === false) return;
-
-        const getter = property && property.get;
-        const setter = property && property.set;
-        if (!getter || !setter) {
-            val = obj[key];
-        }
-
-        //遍历子集
-        let childrenOb = observer(val);
-
-        Object.defineProperty(this.data, key, {
-            //可枚举
-            enumerable: true,
-            //不可再定义
-            configurable: true,
-            get: () => {
-                const value = getter ? getter.call(obj) : val;
-                //如果有人进行此属性访问，则开启订阅列队
-                dep.depend();
-
-                if (childrenOb && childrenOb.dep) {
-                    childrenOb.dep.depend();
-
-                    if (Utils.isArray(value)) {
-                        this.dependArray(value);
-                    }
-                }
-                return value;
-            },
-            set: (newVal) => {
-                const value = getter ? getter.call(obj) : val;
-
-                if (newVal === value || (newVal !== newVal && value !== value)) {
-                    return;
-                }
-
-                if (setter) {
-                    setter.call(obj, newVal)
-                } else {
-                    val = newVal;
-                }
-
-                //遍历子集
-                childrenOb = new Observer(value);
-
-                dep.notify();
-            }
-        });
-    }
 }
 
 /**
@@ -159,7 +162,7 @@ Dep.target = null;
  *  功能名称：属性观察者,订阅者
  *  描述信息：
 */
-class Watcher {
+export class Watcher {
     constructor(data, expOrFn, callBack) {
         this.data = data;
         this.expOrFn = expOrFn;
@@ -216,9 +219,4 @@ class Watcher {
             return result;
         }
     }
-}
-
-export default {
-    Observer,
-    Watcher
 }

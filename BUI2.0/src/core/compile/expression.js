@@ -1,4 +1,4 @@
-﻿import LogHandler from "../common/log";
+import LogHandler from "../common/log";
 import { LOGTAG } from "./index";
 import Utils from "../common/utils";
 
@@ -92,7 +92,6 @@ function makeGetterFn(body) {
 
 
 export default function (exp) {
-    debugger;
     exp = exp.trim()
   
     return compileGetter(exp);

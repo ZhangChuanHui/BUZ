@@ -10,15 +10,15 @@ import log from '../common/log';
 import EventHandler from '../common/event';
 import Compile from '../compile/index';
 import _ from '../common/utils';
-import observer from '../property/observer';
+import { Observer, Watcher } from '../property/observer';
 import Utils from '../common/utils';
 const LOGTAG = "视图组件";
 
 function bmSet(target, key, value) {
     if (Utils.hasOwn(target, _.toStr(key))) {
         target[key] = value;
-        new observer.Observer(target[key]);
-        debugger;
+        new Observer(target[key]);
+
         notifyChange(target);
     }
     else {
@@ -81,7 +81,7 @@ class BaseView extends EventHandler {
         }
 
         if (view.noCompile != true) {
-            new observer.Observer(view.data);
+            new Observer(view.data);
             new Compile(view.$el.nodeList[0], view, view.data);
         }
 
@@ -200,7 +200,7 @@ class View {
      * @param callBack 回调处理事件
     */
     $watch(path, callBack) {
-        new observer.Watcher(this.data, path, Utils.bind(callBack, this));
+        new Watcher(this.data, path, Utils.bind(callBack, this));
     }
     /**
      * 注册全局观察者模式
