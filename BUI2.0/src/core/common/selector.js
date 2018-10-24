@@ -4,7 +4,7 @@ import log from '../common/log';
  *  作者：张传辉
  *  功能名称：内置选择器
  *  描述信息：
-*/
+ */
 function Selector(strOrElement) {
     return new BET(strOrElement);
 }
@@ -17,7 +17,7 @@ Selector.parseHTML = function (data) {
 
             tempContainer.innerHTML = data;
             return tempContainer.children;
-        } catch (e) { }
+        } catch (e) {}
     }
 
     log.error("选择工具", "错误的HTML片段，造成转换DOM失败");
@@ -28,7 +28,7 @@ Selector.parseHTML = function (data) {
  *  作者：张传辉
  *  功能名称：BUI内置选择器 DOM类型
  *  描述信息：
-*/
+ */
 class BET {
     constructor(strOrElement) {
         this.nodeList = [];
@@ -40,15 +40,14 @@ class BET {
     /**
      * 遍历选择器
      * @param callBack 回调 <Function> 传入Element
-    */
+     */
     each(callBack, desc) {
         if (desc) {
             for (let index = this.nodeList.length - 1; index >= 0; index--) {
                 let elem = this.nodeList[index];
                 if (callBack(elem, index) === false) break;
             }
-        }
-        else {
+        } else {
             for (let index = 0; index < this.nodeList.length; index++) {
                 let elem = this.nodeList[index];
                 if (callBack(elem, index) === false) break;
@@ -59,7 +58,7 @@ class BET {
     /**
      * 追加Element
      * @param strOrElement 追加对象 <Element/BETItem>
-    */
+     */
     add(strOrElement) {
         switch (typeof strOrElement) {
             case "string":
@@ -67,8 +66,7 @@ class BET {
                     for (let elem of Array.from(Selector.parseHTML(strOrElement))) {
                         this.nodeList.push(elem);
                     }
-                }
-                else {
+                } else {
                     this.nodeList = document.querySelectorAll(strOrElement);
                 }
                 break;
@@ -76,17 +74,14 @@ class BET {
                 if (strOrElement.toString() === NodeList.prototype.toString()) {
                     this.nodeList = this.nodeList.concat(strOrElement);
                     break;
-                }
-                else if (strOrElement.toString() === HTMLCollection.prototype.toString()) {
+                } else if (strOrElement.toString() === HTMLCollection.prototype.toString()) {
                     for (var item of strOrElement) {
                         this.nodeList.push(item);
                     }
-                }
-                else if (strOrElement.nodeList) {
+                } else if (strOrElement.nodeList) {
                     this.nodeList = this.nodeList.concat(strOrElement.nodeList);
                     break;
-                }
-                else if (strOrElement.nodeType !== undefined) {
+                } else if (strOrElement.nodeType !== undefined) {
                     this.nodeList.push(strOrElement);
                     break;
                 }
@@ -104,7 +99,7 @@ class BET {
     /**
      * 在选择器下查找指定对象
      * @param strFilter 筛选条件 <String>
-    */
+     */
     find(strFilter) {
         let result = new BET();
 
@@ -118,7 +113,7 @@ class BET {
      * 注册事件
      * @param events 事件集 <Object>
      * @param delegate 委托处理 <Function> 返回true则触发事件机制
-    */
+     */
     on(events, delegate) {
         if (_.isObjEmpty(events)) return this;
 
@@ -138,7 +133,7 @@ class BET {
      * 移除事件
      * @param eventName 事件名称 <String>
      * @param func  指定事件处理把柄 <Function> 可选
-    */
+     */
     off(eventName, func) {
         if (_.isStrEmpty(eventName)) return this;
 
@@ -155,7 +150,7 @@ class BET {
      * 触发事件
      * @param eventName 事件名称 <String>
      * @param params 事件参数 <...Array>
-    */
+     */
     trigger(eventName, ...params) {
         if (_.isStrEmpty(eventName)) return this;
 
@@ -170,7 +165,7 @@ class BET {
     /**
      * 添加Class样式
      * @param cssName 样式名称
-    */
+     */
     addClass(cssName) {
         this.each(function (elem) {
             elem.classList.add(cssName);
@@ -180,7 +175,7 @@ class BET {
     /**
      * 移除Class样式
      * @param cssName 样式名称
-    */
+     */
     removeClass(cssName) {
         this.each(function (elem) {
             elem.classList.remove(cssName);
@@ -190,15 +185,14 @@ class BET {
     /**
      * 设置或读取DOM属性
      * @param strOrObject 字符串时读取属性，对象设置属性<String/Object>
-    */
+     */
     attr(strOrObject) {
         for (let index = 0; index < this.nodeList.length; index++) {
             let elem = this.nodeList[index];
 
             if (typeof strOrObject === "string") {
                 return elem.getAttribute(strOrObject);
-            }
-            else if (typeof strOrObject === "object") {
+            } else if (typeof strOrObject === "object") {
                 for (let name in strOrObject) {
                     elem.setAttribute(name, strOrObject[name]);
                 }
@@ -210,7 +204,7 @@ class BET {
     /**
      * 追加子集元素
      * @param param 追加内容 <String/Element/BET>
-    */
+     */
     append(param) {
         let $el;
 
@@ -218,8 +212,7 @@ class BET {
             if (typeof param === "string") {
                 //追加文本
                 elem.innerHTML += param;
-            }
-            else {
+            } else {
                 if ($el === undefined) {
                     $el = new BET(param);
                 }
@@ -234,7 +227,7 @@ class BET {
     /**
      * 移除元素
      * @param param 移除内容 参考BET <String,Element,BET>
-    */
+     */
     remove(param) {
         if (param) {
             let $el = new BET(param);
@@ -244,8 +237,7 @@ class BET {
                     elem.parentNode && elem.parentNode.removeChild(rItem);
                 });
             });
-        }
-        else {
+        } else {
             this.each(function (elem) {
                 elem.parentNode && elem.parentNode.removeChild(elem);
             });
@@ -255,7 +247,7 @@ class BET {
     }
     /**
      * 获取父级元素
-    */
+     */
     parent() {
         let result = new BET();
 
@@ -267,7 +259,7 @@ class BET {
     }
     /**
      * 向前插入内容
-    */
+     */
     before(content, returnInsert) {
         let insertElem = new BET(content);
         this.each(function (elem) {
@@ -275,13 +267,13 @@ class BET {
 
             insertElem.each((item) => {
                 parent.insertBefore(item, elem);
-            },true);
+            }, true);
         });
         return returnInsert ? insertElem : this;
     }
     /**
      * 向后插入内容
-    */
+     */
     after(content, returnInsert) {
         let insertElem = new BET(content);
         this.each(function (elem) {
@@ -289,14 +281,14 @@ class BET {
 
             insertElem.each((item) => {
                 parent.insertBefore(item, elem.nextSibling);
-            },true);
+            }, true);
         });
 
         return returnInsert ? insertElem : this;
     }
     /**
      * 获取下一个元素
-    */
+     */
     next() {
         let result = new BET();
 
@@ -308,7 +300,7 @@ class BET {
     }
     /**
      * 获取上一个元素
-    */
+     */
     prev() {
         let result = new BET();
 
@@ -329,7 +321,7 @@ class BET {
     }
     /**
      * 清空子集
-    */
+     */
     empty() {
         this.each(function (elem) {
             while (elem.firstChild) {
@@ -340,7 +332,7 @@ class BET {
     }
     /**
      * 克隆元素
-    */
+     */
     clone() {
         let result = new BET();
 
@@ -354,15 +346,14 @@ class BET {
      * 读取/设置HTML内容
      * @param content 可选-内容 <String>
      * @param isText 是否读取文本 <Boolean> 默认False
-    */
+     */
     html(content, isText) {
         for (let index = 0; index < this.nodeList.length; index++) {
             let elem = this.nodeList[index];
 
             if (typeof content === "string") {
                 isText ? (elem.textContent = content) : (elem.innerHTML = content);
-            }
-            else if (content === undefined) {
+            } else if (content === undefined) {
                 return isText ? elem.textContent : elem.innerHTML;
             }
         }
@@ -372,14 +363,14 @@ class BET {
     /**
      * 读取/设置HTML文本
      * @param content 可选-内容 <String>
-    */
+     */
     text(content) {
         return this.html(content, true);
     }
     /**
      * 读取/设置值 -针对控件
      * @param value 可选-值 <Any>
-    */
+     */
     val(value) {
         var special = ["checkbox", "radio"];
         for (let index = 0; index < this.nodeList.length; index++) {
@@ -388,8 +379,7 @@ class BET {
 
             if (_.isStrEmpty(value) === false) {
                 isSpecial ? elem.checked = !!value : elem.value = value;
-            }
-            else {
+            } else {
                 return isSpecial ? !!elem.checked : elem.value;
             }
         }
@@ -398,7 +388,7 @@ class BET {
     }
     /**
      * 显示元素
-    */
+     */
     show() {
         this.each(function (elem) {
             elem.style.display = "";
@@ -407,7 +397,7 @@ class BET {
     }
     /**
      * 隐藏元素
-    */
+     */
     hide() {
         this.each(function (elem) {
             elem.style.display = "none";
@@ -417,15 +407,14 @@ class BET {
     /**
      * 设置/读取宽度
      * @param value 值
-    */
+     */
     width(value) {
         for (let index = 0; index < this.nodeList.length; index++) {
             let elem = this.nodeList[index];
 
             if (typeof value === undefined) {
                 return parseFloat(window.getComputedStyle(elem).width);
-            }
-            else {
+            } else {
                 elem.style.width = typeof value === "number" ? value + "px" : value;
             }
         }
@@ -434,15 +423,14 @@ class BET {
     /**
      * 设置/读取高度
      * @param value 值
-    */
+     */
     height(value) {
         for (let index = 0; index < this.nodeList.length; index++) {
             let elem = this.nodeList[index];
 
             if (typeof value === undefined) {
                 return parseFloat(window.getComputedStyle(elem).height);
-            }
-            else {
+            } else {
                 elem.style.height = typeof value === "number" ? value + "px" : value;
             }
         }
@@ -451,7 +439,7 @@ class BET {
     /**
      * 读取整体高度 默认：height+padding+border
      * @param containMargin 是否包含外边距 <Boolean>
-    */
+     */
     outerHeight(containMargin) {
         for (let index = 0; index < this.nodeList.length; index++) {
             let elem = this.nodeList[index];
@@ -463,7 +451,7 @@ class BET {
     /**
      * 读取整体宽度 默认：width+padding+border
      * @param containMargin 是否包含外边距 <Boolean>
-    */
+     */
     outerWidth(containMargin) {
         for (let index = 0; index < this.nodeList.length; index++) {
             let elem = this.nodeList[index];

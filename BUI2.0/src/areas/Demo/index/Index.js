@@ -7,14 +7,19 @@ export default Bui.View({
         demoTip: "我是固定提示",
         eventName: "click1",
         htmlcard: "",
-        listData: [
-            { name: "张1", age: 10 },
-            { name: "张1", age: 10 }
+        listData: [{
+                name: "张1",
+                age: 10
+            },
+            {
+                name: "张1",
+                age: 10
+            }
         ],
         demoObj: {
             name: "张2",
             age: 10,
-            other:"山东"
+            other: "山东"
         }
     },
     onShow: function () {
@@ -48,11 +53,22 @@ export default Bui.View({
         });
     },
     click6: function () {
-        this.data.listData = [
-            { name: "李1", age: 12 },
-            { name: "李2", age: 13 },
-            { name: "李3", age: 14 },
-            { name: "李4", age: 15 }
+        this.data.listData = [{
+                name: "李1",
+                age: 12
+            },
+            {
+                name: "李2",
+                age: 13
+            },
+            {
+                name: "李3",
+                age: 14
+            },
+            {
+                name: "李4",
+                age: 15
+            }
         ];
     },
     click7: function () {

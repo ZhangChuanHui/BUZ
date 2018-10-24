@@ -8,7 +8,7 @@ export const ATTRREGEXP = /^:((?:.*|\n)+?)/;
  *  作者：张传辉
  *  功能名称：Element 模板渲染处理类
  *  描述信息：
-*/
+ */
 export default class Handler extends Base {
     check() {
         return this.node.nodeType === 1;
@@ -16,7 +16,7 @@ export default class Handler extends Base {
     parser() {
         let nodeAttrs = this.node.attributes;
 
-        for (let attr of Array.from( nodeAttrs)) {
+        for (let attr of Array.from(nodeAttrs)) {
             let attrNm = attr.name,
                 exp = attr.value;
             let baseItem = {
@@ -31,8 +31,7 @@ export default class Handler extends Base {
                 }));
 
                 this.node.removeAttribute(attrNm);
-            }
-            else if (ONREGEXP.test(attrNm)) {
+            } else if (ONREGEXP.test(attrNm)) {
                 let param = ONREGEXP.exec(attrNm)[1];
                 this.result.push(Object.assign(baseItem, {
                     order: "event",
@@ -40,8 +39,7 @@ export default class Handler extends Base {
                 }));
 
                 this.node.removeAttribute(attrNm);
-            }
-            else if (ATTRREGEXP.test(attrNm)) {
+            } else if (ATTRREGEXP.test(attrNm)) {
                 let param = ATTRREGEXP.exec(attrNm)[1];
                 this.result.push(Object.assign(baseItem, {
                     order: "attr",
