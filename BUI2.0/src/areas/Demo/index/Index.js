@@ -12,7 +12,7 @@ export default Bui.View({
             { name: "张1", age: 10 }
         ],
         demoObj: {
-            name: "张1",
+            name: "张2",
             age: 10,
             other:"山东"
         }
