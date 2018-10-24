@@ -19,7 +19,7 @@ export function compileNodes(el, option, scope) {
 
     let childNodes = el.childNodes;
     if (childNodes && childNodes.length) {
-        childNodes.forEach((node) => {
+        [...childNodes].forEach((node) => {
             compileNodes(node, option, scope);
         });
     }

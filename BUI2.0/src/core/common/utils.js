@@ -43,7 +43,7 @@ class Utils {
     static distinct(list = []) {
         let result = [];
 
-        for (var item of list) {
+        for (var item of Array.from(list)) {
             if (result.indexOf(item) === -1) {
                 result.push(item);
             }

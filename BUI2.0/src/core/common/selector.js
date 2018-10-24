@@ -64,7 +64,7 @@ class BET {
         switch (typeof strOrElement) {
             case "string":
                 if (strOrElement.indexOf("<") > -1) {
-                    for (let elem of Selector.parseHTML(strOrElement)) {
+                    for (let elem of Array.from(Selector.parseHTML(strOrElement))) {
                         this.nodeList.push(elem);
                     }
                 }

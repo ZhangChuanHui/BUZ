@@ -16,7 +16,7 @@ export default class Handler extends Base {
     parser() {
         let nodeAttrs = this.node.attributes;
 
-        for (let attr of nodeAttrs) {
+        for (let attr of Array.from( nodeAttrs)) {
             let attrNm = attr.name,
                 exp = attr.value;
             let baseItem = {
