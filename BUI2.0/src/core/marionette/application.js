@@ -14,7 +14,7 @@ const LOGTAG = "应用管理";
  *      一个项目只会初始化一次
  *      初始化后应按照个性化需求处理后执行start方法，开启应用池
  *      对外输出App，如不指定对外输出物，则默认生成App
-*/ 
+*/
 class Application extends EventHandler {
     constructor(config) {
         super();
