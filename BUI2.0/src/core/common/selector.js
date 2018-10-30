@@ -17,7 +17,7 @@ Selector.parseHTML = function (data) {
 
             tempContainer.innerHTML = data;
             return tempContainer.children;
-        } catch (e) {}
+        } catch (e) { }
     }
 
     log.error("选择工具", "错误的HTML片段，造成转换DOM失败");
@@ -112,9 +112,8 @@ class BET {
     /**
      * 注册事件
      * @param events 事件集 <Object>
-     * @param delegate 委托处理 <Function> 返回true则触发事件机制
      */
-    on(events, delegate) {
+    on(events) {
         if (_.isObjEmpty(events)) return this;
 
         this.each(function (elem) {
