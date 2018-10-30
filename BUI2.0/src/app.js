@@ -1,5 +1,5 @@
 import Bui from './core/bui';
-import baseCss from './commonWeb/resource/base.less'
+import baseCss from './commonWeb/resource/base.less';
 baseCss.use();
 
 _.docReady(() => {
