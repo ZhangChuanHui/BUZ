@@ -1,32 +1,26 @@
 ﻿@import "../../../commonWeb/resource/common.less";
-
-#container{
-    @sideBarWidth:170px;
-
+#container {
+    @sideBarWidth: 170px;
     width: 1200px;
-    margin:20px auto;
-
-    #sideBar{
-        width:@sideBarWidth;
+    margin: 20px auto;
+    #sideBar {
+        width: @sideBarWidth;
         float: left;
     }
-
     #content {
-        width:calc(1200px - @sideBarWidth - 20px);
+        width: calc(1200px - @sideBarWidth - 20px);
         float: right;
     }
 }
 
-#sideBar ul{
+#sideBar ul {
     background: #f2f2f2;
-
-    li{
+    li {
         line-height: 50px;
         padding: 0 10px;
         font-size: 14px;
-
-        &.active{
-            color:#fff;
+        &.active {
+            color: #fff;
             background: #e67729;
         }
     }
@@ -42,7 +36,7 @@ h1 {
     font-weight: 500;
 }
 
-h2{
+h2 {
     font-size: 16px;
     color: #333;
     line-height: 20px;
@@ -63,11 +57,10 @@ button {
     border-radius: 3px;
     cursor: pointer;
     color: #fff;
-    padding:0 15px;
+    padding: 0 15px;
     background: #e67729;
     border-color: #e67729;
-    
-    &:hover{
+    &:hover {
         opacity: .8;
     }
 }
@@ -75,25 +68,23 @@ button {
 .baseCss {
     display: block;
     padding: 3px 10px;
-    width:150px;
+    width: 150px;
     height: 150px;
     line-height: 150px;
     text-align: center;
     color: #fff;
-
     &.class1 {
         background: green;
     }
-
     &.class2 {
         background: #e67729;
     }
 }
 
 table {
-    margin: 10px 0 ;
-    tr td{
-        border:solid 1px #ccc;
-        padding:5px 20px;
-    }   
+    margin: 10px 0;
+    tr td {
+        border: solid 1px #ccc;
+        padding: 5px 20px;
+    }
 }
