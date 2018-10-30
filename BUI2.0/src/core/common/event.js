@@ -18,7 +18,7 @@ class EventHandler {
      *      其中callBack中传递两个参数：
      *      1.event ：{
      *            target <Any> 触发事件对象
-     *            stopPropagation <Functionn> 终止事件传播
+     *            stopPropagation <Function> 终止事件传播
      *            timer <Int> 触发次数
      *        }
      *      2.param <Any> 事件传递参数
