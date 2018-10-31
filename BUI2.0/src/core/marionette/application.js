@@ -44,6 +44,8 @@ class Application extends EventHandler {
         /**视图管理操作把柄 */
         this.view = new BaseView(this);
 
+        this._initHandler();
+
         window.App = this;
         return this;
     }
@@ -78,6 +80,10 @@ class Application extends EventHandler {
     */
     goIndex() {
         this.go(this.option.indexPath);
+    }
+    //绑定基础事件
+    _initHandler() {
+
     }
 }
 

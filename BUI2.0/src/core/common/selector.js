@@ -71,20 +71,18 @@ class BET {
                 }
                 break;
             case "object":
-                if (strOrElement.toString() === NodeList.prototype.toString()) {
-                    this.nodeList = this.nodeList.concat(strOrElement);
-                    break;
-                } else if (strOrElement.toString() === HTMLCollection.prototype.toString()) {
-                    for (var item of strOrElement) {
-                        this.nodeList.push(item);
-                    }
-                } else if (strOrElement.nodeList) {
-                    this.nodeList = this.nodeList.concat(strOrElement.nodeList);
-                    break;
-                } else if (strOrElement.nodeType !== undefined) {
-                    this.nodeList.push(strOrElement);
-                    break;
+                let elemType = strOrElement.toString();
+                if (elemType === NodeList.prototype.toString()
+                    || elemType === HTMLCollection.prototype.toString()) {
+                    this.nodeList = this.nodeList.concat(Array.from(strOrElement));
                 }
+                else if (strOrElement.nodeList) {
+                    this.nodeList = this.nodeList.concat(strOrElement.nodeList);
+                }
+                else if (strOrElement.nodeType !== undefined) {
+                    this.nodeList.push(strOrElement);
+                }
+                break;
             default:
                 break;
 

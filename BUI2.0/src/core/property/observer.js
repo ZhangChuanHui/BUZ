@@ -80,7 +80,7 @@ export function defineReactive(obj, key, val) {
             }
 
             //遍历子集
-            childrenOb = new Observer(value);
+            childrenOb = new Observer(newVal);
 
             dep.notify();
         }
