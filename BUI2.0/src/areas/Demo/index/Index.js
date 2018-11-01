@@ -5,6 +5,7 @@ export default Bui.View({
     data: {
         demoText: 1,
         demoTip: "我是固定提示",
+        demoStr: "测试监听移除",
         eventName: "click1",
         htmlcard: "",
         listData: [{
@@ -81,5 +82,13 @@ export default Bui.View({
 
         //3.
         this.data.listData[0].age = "22222";
+    },
+    click8: function () {
+        if (this.data.listData.length) {
+            this.data.listData.splice(this.data.listData.length - 1, 1);
+        }
+    },
+    click9: function () {
+        this.data.demoStr = _.guid();
     }
 });

@@ -33,12 +33,15 @@
 
 <h2>列表渲染</h2>
 <button on:click="click5">追加一条</button>
+<button on:click="click8">移除最后一条</button>
 <button on:click="click7">更改第一条数据年龄</button>
+<button on:click="click9">更改demoStr</button>
 <table>
     <tr b-for="item in listData">
         <td>{{item.name}}</td>
         <td>{{item.age}}</td>
         <td>{{demoText}}</td>
+        <td>{{demoStr}}</td>
     </tr>
 </table>
 

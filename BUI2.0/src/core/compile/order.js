@@ -22,8 +22,6 @@ export default {
             && (this.orderList[param.name] = Object.assign({
                 //是否跳过子集
                 isSkipChildren: false,
-                //是否开启指令数据
-                enableOrderData: false,
                 breforeExec: function (token, option) { },
                 runExpress: function (token, option, scope) {
                     return this.tryRun(token.exp, scope);
@@ -79,7 +77,7 @@ export default {
                 let watcher = new Watcher(scope,
                     function (scope) {
                         return order.runExpress(token, option, scope);
-                    }, exec);
+                    }, exec, token);
 
                 exec(watcher.value);
             }

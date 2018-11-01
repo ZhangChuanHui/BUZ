@@ -102,8 +102,6 @@ export class Observer {
         return this;
     }
     start() {
-        let self = this;
-
         //生成主DEP，为其他驱动做操作依据
         this.dep = new Dep();
         Utils.def(this.data, '__ob__', this);
@@ -163,10 +161,15 @@ Dep.target = null;
  *  描述信息：
 */
 export class Watcher {
-    constructor(data, expOrFn, callBack) {
+    constructor(data, expOrFn, callBack, token) {
         this.data = data;
         this.expOrFn = expOrFn;
-        this.deps = {};
+        this.token = token;
+        this.deps = [];
+        this.depIds = [];
+        this.newDeps = [];
+        this.newDepIds = [];
+
         this.callBack = callBack;
 
         if (typeof expOrFn === "function") {
@@ -191,16 +194,44 @@ export class Watcher {
         }
     }
     addDep(dep) {
-        if (!this.deps[dep.id]) {
-            dep.addSub(this);
-            this.deps[dep.id] = dep;
+        const id = dep.id;
+        if (this.newDepIds.indexOf(id) === -1) {
+            this.newDepIds.push(id);
+            this.newDeps.push(dep);
+
+            if (this.depIds.indexOf(id) === -1) {
+                dep.addSub(this);
+            }
         }
     }
     get() {
         Dep.target = this;
         let value = this.getter.call(this.data, this.data);
         Dep.target = undefined;
+
+        this.clearnDeps();
         return value;
+    }
+    clearnDeps() {
+        let i = this.deps.length;
+
+        while (i--) {
+            const dep = this.deps[i];
+
+            if (this.newDepIds.indexOf(dep.id) === -1) {
+                debugger;
+                dep.removeSub(this);
+            }
+        }
+
+        let tmp = this.depIds;
+        this.depIds = this.newDepIds;
+        this.newDepIds = tmp;
+        this.newDepIds.length = 0;
+        tmp = this.deps;
+        this.deps = this.newDeps;
+        this.newDeps = tmp
+        this.newDeps.length = 0;
     }
     transformGetter(exp) {
         //过滤非正常属性

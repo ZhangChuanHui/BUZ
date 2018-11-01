@@ -11,7 +11,6 @@ const STRIPPARENTSRE = /^\(|\)$/g;
 CompileOrder.addOrder({
     name: "for",
     isSkipChildren: true,
-    enableOrderData: true,
     exec: function (option, nv, ov) {
         if (option.token.forContent) {
             option.token.forContent.remove();
@@ -35,22 +34,21 @@ CompileOrder.addOrder({
         let viewData = this.tryRun(inMatch[2].trim(), scope) || "";
 
         let result = $();
-        let index = 0; 
+        let index = 0;
         for (let key in viewData) {
             let value = viewData[key];
-            let orderData = {};
             let newTemplete = token.node.cloneNode(true);
             let $scope = Object.create(scope);
 
             $scope.$parentScope = scope;
 
-            defineReactive($scope, runParam.tagName , value);
+            defineReactive($scope, runParam.tagName, value);
 
-            if (runParam.key) defineReactive($scope, runParam.key, key); 
-            if (runParam.index) defineReactive($scope, runParam.index, index);  
+            if (runParam.key) defineReactive($scope, runParam.key, key);
+            if (runParam.index) defineReactive($scope, runParam.index, index);
 
             compileNodes(newTemplete, option, $scope);
-           
+
             result.add(newTemplete);
 
             index++;
