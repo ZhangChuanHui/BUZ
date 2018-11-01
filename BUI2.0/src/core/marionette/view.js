@@ -10,7 +10,7 @@ import log from '../common/log';
 import EventHandler from '../common/event';
 import Compile from '../compile/index';
 import _ from '../common/utils';
-import { Observer, Watcher } from '../property/observer';
+import { Observer, Watcher } from '../observer';
 import Utils from '../common/utils';
 const LOGTAG = "视图组件";
 
@@ -169,8 +169,9 @@ function ViewHandler(option, ...args) {
     }
 }
 
-class View {
+class View extends EventHandler {
     constructor(option, pageParam) {
+        super();
         /**页面样式名称，配置后追加app-page之后*/
         this.pageClassName = "";
         /**页面模板 */

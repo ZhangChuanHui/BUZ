@@ -1,5 +1,5 @@
 import Utils from "../common/utils";
-import { observeArray } from './observer';
+import { observeArray } from './';
 const arrayProto = Array.prototype;
 const arrayMethods = Object.create(arrayProto);
 const arrayKeys = Object.getOwnPropertyNames(arrayMethods);

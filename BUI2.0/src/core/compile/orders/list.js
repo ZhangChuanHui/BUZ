@@ -2,7 +2,7 @@ import CompileOrder from '../order';
 import LogHandler from '../../common/log';
 import { LOGTAG, compileNodes } from '../index';
 import Utils from '../../common/utils';
-import { defineReactive } from '../../property/observer';
+import { defineReactive } from '../../observer';
 
 const FORRE = /([^]*?)\s+(?:in|of)\s+([^]*)/;
 const FORITERATORRE = /,([^,\}\]]*)(?:,([^,\}\]]*))?$/;

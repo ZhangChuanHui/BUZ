@@ -1,5 +1,5 @@
 import log from "../common/log";
-import { Watcher } from '../property/observer';
+import { Watcher } from '../observer';
 import { LOGTAG } from './index';
 import Utils from "../common/utils";
 import expression from './expression';
