@@ -11,7 +11,7 @@ const LOGTAG = "区域管理";
  *      内置全局观察者模式，提供注册和触发，不提供卸载（卸载不符合全局观察者理念）。
  *      主要功能：提供区域的注册、销毁及页面区域的视图装载
 */
-class RegionItem extends EventHandler { 
+class RegionItem extends EventHandler {
     /**
      * 构造函数
      * @param region 区域参考Region类 <Class>
@@ -42,6 +42,7 @@ class RegionItem extends EventHandler {
         //若当前区域装载视图，先执行视图卸载
         if (this.view) {
             this.app.view.teardown(this.view);
+            log.info(LOGTAG, `${this.name}：区域视图卸载完毕`);
         }
 
         log.info(LOGTAG, `${this.name}：区域准备装载`);
@@ -57,7 +58,7 @@ class RegionItem extends EventHandler {
             let self = this;
 
             (function (viewPath, tempId) {
-                import('~/'+viewPath)
+                import('~/' + viewPath)
                     .then(viewHandler => {
                         if (self && self._tempId === tempId) {
                             view = viewHandler.default.call(viewHandler.default);
@@ -69,7 +70,7 @@ class RegionItem extends EventHandler {
                         }
                     })
                     .catch(e => {
-                        log.error(LOGTAG, `视图文件请求失败`,e);
+                        log.error(LOGTAG, `视图文件请求失败`, e);
                         self._breakInit();
                     });
             })(view, this._tempId);
@@ -88,6 +89,8 @@ class RegionItem extends EventHandler {
             this.view._teardown();
             this.view = undefined;
         }
+
+        log.info(LOGTAG, `${this.name}：区域已完成卸载`);
     }
     //初始化之前
     _beforeInit(params) {
@@ -184,7 +187,7 @@ class Region extends EventHandler {
             || _.isStrEmpty(eventName)
             || !callBack) {
             log.error(LOGTAG, "注册全局观察者失败，存在不完整的配置参数");
-            return; 
+            return;
         }
 
         this.listener[view._viewId] = this.listener[view._viewId] || {

@@ -23,9 +23,7 @@ const wsRE = /\s/g;
 const newlineRE = /\n/g;
 const saveRE = /[\{,]\s*[\w\$_]+\s*:|('(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|`(?:[^`\\]|\\.)*\$\{|\}(?:[^`\\]|\\.)*`|`(?:[^`\\]|\\.)*`)|new |typeof |void /g;
 const restoreRE = /"(\d+)"/g;
-const pathTestRE = /^[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*|\['.*?'\]|\[".*?"\]|\[\d+\]|\[[A-Za-z_$][\w$]*\])*$/;
 const identRE = /[^\w$\.](?:[A-Za-z_$][\w$]*)/g;
-const literalValueRE = /^(?:true|false|null|undefined|Infinity|NaN)$/;
 
 var saved = [];
 
@@ -93,7 +91,7 @@ function makeGetterFn(body) {
 
 export default function (exp) {
     exp = exp.trim()
-  
+
     return compileGetter(exp);
 }
 
