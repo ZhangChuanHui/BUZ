@@ -110,17 +110,36 @@ class BET {
     /**
      * 注册事件
      * @param events 事件集 <Object>
+     * @param agent 代理/委托 <String> 注意如果设置代理则事件被
+     * 重写，无法手动移除（off）,对于大范围的委托建议手动判断e.target
      */
-    on(events) {
+    on(events, agent) {
         if (_.isObjEmpty(events)) return this;
 
         this.each(function (elem) {
+            elem._buiEvents = elem._buiEvents || [];
             for (let name in events) {
                 let callBack = events[name];
 
                 if (_.isFunction(callBack) === false) continue;
 
-                elem.addEventListener(name, callBack, false);
+                let _callBack = callBack;
+
+                if (agent) {
+                    _callBack = function (e) {
+                        var range = elem.querySelectorAll(agent);
+                        if (range.indexOf(e.target) > -1) {
+                            callBack(e);
+                        }
+                    }
+                }
+
+                elem._buiEvents.push({
+                    callBack: callBack,
+                    agent: _callBack
+                });
+
+                elem.addEventListener(name, _callBack, false);
             }
         });
 
@@ -135,8 +154,26 @@ class BET {
         if (_.isStrEmpty(eventName)) return this;
 
         this.each(function (elem) {
-            if (func)
-                elem.removeEventListener(eventName, func);
+            elem._buiEvents = elem._buiEvents || [];
+
+            if (func) {
+                let findCallBack = [];
+                elem._buiEvents.forEach((item) => {
+                    if (item.callBack === func) {
+                        elem.removeEventListener(eventName, item.agent);
+                        findCallBack.push(item);
+                    }
+                });
+
+                findCallBack.forEach((item) => {
+                    elem._buiEvents = _.without(elem._buiEvents, item);
+                });
+
+                if (findCallBack.length === 0) {
+                    elem.removeEventListener(eventName, func);
+                }
+
+            }
             else
                 elem.removeEventListener(eventName);
         });

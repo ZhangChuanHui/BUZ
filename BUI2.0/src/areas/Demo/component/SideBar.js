@@ -13,8 +13,14 @@ export default Bui.View({
 
         let url = [area, controller, action].join('/');
 
+
         this.$("li.active").removeClass("active");
         this.$(`li[data-hash='${url}']`).addClass("active");
+    },
+    goHref: function (e) {
+        if (e.target.tagName === "LI") {
+            App.go($(e.target).attr("data-hash"));
+        }
     },
     onTeardown: function () {
         App.router.off("after:change", this._onAfterRouterChange);

@@ -7,6 +7,7 @@ import Dep from './dep';
 */
 export class Watcher {
     constructor(data, expOrFn, callBack, token) {
+        this.active = true;
         this.data = data;
         this.expOrFn = expOrFn;
         this.token = token;
@@ -56,6 +57,14 @@ export class Watcher {
 
         this.clearnDeps();
         return value;
+    }
+    stop() {
+        this.active = false;
+        this.deps.forEach((dep) => {
+            dep.removeSub(this);
+        });
+
+        this.deps.length = 0;
     }
     clearnDeps() {
         let i = this.deps.length;

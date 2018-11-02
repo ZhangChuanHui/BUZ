@@ -48,7 +48,7 @@ export default {
         refNode: undefined
     }, scope) {
         let isSkipChildren = false;
-
+        let watchers = [];
         for (let token of tokens) {
             let order = this.orderList[token.order];
 
@@ -80,13 +80,19 @@ export default {
                     }, exec, token);
 
                 exec(watcher.value);
+
+                option.view.watchers.push(watcher);
+                watchers.push(watcher);
             }
             else {
                 log.error(LOGTAG, `未找到${token.order}指令名`);
             }
         }
 
-        return isSkipChildren;
+        return {
+            isSkipChildren: isSkipChildren,
+            watchers: watchers
+        };
     },
     getRunExecFunc: function (token, option) {
         return function () {

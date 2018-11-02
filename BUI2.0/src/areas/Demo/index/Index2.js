@@ -11,5 +11,8 @@ export default Bui.View({
     },
     click2: function () {
         this.data.listData.splice(this.data.listData.length - 1, 1);
+    },
+    click3: function () {
+        this.data.demoStr = _.guid();
     }
 });

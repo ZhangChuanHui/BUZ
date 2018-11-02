@@ -35,6 +35,15 @@ CompileOrder.addOrder({
 
         let result = $();
         let index = 0;
+
+        if (token.oldWatchers) {
+            token.oldWatchers.forEach((item) => {
+                item.stop();
+            });
+        }
+
+        token.oldWatchers = [];
+
         for (let key in viewData) {
             let value = viewData[key];
             let newTemplete = token.node.cloneNode(true);
@@ -47,7 +56,8 @@ CompileOrder.addOrder({
             if (runParam.key) defineReactive($scope, runParam.key, key);
             if (runParam.index) defineReactive($scope, runParam.index, index);
 
-            compileNodes(newTemplete, option, $scope);
+            token.oldWatchers =
+                token.oldWatchers.concat(compileNodes(newTemplete, option, $scope));
 
             result.add(newTemplete);
 

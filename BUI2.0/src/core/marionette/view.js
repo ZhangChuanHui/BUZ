@@ -61,6 +61,7 @@ class BaseView extends EventHandler {
         view.$container = selector;
         view.pageParam = pageParam;
         view.data = view.data || {};
+        view.watchers = [];
 
         //克隆一个基础版本，用于视图组件独立reload
         view.__baseView = Object.assign({}, view);
@@ -138,6 +139,14 @@ class BaseView extends EventHandler {
         view.childrens.forEach(item => {
             self.teardown(item);
         });
+
+        //移除所有监听
+        view.watchers.forEach((watcher) => {
+            watcher.stop();
+            watcher = undefined;
+        });
+
+        view.watchers.length = 0;
 
         view.childrens = [];
 

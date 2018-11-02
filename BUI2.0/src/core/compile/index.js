@@ -13,16 +13,20 @@ export const LOGTAG = "页面渲染";
 export function compileNodes(el, option, scope) {
     let tokens = new parser(el);
 
-    let isSkipChildren = CompileOrder.exec(el, tokens, option, scope);
+    let result = CompileOrder.exec(el, tokens, option, scope);
 
-    if (isSkipChildren) return;
+    let watchers = result.watchers;
+
+    if (result.isSkipChildren) return;
 
     let childNodes = el.childNodes;
     if (childNodes && childNodes.length) {
         [...childNodes].forEach((node) => {
-            compileNodes(node, option, scope);
+            watchers = watchers.concat(compileNodes(node, option, scope));
         });
     }
+
+    return watchers;
 }
 
 /**

@@ -25,7 +25,8 @@ class Dep {
     }
     notify() {
         this.subs.forEach((sub) => {
-            sub.update();
+            if (sub.active)
+                sub.update();
         });
     }
 }

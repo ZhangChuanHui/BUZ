@@ -2,13 +2,12 @@
 
 <button on:click="click1">追加一条</button>
 <button on:click="click2">移除一条</button>
-<table>
-    <tr b-for="item in listData">
-        <td>{{item}}</td>
-        <td>{{demoStr}}</td>
-    </tr>
-</table>
-
+<button on:click="click3">更改demoStr</button>
+<p class="tip">直接点击更改demoStr后，会通知两次（两行）demoStr监听</p>
+<p class="tip">删除一条后，再次更改demoStr则只执行一次监听</p>
+<p class="tip">
+    跳转其他地址时，区域卸载时（teardown）时会移除当前视图所有监听，移除所有引用，交由GC回收
+</p>
 <table>
     <tr b-for="item in listData">
         <td>{{item}}</td>
