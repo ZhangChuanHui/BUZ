@@ -17,5 +17,5 @@ export default Bui.View({
     },
     click4: function () {
         alert("123");
-    },
+    }
 });
