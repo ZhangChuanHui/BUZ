@@ -71,9 +71,8 @@ class BET {
                 }
                 break;
             case "object":
-                let elemType = strOrElement.toString();
-                if (elemType === NodeList.prototype.toString()
-                    || elemType === HTMLCollection.prototype.toString()) {
+                let elemType = _.getType(strOrElement);
+                if (elemType === "[object NodeList]" || elemType === "[object HTMLCollection]") {
                     this.nodeList = this.nodeList.concat(Array.from(strOrElement));
                 }
                 else if (strOrElement.nodeList) {

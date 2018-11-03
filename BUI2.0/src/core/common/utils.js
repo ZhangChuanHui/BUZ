@@ -191,6 +191,9 @@ class Utils {
     static isPlainObject(obj) {
         return _toString.call(obj) === '[object Object]'
     }
+    static getType(obj) {
+        return _toString.call(obj);
+    }
     /**
      * 获取对象所有属性地址
      */
@@ -206,7 +209,7 @@ class Utils {
 
         return array;
     }
-    static noop() {}
+    static noop() { }
 }
 
 export default Utils;
