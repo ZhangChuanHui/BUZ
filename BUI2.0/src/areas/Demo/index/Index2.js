@@ -14,5 +14,8 @@ export default Bui.View({
     },
     click3: function () {
         this.data.demoStr = _.guid();
-    }
+    },
+    click4: function () {
+        alert("123");
+    },
 });
