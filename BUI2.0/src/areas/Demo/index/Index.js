@@ -28,6 +28,9 @@ export default Bui.View({
             console.log(`#######内部监听demoText：${ov}=>${nv}`);
         });
     },
+    ComputedMethed: function () {
+        return this.data.demoText + this.data.demoStr;
+    },
     clickFun: function () {
         this.data.demoText++;
     },
