@@ -29,9 +29,9 @@ Selector.parseHTML = function (data) {
  *  功能名称：BUI内置选择器 DOM类型
  *  描述信息：
  */
-class BET {
+class BET extends Array {
     constructor(strOrElement) {
-        this.nodeList = [];
+        super();
 
         this.add(strOrElement);
 
@@ -43,13 +43,13 @@ class BET {
      */
     each(callBack, desc) {
         if (desc) {
-            for (let index = this.nodeList.length - 1; index >= 0; index--) {
-                let elem = this.nodeList[index];
+            for (let index = this.length - 1; index >= 0; index--) {
+                let elem = this[index];
                 if (callBack(elem, index) === false) break;
             }
         } else {
-            for (let index = 0; index < this.nodeList.length; index++) {
-                let elem = this.nodeList[index];
+            for (let index = 0; index < this.length; index++) {
+                let elem = this[index];
                 if (callBack(elem, index) === false) break;
             }
         }
@@ -60,26 +60,25 @@ class BET {
      * @param strOrElement 追加对象 <Element/BETItem>
      */
     add(strOrElement) {
+        let addItems;
         switch (typeof strOrElement) {
             case "string":
                 if (strOrElement.indexOf("<") > -1) {
-                    for (let elem of Array.from(Selector.parseHTML(strOrElement))) {
-                        this.nodeList.push(elem);
-                    }
+                    addItems = Array.from(Selector.parseHTML(strOrElement));
                 } else {
-                    this.nodeList = document.querySelectorAll(strOrElement);
+                    addItems = Array.from(document.querySelectorAll(strOrElement));
                 }
                 break;
             case "object":
                 let elemType = _.getType(strOrElement);
                 if (elemType === "[object NodeList]" || elemType === "[object HTMLCollection]") {
-                    this.nodeList = this.nodeList.concat(Array.from(strOrElement));
-                }
-                else if (strOrElement.nodeList) {
-                    this.nodeList = this.nodeList.concat(strOrElement.nodeList);
+                    addItems = Array.from(strOrElement);
                 }
                 else if (strOrElement.nodeType !== undefined) {
-                    this.nodeList.push(strOrElement);
+                    addItems = [strOrElement];
+                }
+                else if (strOrElement.length !== undefined) {
+                    addItems = strOrElement;
                 }
                 break;
             default:
@@ -87,9 +86,12 @@ class BET {
 
         }
 
-        this.nodeList = _.distinct(this.nodeList);
+        (addItems || []).forEach((item) => {
+            if (this.indexOf(item) === -1) {
+                this.push(item);
+            }
+        });
 
-        this.length = this.nodeList.length;
 
         return this;
     }
@@ -220,8 +222,8 @@ class BET {
      * @param strOrObject 字符串时读取属性，对象设置属性<String/Object>
      */
     attr(strOrObject) {
-        for (let index = 0; index < this.nodeList.length; index++) {
-            let elem = this.nodeList[index];
+        for (let index = 0; index < this.length; index++) {
+            let elem = this[index];
 
             if (typeof strOrObject === "string") {
                 return elem.getAttribute(strOrObject);
@@ -381,8 +383,8 @@ class BET {
      * @param isText 是否读取文本 <Boolean> 默认False
      */
     html(content, isText) {
-        for (let index = 0; index < this.nodeList.length; index++) {
-            let elem = this.nodeList[index];
+        for (let index = 0; index < this.length; index++) {
+            let elem = this[index];
 
             if (typeof content === "string") {
                 isText ? (elem.textContent = content) : (elem.innerHTML = content);
@@ -406,8 +408,8 @@ class BET {
      */
     val(value) {
         var special = ["checkbox", "radio"];
-        for (let index = 0; index < this.nodeList.length; index++) {
-            let elem = this.nodeList[index];
+        for (let index = 0; index < this.length; index++) {
+            let elem = this[index];
             let isSpecial = special.indexOf(elem.type) > -1;
 
             if (_.isStrEmpty(value) === false) {
@@ -442,8 +444,8 @@ class BET {
      * @param value 值
      */
     width(value) {
-        for (let index = 0; index < this.nodeList.length; index++) {
-            let elem = this.nodeList[index];
+        for (let index = 0; index < this.length; index++) {
+            let elem = this[index];
 
             if (typeof value === undefined) {
                 return parseFloat(window.getComputedStyle(elem).width);
@@ -458,8 +460,8 @@ class BET {
      * @param value 值
      */
     height(value) {
-        for (let index = 0; index < this.nodeList.length; index++) {
-            let elem = this.nodeList[index];
+        for (let index = 0; index < this.length; index++) {
+            let elem = this[index];
 
             if (typeof value === undefined) {
                 return parseFloat(window.getComputedStyle(elem).height);
@@ -474,8 +476,8 @@ class BET {
      * @param containMargin 是否包含外边距 <Boolean>
      */
     outerHeight(containMargin) {
-        for (let index = 0; index < this.nodeList.length; index++) {
-            let elem = this.nodeList[index];
+        for (let index = 0; index < this.length; index++) {
+            let elem = this[index];
             let computeStyle = window.getComputedStyle(elem)
             return parseFloat(elem.offsetHeight) +
                 (containMargin ? parseFloat(computeStyle.marginTop) + parseFloat(computeStyle.marginBottom) : 0);
@@ -486,8 +488,8 @@ class BET {
      * @param containMargin 是否包含外边距 <Boolean>
      */
     outerWidth(containMargin) {
-        for (let index = 0; index < this.nodeList.length; index++) {
-            let elem = this.nodeList[index];
+        for (let index = 0; index < this.length; index++) {
+            let elem = this[index];
             let computeStyle = window.getComputedStyle(elem)
             return parseFloat(elem.offsetWidth) +
                 (containMargin ? parseFloat(computeStyle.marginLeft) + parseFloat(computeStyle.marginRight) : 0);

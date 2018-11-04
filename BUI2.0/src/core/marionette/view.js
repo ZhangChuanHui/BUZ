@@ -83,7 +83,7 @@ class BaseView extends EventHandler {
 
         if (view.noCompile != true) {
             new Observer(view.data);
-            new Compile(view.$el.nodeList[0], view, view.data);
+            new Compile(view.$el[0], view, view.data);
         }
 
         if (_.isFunction(view.onShow)) {
