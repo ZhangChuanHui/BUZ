@@ -9,8 +9,13 @@
 * 5.框架本身是一个轻量级框架，减少页面加载时间，减少对第三方的依赖，减少开发人员的上手时间， 框架本身必须遵循实用性、可扩展性、可维护性。
 * 6.支持单项绑定，由于本框架对控件集成封装，无需支持双向绑定。
 
+## 帮助文档
+
+[帮助文档](https://zhangchuanhui.github.io/BUI/docs/index.html)
+
 ## BraveOS专用UI
 
+[BraveOS](https://github.com/ZhangChuanHui/BraveOS)
 
 ## License
 
