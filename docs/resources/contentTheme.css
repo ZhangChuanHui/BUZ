@@ -7,9 +7,8 @@
 h1 {
     padding-bottom: 9px;
     margin: 0px 0 20px;
-    font-size: 36px;
+    font-size: 34px;
     color: rgb(51, 51, 51);
-    border-bottom: 1px solid #eee;
     line-height: 1.1;
     font-weight: 500;
 }
@@ -29,13 +28,12 @@ p {
 h2 {
     padding-top: 20px;
     padding-bottom: 9px;
-    padding-left: 20px;
     margin: 0px 0 20px;
-    font-size: 30px;
+    font-size: 28px;
     color: rgb(51, 51, 51);
     line-height: 1.1;
     font-weight: 500;
-    position: relative;
+    border-bottom: solid 1px #efefef;
 }
 
 h3 {
@@ -79,16 +77,7 @@ img {
     max-width: 90%;
 }
 
-h2:after {
-    position: absolute;
-    z-index: -1;
-    content: '';
-    left: 0;
-    top: 20px;
-    width: 10px;
-    height: 30px;
-    background: #ffd800;
-}
+
 
 h3:after {
     position: absolute;
@@ -134,6 +123,36 @@ code {
 
 iframe {
     border: solid 1px #efefef;
+}
+
+.tip{
+    padding: 12px 24px 12px 30px;
+    margin: 2em 0;
+    border-left-width: 4px;
+    border-left-style: solid;
+    border-left-color: #f66;
+    background-color: #f8f8f8;
+    position: relative;
+    border-bottom-right-radius: 2px;
+    border-top-right-radius: 2px;
+
+}
+
+.tip::before{
+    position: absolute;
+    top: 14px;
+    left: -12px;
+    color: #fff;
+    width: 20px;
+    height: 20px;
+    border-radius: 100%;
+    text-align: center;
+    line-height: 20px;
+    font-weight: bold;
+    font-family: "Dosis", "Source Sans Pro", "Helvetica Neue", Arial, sans-serif;
+    font-size: 14px;
+    content: "!";
+    background-color: #f66;
 }
 
 .demoNavMin {
@@ -184,24 +203,6 @@ iframe {
         color: #fff;
     }
 
-::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-    -webkit-border-radius: 10px;
-    border-radius: 10px;
-    background: #999;
-}
-
-    ::-webkit-scrollbar-thumb:window-inactive {
-        opacity: 0;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-        background: #888;
-    }
 
 .syntaxhighlighter {
     padding: 10px 0;

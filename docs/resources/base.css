@@ -70,12 +70,12 @@ td {
     outline: 0;
     font-size: 14px;
     vertical-align: baseline;
-    font-family: "Microsoft Yahei", "Hiragino Sans GB", "SimSun", Arial, Helvetica, sans-serif;
+    font-family: "Source Sans Pro", "Helvetica Neue", Arial, sans-serif;
 }
 
 input,
 textarea {
-    font-family: "Microsoft Yahei", "Hiragino Sans GB", "SimSun", Arial, Helvetica, sans-serif;
+    font-family: "Source Sans Pro", "Helvetica Neue", Arial, sans-serif;
 }
 
 *html {
@@ -167,3 +167,22 @@ a:active {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background: #999;
+}
+
+    ::-webkit-scrollbar-thumb:window-inactive {
+        opacity: 0;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #888;
+    }

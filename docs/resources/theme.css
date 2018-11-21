@@ -1,12 +1,15 @@
-﻿#container {
-    min-width: 500px;
-}
+﻿
 
 .header {
-    height: 80px;
-    border-bottom: solid 1px #ccc;
-    line-height: 80px;
-    padding: 0 100px;
+    height: 60px;
+    border-bottom: solid 1px #efefef;
+    line-height: 60px;
+    margin: 0 20px;
+}
+
+.header .content{
+    width:1200px;
+    margin: 0 auto;
 }
 
 .header h1 {
@@ -44,7 +47,43 @@
     content: "";
     display: inline-block;
     position: absolute;
-    bottom: 20px;
+    bottom: 10px;
     left: 0;
     background: #099e07;
+}
+
+.middel{
+   width:1200px;
+   margin: 10px auto;
+}
+.middel .menu{
+    float: left;
+    width: 200px;
+    height: 100%;
+    background: #f5f5f5;
+}
+
+.middel .menu li a{
+    display: block;
+    height: 50px;
+    line-height: 50px;
+    font-size: 14px;
+    color:#333;
+    text-decoration: none;
+    padding-left:20px;
+}
+.middel .menu li a:hover{
+    color:#099e07;
+}
+
+.middel .menu li a.active,
+.middel .menu li a.active:hover{
+    background: #099e07;
+    color:#fff;
+}
+
+.middel iframe{
+    width:980px;
+    float: right;
+    height: 100%;
 }
