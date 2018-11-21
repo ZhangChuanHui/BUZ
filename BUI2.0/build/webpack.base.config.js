@@ -43,6 +43,10 @@ module.exports = {
                     { loader: 'postcss-loader', options: { sourceMap: true, plugins: [require("autoprefixer")("last 100 versions")] } },
                     { loader: 'less-loader', options: { sourceMap: true } }
                 ]
+            },
+            {
+                test: /\.(png|ico|jpg)$/,
+                loader: 'url-loader'
             }
         ]
     }

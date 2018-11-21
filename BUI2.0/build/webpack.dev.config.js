@@ -23,13 +23,13 @@ const devWebpackConfig = merge(baseWebpackConfig, {
         hot: true,
         //代码进行压缩
         compress: true,
-        contentBase:false,
+        contentBase: false,
         host: config.dev.host,
         port: config.dev.port,
         open: config.dev.autoOpenBrowser,
         overlay: config.dev.errorOverlay,
         proxy: config.dev.proxyTable,
-        publicPath:'/',
+        publicPath: '/',
         //是否只输入默认信息在控制台（不包括错误和警告）
         quiet: true,
         //是否启用文件监听修改
@@ -54,10 +54,12 @@ const devWebpackConfig = merge(baseWebpackConfig, {
             inject: "head"
         }),
         //copy静态资源
-        new CopyWebpackPlugin([{
-            from: path.resolve(__dirname, '../src/static'),
-            to: config.dev.staticDir
-        }])
+        new CopyWebpackPlugin([
+            {
+                from: path.resolve(__dirname, '../src/static'),
+                to: config.dev.staticDir
+            }
+        ])
     ]
 });
 
