@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>BUI帮助文档</title>
+    <meta charset="utf-8" />
+    <link href="../../resources/base.css" rel="stylesheet" />
+    <link href="../../resources/contentTheme.css" rel="stylesheet" />
+    <link href="../../resources/shCoreDefault.css" rel="stylesheet" />
+    <script src="../../scripts/shCore/shCore.js"></script>
+    <script src="../../scripts/shCore/extend/shBrushJScript.js"></script>
+    <script src="../../scripts/shCore/extend/shBrushXml.js"></script>
+    <script src="../../scripts/page.js"></script>
+</head>
+
+<body>
+    <h1>模板语法</h1>
+    <p>Bui.js使用基于HTML的模板语法，所有模板都是合法的HTML，所以能被尊村规范的浏览器和HTML解析器解析。</p>
+    <p>
+        在底层我们会将模板变异成虚拟DOM渲染函数。结合<code>Object.defineProperty</code>进行双向相应，
+        Bui能够智能的计算最少重新渲染的节点，并且当DOM移除时会做相应的接触监听依赖。
+    </p>
+    <p>在本文最后会对模板渲染流程进行详细介绍。</p>
+    <p><b>前提：</b>模板渲染时会依赖视图组件数据</p>
+    <h2>插值</h2>
+    <h3>文本</h3>
+    <p>使用双大括号"Mustache"语法的文本插值</p>
+    <pre class="brush: html;">
+        <p>{{msg}}</p>
+    </pre>
+    <p>
+        Mustache 变迁将会替代为对应数据对象的<code>msg</code>属性值。当<code>msg</code>值发生改变时，
+        视图中依赖此属性的节点都会进行实时渲染。
+    </p>
+
+    <h3>插入HTML</h3>
+    <p>使用三个大括号实现HTML节点渲染</p>
+    <pre class="brush: html;">
+        {{{htmlcard}}}
+    </pre>
+    <p>
+        使用三个大括号时也会实现文本插值，他与双大括号的唯一区别是一个是设置节点的<code>textContent</code>
+        ，一个是使用插入新的DOM节点。
+    </p>
+    <p class="tip">
+        直接将视图组件的值作为HTML进行渲染时非常危险的，因为它很容易导致<code>XSS</code>攻击。
+        请只对可信内容使用插入HTML操作，<b>绝不要</b>对用户写入的数据进行渲染。
+    </p>
+    <h3>Attributes（特性）</h3>
+    <p>
+        Attributes中我们提供了三种使用方式：<code>设置属性</code>、<code>指令</code>、<code>事件</code>，
+        指令、事件调用方式我们将在下一节详细介绍。
+    </p>
+    <p>采用冒号方式<code>:</code>即可事件属性的动态渲染。</p>
+    <pre class="brush: html;">
+        <p :href="hrefData" :class="className" :customAttr="demo"></p>
+    </pre>
+    <p>若hrefData="http:www.braveos.com";className="show";不设置demo值,则渲染后的结果：</p>
+    <pre class="brush: html;">
+        <p href="http:www.braveos.com" class="show" customAttr="demo"></p>
+    </pre>
+
+    <h3>Javascript表达式</h3>
+    <p>
+        在上面讲到的示例中我们都是采用简单的绑定一个属性值，但实际上，我们支持多属性绑定，也可以支持复杂的运算，
+        Bui.js提供Javascript表达式，支持自定义的渲染逻辑。
+    </p>
+    <pre class="brush: html;">
+        {{ 1+1 }}
+        {{ true?"1":"0" }}
+        {{ "Bui.js".split('').join('-') }}
+
+        <p :customAttribute="1+1" :id="'id'+Date.now()" ></p>
+    </pre>
+    <p class="tip">
+        在模板渲染时，模板引擎会第一时间对每个标记进行解析，因此<b>一定不要</b>在表达式中出现alert等语法，
+        因为在模板尝试解析时会执行表达式，会对表达式内的语法进行执行。
+    </p>
+    <h2>指令</h2>
+    <p>
+        指令（Directives）是采用Attribute来进行引导的，使用<code>b-</code>前缀来调用指令，
+        我们提供了常用的几个指令，当然你可以自定义<code>局部指令</code>、<code>全局指令</code>来实现特定需求。
+    </p>
+    <h3>class</h3>
+    <p>class指令用于动态编译class，我们通过下面的例子了解下class指令的用途</p>
+    <pre class="brush: html;">
+        <p b-class="true?'class1':'class2'"></p>
+        <p class="baseClass" b-class="true?'class1':'class2'"></p>
+    </pre>
+    <p>编译后的结果：</p>
+    <pre class="brush: html;">
+        <p class="class1"></p>
+        <p class="baseClass class1"></p>
+    </pre>
+    <p>
+        通过上面这个例子我们可以看出，class指令和<code>:class</code>的用途是一样的，
+        但是他的主要用途是可以和class进行混用，将公共样式在class中设置，并通过class指令设置动态class值。
+    </p>
+
+    <h3>show/hide（显示/隐藏）</h3>
+    <p>此指令依赖BUI框架中的<code>base.css</code>，通过表达式返回的bool值设置hide样式或移除hide样式。</p>
+    <pre class="brush: html;">
+        <p b-show="true">1</p>
+        <p b-show="false">2</p>
+        <p b-hide="true">3</p>
+        <p b-hide="false">4</p>
+    </pre>
+    <p>输出结果为（1、4）：</p>
+    <pre class="brush: html;">
+        <p>1</p>
+        <p class="hide">2</p>
+        <p class="hide">3</p>
+        <p>4</p>
+    </pre>
+    <h4>高级用法</h4>
+    <pre class="brush: html;">
+        <p class="hide" b-show="true">1</p>
+    </pre>
+    <p>渲染完毕后</p>
+    <pre class="brush: html;">
+        <p>1</p>
+    </pre>
+    <p>
+        在某些特殊场景下，可能需要通过异步请求服务器，通过服务器参数来作为展示/隐藏依据，
+        为了防止在请求结束之前显示该标签，可以先设置为hide，然后通过show/hide指令实时监听异步返回结果，
+        服务器返回结果后再做业务处理。可以防止闪烁。
+    </p>
+</body>
+
+</html>
