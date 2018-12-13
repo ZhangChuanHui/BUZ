@@ -11,12 +11,27 @@ const STRIPPARENTSRE = /^\(|\)$/g;
 CompileOrder.addOrder({
     name: "for",
     isSkipChildren: true,
+    weight: 200,
     exec: function (option, nv, ov) {
-        if (option.token.forContent) {
-            option.token.forContent.remove();
+        var token = option.$token;
+
+        if (token.forContent) {
+            token.forContent.remove();
         }
-        option.token.forContent = nv;
-        nv && option.forTag.after(nv);
+
+        token.forContent = nv;
+
+        //清空监听
+        this.clearWatchers(token);
+
+        if (nv) {
+            option.forTag.after(nv);
+
+            nv.each((node) => {
+                let $scope = node.forScope;
+                this.addWatchers(compileNodes(node, option.$option, $scope));
+            });
+        }
     },
     breforeExec: function (token, option) {
         token.forTag = token.$node.after(document.createTextNode(""), true);
@@ -36,17 +51,13 @@ CompileOrder.addOrder({
         let result = $();
         let index = 0;
 
-        if (token.oldWatchers) {
-            token.oldWatchers.forEach((item) => {
-                item.stop();
-            });
-        }
-
-        token.oldWatchers = [];
+        token.forCloneNode =
+            token.forCloneNode || token.node.cloneNode(true);
 
         for (let key in viewData) {
             let value = viewData[key];
-            let newTemplete = token.node.cloneNode(true);
+            //再次clone防止污染
+            let newTemplete = token.forCloneNode.cloneNode(true);
             let $scope = Object.create(scope);
 
             $scope.$parentScope = scope;
@@ -56,11 +67,8 @@ CompileOrder.addOrder({
             if (runParam.key) defineReactive($scope, runParam.key, key);
             if (runParam.index) defineReactive($scope, runParam.index, index);
 
-            token.oldWatchers =
-                token.oldWatchers.concat(compileNodes(newTemplete, option, $scope));
-
+            newTemplete.forScope = $scope;
             result.add(newTemplete);
-
             index++;
         }
 

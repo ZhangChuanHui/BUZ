@@ -6,15 +6,16 @@ CompileOrder.addOrder({
         return this.tryRun(token.exp, scope) || token.exp;
     },
     exec: function (option, nv, ov) {
-        if (option.token.eventFun && option.param) {
-            option.$node.off(option.param, option.token.eventFun);
+        let token = option.$token;
+        if (token.eventFun && option.param) {
+            option.$node.off(option.param, token.eventFun);
         }
 
         let eventFn = option.view[nv];
         if (eventFn && option.param) {
-            option.token.eventFun = _.bind(eventFn, option.view);
+            token.eventFun = _.bind(eventFn, option.view);
             option.$node.on({
-                [option.param]: option.token.eventFun
+                [option.param]: token.eventFun
             });
         }
     }

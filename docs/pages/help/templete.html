@@ -126,6 +126,11 @@
         为了防止在请求结束之前显示该标签，可以先设置为hide，然后通过show/hide指令实时监听异步返回结果，
         服务器返回结果后再做业务处理。可以防止闪烁。
     </p>
+    <h3>if/else-if/else（条件）</h3>
+    <p>条件指令依赖于标签进行展示和隐藏，它与<code>show/hide</code>唯一区别在于，条件指令在DOM树不展示节点
+        ，而<code>show/hide</code>则是对标签进行show、hide操作。</p>
+    <p>1.条件表达式在运行时会把结果强制转换为<code>BOOL</code>值进行判断。</p>
+    <p>2.在配合<code>else-if</code>/<code>else</code>一起使用时，<b>注意：</b>指令必须在是同级标签。</p>
 </body>
 
 </html>

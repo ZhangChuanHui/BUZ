@@ -1,7 +1,6 @@
 import log from '../common/log';
 import EventHandler from '../common/event';
-import _ from '../common/utils';
-import { error, debug } from 'util';
+import Utils from '../common/utils';
 
 const LOGTAG = "路由管理";
 
@@ -54,7 +53,7 @@ class Router extends EventHandler {
     addRouterMap(map) {
         map = Object.assign({}, defaultRouterMap, map);
         if (map.role) {
-            this.routerMaps = _.without(this.routerMaps, (item) => {
+            this.routerMaps = Utils.without(this.routerMaps, (item) => {
                 return item.role === map.role;
             });
 
@@ -69,7 +68,7 @@ class Router extends EventHandler {
      * @param roleName 参考defaultRouterMap.role <String>
     */
     removeRouterMap(roleName) {
-        this.routerMaps = _.without(this.routerMaps, (item) => {
+        this.routerMaps = Utils.without(this.routerMaps, (item) => {
             return item.role === roleName;
         });
     }
@@ -109,7 +108,7 @@ class Router extends EventHandler {
      * @param hash hashValue <String>
     */
     hasChange(hash) {
-        if (_.isStrEmpty(hash)) {
+        if (Utils.isStrEmpty(hash)) {
             this.app.goIndex();
             return;
         }
@@ -166,7 +165,7 @@ class Router extends EventHandler {
                 //延迟加载异常不阻塞，不进行反馈
                 if (fragment.params.area !== self.fragment.params.area) return;
 
-                log.error(LOGTAG, `区域配置文件未成功加载：${areaPath}`,e);
+                log.error(LOGTAG, `区域配置文件未成功加载：${areaPath}`, e);
                 self.trigger("break");
 
                 //跳转首页，判断是否当前所在是否是首页，如果不是则跳转，防止死循环
@@ -190,11 +189,11 @@ class Router extends EventHandler {
         if (this.areaConfig !== areaConfig) {
             this.trigger("before:initArea");
             //卸载原有区域样式
-            _.removeStyle(this.areaConfig.styles);
+            Utils.removeStyle(this.areaConfig.styles);
             //装载新区域样式
-            _.insertStyle(areaConfig.styles);
+            Utils.insertStyle(areaConfig.styles);
             //执行区域自定义初始化方法，只触发一次
-            if (_.isFunction(areaConfig.init)) {
+            if (Utils.isFunction(areaConfig.init)) {
                 areaConfig.init();
             }
             this.trigger("after:initArea");
@@ -224,7 +223,7 @@ class Router extends EventHandler {
                     return;
                 }
 
-                if (_.isFunction(areaConfig.onLayoutShow)) {
+                if (Utils.isFunction(areaConfig.onLayoutShow)) {
                     areaConfig.onLayoutShow();
                 }
 
@@ -265,11 +264,11 @@ class Router extends EventHandler {
         let self = this;
 
         //若控制器层为空则按照默认控制器执行跳转
-        if (_.isStrEmpty(this.fragment.params.controller)) {
+        if (Utils.isStrEmpty(this.fragment.params.controller)) {
             let defaultPath = this.fragment.params.area + "/" +
                 this.areaConfig.defaultPath;
 
-            if (_.isStrEmpty(this.areaConfig.defaultPath) || fragmentUrl === defaultPath) {
+            if (Utils.isStrEmpty(this.areaConfig.defaultPath) || fragmentUrl === defaultPath) {
                 log.error(LOGTAG, `未解析正确的Contoller，地址为：${fragmentUrl}`);
             }
             else {
@@ -301,7 +300,7 @@ class Router extends EventHandler {
             })
             .catch(e => {
                 self.trigger("break");
-                log.error(LOGTAG, `路由文件加载失败`,e);
+                log.error(LOGTAG, `路由文件加载失败`, e);
             });
     }
     /**
@@ -317,7 +316,7 @@ class Router extends EventHandler {
         let result = [];
 
         hashArray.forEach((item) => {
-            if (_.isStrEmpty(item) === false)
+            if (Utils.isStrEmpty(item) === false)
                 result.push(item);
         });
 
@@ -340,7 +339,7 @@ class Router extends EventHandler {
 
             for (let index = 0; index < roleArray.length; index++) {
                 var roleItem = roleArray[index];
-                if (_.isStrEmpty(roleItem)) continue;
+                if (Utils.isStrEmpty(roleItem)) continue;
 
                 if (/^{\S+}$/.test(roleItem)) {
                     let roleName = roleItem.substring(1, roleItem.length - 1);
@@ -355,7 +354,7 @@ class Router extends EventHandler {
             if (isMatch === false) continue;
 
             roleParam.routerMap = item;
-            if (_.isFunction(item.exec)) {
+            if (Utils.isFunction(item.exec)) {
                 return item.exec(roleParam) || roleParam;
             }
             else {
@@ -374,7 +373,7 @@ class Router extends EventHandler {
             path = routerMap.path[name],
             result = "";
 
-        if (_.isFunction(path)) {
+        if (Utils.isFunction(path)) {
             result = path(fragment);
         }
         else {

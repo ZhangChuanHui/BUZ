@@ -27,26 +27,25 @@ export default class Handler extends Base {
             if (TAGREGEXP.test(attrNm)) {
                 let order = TAGREGEXP.exec(attrNm)[1];
                 this.result.push(Object.assign(baseItem, {
-                    order: order
+                    order: order,
+                    removeAttr: function () { this.node.removeAttribute(attrNm); }
                 }));
 
-                this.node.removeAttribute(attrNm);
             } else if (ONREGEXP.test(attrNm)) {
                 let param = ONREGEXP.exec(attrNm)[1];
                 this.result.push(Object.assign(baseItem, {
                     order: "event",
-                    param: param
+                    param: param,
+                    removeAttr: function () { this.node.removeAttribute(attrNm); }
                 }));
 
-                this.node.removeAttribute(attrNm);
             } else if (ATTRREGEXP.test(attrNm)) {
                 let param = ATTRREGEXP.exec(attrNm)[1];
                 this.result.push(Object.assign(baseItem, {
                     order: "attr",
-                    param: param
+                    param: param,
+                    removeAttr: function () { this.node.removeAttribute(attrNm); }
                 }));
-
-                this.node.removeAttribute(attrNm);
             }
         }
     }

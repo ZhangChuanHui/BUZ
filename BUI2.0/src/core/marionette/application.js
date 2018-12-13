@@ -4,7 +4,6 @@ import Router from './router';
 import { BaseController } from './controller';
 import Region from './region';
 import { BaseView } from './view';
-import { debug } from 'util';
 
 const LOGTAG = "应用管理";
 /**

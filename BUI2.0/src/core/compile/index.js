@@ -1,4 +1,3 @@
-import log from '../common/log';
 import parser from './parser/index';
 import orders from './orders/index';
 import CompileOrder from './order';
@@ -17,7 +16,8 @@ export function compileNodes(el, option, scope) {
 
     let watchers = result.watchers;
 
-    if (result.isSkipChildren) return;
+    //若指令禁止子集渲染||条件指令为false时
+    if (result.isSkipChildren || el.conditionResult === false) return watchers;
 
     let childNodes = el.childNodes;
     if (childNodes && childNodes.length) {

@@ -1,6 +1,6 @@
 ﻿import log from '../common/log';
 import EventHandler from '../common/event';
-import _ from '../common/utils';
+import Utils from '../common/utils';
 
 const LOGTAG = "区域管理";
 
@@ -52,7 +52,7 @@ class RegionItem extends EventHandler {
             viewData: viewData
         });
 
-        this._tempId = _.guid();
+        this._tempId = Utils.guid();
 
         if (typeof view === "string") {
             let self = this;
@@ -133,7 +133,7 @@ class Region extends EventHandler {
         /**全局观察者数据源，不予event合并，独立管理 */
         this.listener = {};
         /**挂载initRegion方法到app，方便外部调用*/
-        this.app.initRegions = _.bind(this.initRegions, this);
+        this.app.initRegions = Utils.bind(this.initRegions, this);
     }
     /**
      * 初始化页面视图区域，通常只在Layout中进行设置
@@ -183,8 +183,8 @@ class Region extends EventHandler {
      * @param isOnce 是否只执行一次 <Boolean>
     */
     registerGlobalEvent(view, eventName, callBack, isOnce) {
-        if (_.isStrEmpty(view._viewId)
-            || _.isStrEmpty(eventName)
+        if (Utils.isStrEmpty(view._viewId)
+            || Utils.isStrEmpty(eventName)
             || !callBack) {
             log.error(LOGTAG, "注册全局观察者失败，存在不完整的配置参数");
             return;
@@ -232,7 +232,7 @@ class Region extends EventHandler {
                 }, params);
 
                 if (item.isOnce) {
-                    delegates = _.without(delegates, item);
+                    delegates = Utils.without(delegates, item);
                 }
                 else {
                     i++;
