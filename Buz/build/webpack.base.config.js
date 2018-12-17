@@ -7,7 +7,7 @@ function resolve(dir) {
 
 module.exports = {
     context: path.resolve(__dirname, '../src'),
-    entry: ['./polyfill.js', './app.js', './core/bui.js'],
+    entry: ['./polyfill.js', './app.js', './core/buz.js'],
     resolve: {
         extensions: ['.js', '.css'],
         alias: {

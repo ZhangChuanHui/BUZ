@@ -1,7 +1,7 @@
 {
-    "name": "bui2.0",
+    "name": "buz",
     "version": "2.0.0",
-    "description": "A Bui.js project",
+    "description": "A Buz.js project",
     "scripts": {
         "dev": "webpack-dev-server --inline --progress --mode development --config build/webpack.dev.config.js"
     },

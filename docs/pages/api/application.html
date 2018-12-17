@@ -3,7 +3,7 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>BUI帮助文档</title>
+    <title>BUZ帮助文档</title>
     <meta charset="utf-8" />
     <link href="../../resources/base.css" rel="stylesheet" />
     <link href="../../resources/contentTheme.css" rel="stylesheet" />
@@ -20,7 +20,7 @@
     进入页面后会在<code>app.js</code>中初始化一次。
     <p>初始化后会将操作把柄保存到<code>App</code>全局对象中，方便大家使用，请避免重名。</p>
     <pre class="brush: js;">
-        new Bui.Application({
+        new Buz.Application({
             /**主容器选择器*/
             containerSelector: "#layout",
             /**主页地址（锚点）*/
@@ -133,12 +133,12 @@
     <p>初始化后，执行此方法启动应用池</p>
     <p>在此方法之前可以对App进行事件监听等操作，执行<code>start</code>后会执行hashChange触发首次渲染流程。</p>
     <pre class="brush: js;">
-        new Bui.Application({
+        new Buz.Application({
             //操作配置
         }).start();
 
         /**或者*/
-        new Bui.Application({
+        new Buz.Application({
             //操作配置
         })
         //操作配置

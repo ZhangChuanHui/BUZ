@@ -26,7 +26,7 @@ Selector.parseHTML = function (data) {
 
 /**
  *  作者：张传辉
- *  功能名称：BUI内置选择器 DOM类型
+ *  功能名称：BUZ内置选择器 DOM类型
  *  描述信息：
  */
 class BET extends Array {
@@ -118,7 +118,7 @@ class BET extends Array {
         if (Utils.isObjEmpty(events)) return this;
 
         this.each(function (elem) {
-            elem._buiEvents = elem._buiEvents || [];
+            elem._buzEvents = elem._buzEvents || [];
             for (let name in events) {
                 let callBack = events[name];
 
@@ -135,7 +135,7 @@ class BET extends Array {
                     }
                 }
 
-                elem._buiEvents.push({
+                elem._buzEvents.push({
                     callBack: callBack,
                     agent: _callBack
                 });
@@ -155,11 +155,11 @@ class BET extends Array {
         if (Utils.isStrEmpty(eventName)) return this;
 
         this.each(function (elem) {
-            elem._buiEvents = elem._buiEvents || [];
+            elem._buzEvents = elem._buzEvents || [];
 
             if (func) {
                 let findCallBack = [];
-                elem._buiEvents.forEach((item) => {
+                elem._buzEvents.forEach((item) => {
                     if (item.callBack === func) {
                         elem.removeEventListener(eventName, item.agent);
                         findCallBack.push(item);
@@ -167,7 +167,7 @@ class BET extends Array {
                 });
 
                 findCallBack.forEach((item) => {
-                    elem._buiEvents = Utils.without(elem._buiEvents, item);
+                    elem._buzEvents = Utils.without(elem._buzEvents, item);
                 });
 
                 if (findCallBack.length === 0) {

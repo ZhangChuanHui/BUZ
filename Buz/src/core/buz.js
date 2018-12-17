@@ -7,7 +7,7 @@ import selector from './common/selector';
 
 window.$ = selector;
 window._ = utils;
-window.Bui = {
+window.Buz = {
     log: log,
     Application: Application,
     Controller: Controller,
@@ -17,4 +17,4 @@ window.Bui = {
     notifyChange: notifyChange
 }
 
-export default window.Bui
+export default window.Buz;

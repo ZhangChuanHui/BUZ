@@ -3,7 +3,7 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>BUI帮助文档</title>
+    <title>BUZ帮助文档</title>
     <meta charset="utf-8" />
     <link href="../../resources/base.css" rel="stylesheet" />
     <link href="../../resources/contentTheme.css" rel="stylesheet" />
@@ -16,10 +16,10 @@
 
 <body>
     <h1>模板语法</h1>
-    <p>Bui.js使用基于HTML的模板语法，所有模板都是合法的HTML，所以能被尊村规范的浏览器和HTML解析器解析。</p>
+    <p>Buz.js使用基于HTML的模板语法，所有模板都是合法的HTML，所以能被尊村规范的浏览器和HTML解析器解析。</p>
     <p>
         在底层我们会将模板变异成虚拟DOM渲染函数。结合<code>Object.defineProperty</code>进行双向相应，
-        Bui能够智能的计算最少重新渲染的节点，并且当DOM移除时会做相应的接触监听依赖。
+        Buz能够智能的计算最少重新渲染的节点，并且当DOM移除时会做相应的接触监听依赖。
     </p>
     <p><b>前提：</b>模板渲染时会依赖视图组件数据</p>
     <h2>插值</h2>
@@ -87,7 +87,7 @@
     </p>
 
     <h3>show/hide（显示/隐藏）</h3>
-    <p>此指令依赖BUI框架中的<code>base.css</code>，通过表达式返回的bool值设置hide样式或移除hide样式。</p>
+    <p>此指令依赖BUZ框架中的<code>base.css</code>，通过表达式返回的bool值设置hide样式或移除hide样式。</p>
     <pre class="brush: html;">
         <p b-show="true">1</p>
         <p b-show="false">2</p>
@@ -156,16 +156,16 @@
 
     <h2>高级用法</h2>
     <p>经过上面的简单介绍后，相信大家已经对模板引擎的用法有了基本的用法，接下来我们来介绍下模板引擎的高级用法。</p>
-    <p class="tip">对于刚刚接触BUI框架的童鞋，建议跳过本节内容，对整体架构有了初步认识后，再来阅读本节内容可能会更容易理解。</p>
+    <p class="tip">对于刚刚接触BUZ框架的童鞋，建议跳过本节内容，对整体架构有了初步认识后，再来阅读本节内容可能会更容易理解。</p>
     <h3>Javascript表达式</h3>
     <p>
         在上面讲到的示例中我们都是采用简单的绑定一个属性值，但实际上，我们支持多属性绑定，也可以支持复杂的运算，
-        Bui.js提供Javascript表达式，支持自定义的渲染逻辑。
+        Buz.js提供Javascript表达式，支持自定义的渲染逻辑。
     </p>
     <pre class="brush: html;">
         {{ 1+1 }}
         {{ true?"1":"0" }}
-        {{ "Bui.js".split('').join('-') }}
+        {{ "Buz.js".split('').join('-') }}
 
         <p :customAttribute="1+1" :id="'id'+Date.now()" ></p>
     </pre>

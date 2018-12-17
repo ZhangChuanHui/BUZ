@@ -93,7 +93,7 @@ class BaseController extends EventHandler {
 
 /**
  *  作者：张传辉 
- *  功能名称：控制器操作类，挂载Bui中，用于各路由返回统一的Controller格式数据。
+ *  功能名称：控制器操作类，挂载Buz中，用于各路由返回统一的Controller格式数据。
  *  @param handler Controller配置信息 <Object>
        {
 

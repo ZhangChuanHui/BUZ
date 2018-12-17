@@ -21,7 +21,7 @@ function bmSet(target, key, value) {
         notifyChange(target);
     }
     else {
-        log.error(LOGTAG, `Bui.set传入Key值不在target中，请确认`);
+        log.error(LOGTAG, `Buz.set传入Key值不在target中，请确认`);
     }
 }
 

@@ -1,4 +1,4 @@
-﻿export default Bui.Controller({
+﻿export default Buz.Controller({
     actions: {
         "": () => {
             App.regions.content.show("areas/Demo/index/Index");

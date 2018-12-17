@@ -1,6 +1,6 @@
 import templete from './templetes/index2.html';
 
-export default Bui.View({
+export default Buz.View({
     templete: templete,
     data: {
         listData: [1, 2],

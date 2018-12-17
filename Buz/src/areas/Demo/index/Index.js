@@ -1,6 +1,6 @@
 import templete from './templetes/index.html';
 
-export default Bui.View({
+export default Buz.View({
     templete: templete,
     data: {
         demoText: 1,
@@ -78,10 +78,10 @@ export default Bui.View({
     click7: function () {
         //1.
         //this.data.listData[0].age = "22222";
-        //Bui.notifyChange(this.data.listData);
+        //Buz.notifyChange(this.data.listData);
 
         //2.
-        //Bui.set(this.data.listData, 0, { name: "张2", age: 1011 });
+        //Buz.set(this.data.listData, 0, { name: "张2", age: 1011 });
 
         //3.
         this.data.listData[0].age = "22222";

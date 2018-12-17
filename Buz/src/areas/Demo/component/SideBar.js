@@ -1,6 +1,6 @@
 import templete from './templetes/side-bar.html';
 
-export default Bui.View({
+export default Buz.View({
     templete: templete,
     onShow: function () {
         this._onAfterRouterChange = _.bind(this.onAfterRouterChange, this);
