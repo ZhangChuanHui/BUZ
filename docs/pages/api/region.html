@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>BUI帮助文档</title>
+    <meta charset="utf-8" />
+    <link href="../../resources/base.css" rel="stylesheet" />
+    <link href="../../resources/contentTheme.css" rel="stylesheet" />
+    <link href="../../resources/shCoreDefault.css" rel="stylesheet" />
+    <script src="../../scripts/shCore/shCore.js"></script>
+    <script src="../../scripts/shCore/extend/shBrushJScript.js"></script>
+    <script src="../../scripts/shCore/extend/shBrushXml.js"></script>
+    <script src="../../scripts/page.js"></script>
+</head>
+
+<body>
+    <h1>Region -- 视图区域管理</h1>
+    <p>我们可以通过Layout设计多个页面布局方案，并随意切换整体布局。</p>
+    <p>对外一般在Layout文件中使用，对内一般指的是某个区域的管理。</p>
+    <pre class="brush: js;">
+        App.initRegions(`
+            <div id="container" class="clearFix">
+                <div id="sideBar"></div>
+                <div id="content"></div>
+            </div>
+            `, {
+            sideBar: "#sideBar",
+            content: "#content"
+        });
+    </pre>
+
+    <p>接下来我们来看下Region具体为我们提供了哪些内容。</p>
+
+    <h2>广播事件</h2>
+    <table class="param">
+        <thead>
+            <tr>
+                <td>事件名称</td>
+                <td>作用</td>
+                <td>备注</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>before:initRegions</td>
+                <td>初始化区域（Layout）前触发</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>after:initRegions</td>
+                <td>初始化区域（Layout）后触发</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>before:teardownAll</td>
+                <td>卸载所有页面区域（Layout）前触发</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>after:teardownAll</td>
+                <td>卸载所有页面区域（Layout）后触发</td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+    <h2>公开方法</h2>
+    <h3>initRegions （唯一对外公开方法）</h3>
+    <p>初始化页面视图区域，通常只在Layout中进行设置</p>
+    <pre class="brush: js;">
+        App.initRegions(templete, selectors);
+    </pre>
+    <p>1. 其中templete代表HTML模板，建议使用import导入HTML文件方式进行使用，不建议在JS中写入大量HTML片段。</p>
+    <p>2. selectors代表区域规划方案，key值代表区域名称，value值为HTML选择器</p>
+
+    <h2>驱动逻辑</h2>
+    <p>由于布局方案（Layout）是通过Router进行驱动加载的，在路由变化时，会检测布局方案是否改变，如果未改变则不会重复执行区域初始化。</p>
+    <p>当布局方案发生改变或首次加载布局方案时，优先执行<code>teardownAll</code>卸载区域内的所有视图，并清空当前区域内容。</p>
+
+    <h2>全局观察者模式</h2>
+    <p>全局观察者模式可以实现跨视图组件的事件广播，有效的降低耦合性。</p>
+    <p>
+        但是全局观察者模式通常是在View（视图组件）中进行触发和管理，不建议直接使用，因为视图组件是具有完整生命周期，当视图卸载时，也会
+        在全局观察者模式中进行销毁，若在非视图组件中使用，很容易忘记卸载事件，造成不必要的内存浪费。
+    </p>
+    <p class="tip">上面讲的驱动逻辑、全局观察者模式，这些核心方法都是由外部组件自动调用，在实际开发中几乎不会被用到，这里大家只是对其进行有个初步了解。</p>
+</body>
+
+</html>

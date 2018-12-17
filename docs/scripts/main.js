@@ -8,7 +8,7 @@ var menuDatas = {
     api: [
         { title: "应用池", href: "pages/api/application.html" },
         { title: "路由", href: "pages/api/router.html" },
-        { title: "布局管理", href: "pages/api/layout.html" }
+        { title: "视图区域", href: "pages/api/region.html" }
     ]
 }
 
