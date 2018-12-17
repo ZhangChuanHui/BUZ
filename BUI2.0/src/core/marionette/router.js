@@ -34,9 +34,13 @@ class Router extends EventHandler {
         /**当前路由碎片*/
         this.fragment = {};
         /**当前路由碎片地址*/
-        this.fragmentUrl = {};
+        this.fragmentUrl = "";
         /**路由映射处理表，只读，禁止直接操作*/
         this.routerMaps = [];
+
+        return this;
+    }
+    start() {
         //触发主逻辑
         this._main();
         //写入默认映射
@@ -44,7 +48,7 @@ class Router extends EventHandler {
             role: "{area}/{controller}/{action}"
         });
 
-        return this;
+        this.hasChange(location.hash);
     }
     /**
      * 添加路由映射处理方法
@@ -57,7 +61,7 @@ class Router extends EventHandler {
                 return item.role === map.role;
             });
 
-            this.routerMaps.splice(0, 0, map);
+            this.routerMaps.push(map);
         }
         else {
             log.error(LOGTAG, "无效的路由映射关系，缺少role信息");

@@ -43,16 +43,13 @@ function save(str, isString) {
 
 
 function rewrite(raw) {
-    // 保留第一个字符是因为identRE的匹配到的第一个字符是非变量字符,这个字符为前一个运算符当中的部分或者是空格
-    // 比如' result=a+b' 那么raw就会匹配上' result' 和' =a' 和' +b',所以要保留第一个=和+,
-    // 然后将结果加上'scope.' 变成'scope.result=scope.a+scope.b'
+
     var c = raw.charAt(0)
     var path = raw.slice(1)
     if (allowedKeywordsRE.test(path)) {
         return raw
     } else {
-        // 如果是字符串 那就不加
-        // 不过按理说只有raw.charAt(0)可能会是引号,path里不会匹配到引号啊
+
         path = path.indexOf('"') > -1
             ? path.replace(restoreRE, restore)
             : path

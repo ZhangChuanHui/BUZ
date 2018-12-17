@@ -50,7 +50,7 @@ class Application extends EventHandler {
      * App开始方法
     */
     start() {
-        this.router.hasChange(location.hash);
+        this.router.start();
         return this;
     }
     /**

@@ -29,6 +29,24 @@
     <p>可参考：教程/加载流程</p>
     <img src="../../images/pageStart.png" />
 
+    <p>在接下来的章节中你首先要对两个变量进行初步了解</p>
+    <pre class="brush: js;">
+        //当前路由地址
+        App.router.fragmentUrl;
+
+        /**
+        当前路由地址碎片
+        {
+            
+            //碎片信息，例如{area:"home",controller:"index",action:""}
+            params: {},
+            //当前匹配的路由表信息
+            routerMap: undefined
+        }
+        */
+        App.router.fragment;
+    </pre>
+
     <h2>事件列表</h2>
     <h3>监听事件</h3>
     <p>调用方式</p>
@@ -120,6 +138,70 @@
 
     <h2>公开方法</h2>
 
+    <h3>addRouterMap-添加路由映射处理方法</h3>
+    <pre class="brush: js;">
+        App.router.addRouterMap({
+            /**路由规则*/
+            role: "",
+            /**执行规则*/
+            exec: undefined,
+            /**地址*/
+            path: {}
+        });
+    </pre>
+    <h4>role-路由匹配规则</h4>
+    <p>Router在初始化时会默认向路由映射表中注入默认匹配表。</p>
+    <pre class="brush: js;">
+        //例子1
+        App.router.addRouterMap({
+            role: "{area}/{controller}/{action}"
+        });
+
+        //例子2
+        App.router.addRouterMap({
+            role: "{area}/{controller}/{action}/{id}"
+        });
+    </pre>
+    <p>通过上面的例子2，我们就可以在控制器中拿到id参数，并做相应的处理。</p>
+    <p class="tip">
+        当地址发生改变时优先按照路由表录入顺序依次进行匹配，直到找到全部匹配成功的路由表，并返回当前路由表信息作为接下来页面渲染驱动逻辑。
+        在配置整个项目的路由映射逻辑时，务必注意路由映射顺序。建议：<b>特殊规则>通用规则</b>
+    </p>
+    <h4>exec自定义路由参数解析方法</h4>
+    <p>通过此方法可以为指定的路由表进行参数转换，例如下面的例子。</p>
+    <pre class="brush: js;">
+        App.router.addRouterMap({
+            role: "Home/{controller}/{action}",
+            exec:function(roleParam){
+                roleParam.params.area="DemoHome";
+            }
+        });
+    </pre>
+    <p>通过上面这个例子可以看出，当我们访问Home/xxx/xxx地址时，其实是访问的<code>DemoHome</code>区域下面的文件。</p>
+    <h4>path地址转换方法</h4>
+    <p>目前提供<code>area</code>、<code>router</code>、<code>layout</code>文件的自定义方法</p>
+    <pre class="brush: js;">
+        App.router.addRouterMap({
+            role: "Home/{controller}/{action}",
+            exec:function(roleParam){
+                roleParam.params.area="DemoHome";
+            },
+            path:{
+                area:"DemoHome/config",
+                router:function(fragment){
+                    return "DemoHome/Demo/router"
+                },
+                layout:"commonWeb/layout/demoLayout"
+            }
+        });
+    </pre>
+    <p>area默认值：<code>areas/${fragment.params.area || ""}/config</code></p>
+    <p>router默认值：<code>areas/${this.fragment.params.area}/${this.fragment.params.controller}/router</code></p>
+    <p>layout默认值：<code>commonWeb/layouts/${areaConfig.layout || ""}</code></p>
+    <h3>removeRouterMap 移除路由映射处理方法</h3>
+    <pre class="brush: js;">
+        App.router.removeRouterMap("Home/{controller}/{action}");
+    </pre>
 </body>
 
 </html>
