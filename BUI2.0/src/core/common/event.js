@@ -1,4 +1,4 @@
-﻿import _ from './utils';
+﻿import Utils from './utils';
 
 /**
 *  作者：张传辉
@@ -54,7 +54,7 @@ class EventHandler {
     */
     off(name, callBack) {
         if (callBack) {
-            this._eventDatas[name] = _.without(this._eventDatas[name], callBack);
+            this._eventDatas[name] = Utils.without(this._eventDatas[name], callBack);
         }
         else {
             delete this._eventDatas[name];
@@ -83,7 +83,7 @@ class EventHandler {
                 time++;
 
                 if (item.isOnce) {
-                    delegates = _.without(delegates, item);
+                    delegates = Utils.without(delegates, item);
                 }
                 else {
                     i++;

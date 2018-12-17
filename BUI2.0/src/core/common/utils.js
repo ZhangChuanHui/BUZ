@@ -1,11 +1,11 @@
-﻿/**
+﻿let _guidNum = 0;
+let _toString = Object.prototype.toString;
+
+/**
  *  作者：张传辉
  *  功能名称：工具库
  *  描述信息：
  */
-let _guidNum = 0;
-let _toString = Object.prototype.toString;
-
 class Utils {
     /**
      * 从列表中移除某一项

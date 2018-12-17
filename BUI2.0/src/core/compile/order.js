@@ -22,6 +22,8 @@ export default {
             && (this.orderList[param.name] = Object.assign({
                 //是否跳过子集
                 isSkipChildren: false,
+                //权重
+                weight: 0,
                 breforeExec: function (token, option) { },
                 runExpress: function (token, option, scope) {
                     return this.tryRun(token.exp, scope);
@@ -33,6 +35,20 @@ export default {
                     catch (ex) {
                         return exp;
                     }
+                },
+                clearWatchers: function (token) {
+                    //清空监听
+                    if (token.watchers) {
+                        token.watchers.forEach((item) => {
+                            item.stop();
+                        });
+                    }
+
+                    token.watchers = [];
+                },
+                addWatchers: function (token, watchers = []) {
+                    token.watchers = token.watchers || [];
+                    token.watchers.concat(watchers);
                 }
             }, param));
     },
@@ -48,15 +64,27 @@ export default {
         refNode: undefined
     }, scope) {
         let isSkipChildren = false;
+
         let watchers = [];
+
+        tokens = this.sortTokens(tokens);
+
         for (let token of tokens) {
             let order = this.orderList[token.order];
 
             if (order.isSkipChildren) isSkipChildren = true;
 
-            if (node.parentNode && order) {
+            if (order === undefined) {
+                log.warn(LOGTAG, `未找到${token.order}指令名`);
+                continue;
+            }
+
+            if (node.parentNode) {
                 token.node = node;
                 token.$node = $(node);
+
+                //移除标记
+                token.removeAttr && token.removeAttr();
 
                 scope = scope || option.data;
                 //before Exec
@@ -66,8 +94,10 @@ export default {
                     if (nv === token.oldValue) return;
 
                     order.exec(Object.assign({
-                        //保留token把柄作为后期oder存放依据
-                        token: token,
+                        //保留token/option把柄作为后期oder存放依据
+                        $token: token,
+                        $option: option,
+
                         scope: scope
                     }, token, option), nv, token.oldValue);
 
@@ -84,9 +114,6 @@ export default {
                 option.view.watchers.push(watcher);
                 watchers.push(watcher);
             }
-            else {
-                log.error(LOGTAG, `未找到${token.order}指令名`);
-            }
         }
 
         return {
@@ -94,9 +121,14 @@ export default {
             watchers: watchers
         };
     },
-    getRunExecFunc: function (token, option) {
-        return function () {
+    sortTokens: function (tokens) {
+        return tokens.sort((item1, item2) => {
+            let order1 = this.orderList[item1.order];
+            let order2 = this.orderList[item2.order];
 
-        }
+            if (order1 && order2) {
+                return order1.weight < order2.weight;
+            }
+        });
     }
 }

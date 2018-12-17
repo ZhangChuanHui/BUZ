@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>BUI帮助文档</title>
+    <meta charset="utf-8" />
+    <link href="../../resources/base.css" rel="stylesheet" />
+    <link href="../../resources/contentTheme.css" rel="stylesheet" />
+    <link href="../../resources/shCoreDefault.css" rel="stylesheet" />
+    <script src="../../scripts/shCore/shCore.js"></script>
+    <script src="../../scripts/shCore/extend/shBrushJScript.js"></script>
+    <script src="../../scripts/shCore/extend/shBrushXml.js"></script>
+    <script src="../../scripts/page.js"></script>
+</head>
+
+<body>
+    <h1>Application -- 应用池</h1>
+    <p>Application作为整个页面的应用操作把柄，里面提供了Request、Storage等控件操作把柄。</p>
+    进入页面后会在<code>app.js</code>中初始化一次。
+    <p>初始化后会将操作把柄保存到<code>App</code>全局对象中，方便大家使用，请避免重名。</p>
+    <pre class="brush: js;">
+        new Bui.Application({
+            /**主容器选择器*/
+            containerSelector: "#layout",
+            /**主页地址（锚点）*/
+            indexPath: "Home",
+            /**默认布局方案*/
+            defaultLayout: "DefaultLayout"
+        }).start();
+    </pre>
+
+    <p class="tip">
+        应用池负责框架整体组件的调用和监听，所有内核核心组件几乎都会挂载到App中，若想对某一个核心组件进行配置
+        或者监听，务必在App中进行相应的设置。App将会是整体项目中框架唯一操作入口。
+    </p>
+    <h2>参数说明</h2>
+    <h3>初始化输入参数</h3>
+
+    <table class="param">
+        <thead>
+            <tr>
+                <td>参数名</td>
+                <td>作用</td>
+                <td>类型</td>
+                <td>默认值</td>
+                <td>备注</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>containerSelector</td>
+                <td>页面的根标签</td>
+                <td>String Selector</td>
+                <td>#layout</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>indexPath</td>
+                <td>默认地址</td>
+                <td>String</td>
+                <td>Home</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>defaultLayout</td>
+                <td>默认模板方案名称</td>
+                <td>String</td>
+                <td>DefaultLayout</td>
+                <td>如果在Module/config.js中不指定模板地址，则按照<code>DefaultLayout</code>加载。</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>初始化后属性</h3>
+    <table class="param">
+        <thead>
+            <tr>
+                <td>参数名</td>
+                <td>作用</td>
+                <td>类型</td>
+                <td>备注</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>option</td>
+                <td>应用池配置参数</td>
+                <td>Object</td>
+                <td>参考输入参数</td>
+            </tr>
+            <tr>
+                <td>router</td>
+                <td>路由管理操作把柄</td>
+                <td>Object</td>
+                <td>参考router（路由）</td>
+            </tr>
+            <tr>
+                <td>controller</td>
+                <td>控制器基类操作把柄</td>
+                <td>Object</td>
+                <td>参考BaseController（基础控制器），可对全局控制器匹配进行AOP操作</td>
+            </tr>
+            <tr>
+                <td>region</td>
+                <td>区域管理操作把柄</td>
+                <td>Object</td>
+                <td>参考Region，当前全局区域管理</td>
+            </tr>
+            <tr>
+                <td>view</td>
+                <td>控制器基类操作把柄</td>
+                <td>Object</td>
+                <td>参考BaseView（基础视图），可对全局视图进行AOP操作</td>
+            </tr>
+            <tr>
+                <td>start</td>
+                <td>初始化后，执行此方法启动应用池</td>
+                <td>Function</td>
+                <td>在此方法之前可以对App进行事件监听等操作，执行<code>start</code>后会执行hashChange触发首次渲染流程。</td>
+            </tr>
+            <tr>
+                <td>go</td>
+                <td>跳转页面</td>
+                <td>Function</td>
+                <td>参数：hash（开始位置不需要带'#'或'/'）</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>公开方法</h2>
+    <h3>start</h3>
+    <p>初始化后，执行此方法启动应用池</p>
+    <p>在此方法之前可以对App进行事件监听等操作，执行<code>start</code>后会执行hashChange触发首次渲染流程。</p>
+    <pre class="brush: js;">
+        new Bui.Application({
+            //操作配置
+        }).start();
+
+        /**或者*/
+        new Bui.Application({
+            //操作配置
+        })
+        //操作配置
+        App.start();
+    </pre>
+    <h3>go</h3>
+    <p>跳转页面，参数：hash（开始位置不需要带'#'或'/'）</p>
+    <pre class="brush: js;">
+        App.go("Home/index");
+    </pre>
+
+    <h3>reload</h3>
+    <p>重载当前Hash</p>
+    <pre class="brush: js;">
+        App.reload();
+    </pre>
+
+    <h3>goIndex</h3>
+    <p>跳转首页地址</p>
+    <pre class="brush: js;">
+        App.goIndex();
+        //等同于
+        App.go(App.option.indexPath)；
+    </pre>
+</body>
+
+</html>

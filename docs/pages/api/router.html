@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>BUI帮助文档</title>
+    <meta charset="utf-8" />
+    <link href="../../resources/base.css" rel="stylesheet" />
+    <link href="../../resources/contentTheme.css" rel="stylesheet" />
+    <link href="../../resources/shCoreDefault.css" rel="stylesheet" />
+    <script src="../../scripts/shCore/shCore.js"></script>
+    <script src="../../scripts/shCore/extend/shBrushJScript.js"></script>
+    <script src="../../scripts/shCore/extend/shBrushXml.js"></script>
+    <script src="../../scripts/page.js"></script>
+</head>
+
+<body>
+    <h1>Router -- 路由管理</h1>
+    <p>Router是驱动页面渲染的核心组件，控制整个页面的流转和相关配置项的加载。</p>
+    <p>在项目开发中不会对Router进行频繁操作，一般开发人员只会关心<code>Controller</code>，此篇文章将对Router底层的配置
+        和高级用法进行介绍，有兴趣的童鞋可以深入了解下。</p>
+    <p>Router在Application（应用池）初始化时进行初始化，并挂载到App中，可以通过App进行相应的操作。</p>
+
+    <p class="tip">
+        Router是通过HashChange进行视图渲染的，请保证浏览器HashChange是否支持。
+    </p>
+
+    <h2>驱动流程</h2>
+    <p>可参考：教程/加载流程</p>
+    <img src="../../images/pageStart.png" />
+
+    <h2>事件列表</h2>
+    <h3>监听事件</h3>
+    <p>调用方式</p>
+    <pre class="brush: js;">
+        App.router.trigger("eventName",params);
+    </pre>
+    <table class="param">
+        <thead>
+            <tr>
+                <td>事件名称</td>
+                <td>作用</td>
+                <td>参数</td>
+                <td>备注</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>reload</td>
+                <td>重新渲染当前地址</td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>广播事件</h3>
+    <p>调用方式</p>
+    <pre class="brush: js;">
+        App.router.on("eventName",function(e,param){});
+    </pre>
+    <table class="param">
+        <thead>
+            <tr>
+                <td>事件名称</td>
+                <td>作用</td>
+                <td>参数</td>
+                <td>备注</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>before</td>
+                <td>路由变化时触发的第一个参数</td>
+                <td>{
+                    newFragment: fragment,
+                    newFragmentUrl: hash,
+                    oldFragment: fragment,
+                    oldFragmentUrl: fragmentUrl
+                    }
+                </td>
+                <td>在广播触发事件时，若返回<code>false</code>则中断路由流程，触发<code>break</code>事件。</td>
+            </tr>
+            <tr>
+                <td>continue</td>
+                <td>继续执行路由awit之后的逻辑</td>
+                <td></td>
+                <td>此事件模块配置文件中设置<code>awit=true</code>时，会终止接下来的加载流程，直到
+                    触发<code>continue</code>才会执行，一般适用于等待全局请求结束后再去渲染，例如请求菜单接口。</td>
+            </tr>
+            <tr>
+                <td>after</td>
+                <td>路由整体流程执行完毕后触发</td>
+                <td>fragment</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>break</td>
+                <td>当路由加载时被中断时触发</td>
+                <td></td>
+                <td>
+                    <p>1.在before事件中主动中断（return false）</p>
+                    <p>2.文件加载失败时</p>
+                </td>
+            </tr>
+            <tr>
+                <td>before:initArea</td>
+                <td>初始化模块配置文件之前触发</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>after:initArea</td>
+                <td>初始化模块配置文件之后触发</td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+
+</html>

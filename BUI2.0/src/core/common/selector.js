@@ -1,4 +1,4 @@
-import _ from './utils';
+import Utils from './utils';
 import log from '../common/log';
 /**
  *  作者：张传辉
@@ -70,7 +70,7 @@ class BET extends Array {
                 }
                 break;
             case "object":
-                let elemType = _.getType(strOrElement);
+                let elemType = Utils.getType(strOrElement);
                 if (elemType === "[object NodeList]" || elemType === "[object HTMLCollection]") {
                     addItems = Array.from(strOrElement);
                 }
@@ -115,14 +115,14 @@ class BET extends Array {
      * 重写，无法手动移除（off）,对于大范围的委托建议手动判断e.target
      */
     on(events, agent) {
-        if (_.isObjEmpty(events)) return this;
+        if (Utils.isObjEmpty(events)) return this;
 
         this.each(function (elem) {
             elem._buiEvents = elem._buiEvents || [];
             for (let name in events) {
                 let callBack = events[name];
 
-                if (_.isFunction(callBack) === false) continue;
+                if (Utils.isFunction(callBack) === false) continue;
 
                 let _callBack = callBack;
 
@@ -152,7 +152,7 @@ class BET extends Array {
      * @param func  指定事件处理把柄 <Function> 可选
      */
     off(eventName, func) {
-        if (_.isStrEmpty(eventName)) return this;
+        if (Utils.isStrEmpty(eventName)) return this;
 
         this.each(function (elem) {
             elem._buiEvents = elem._buiEvents || [];
@@ -167,7 +167,7 @@ class BET extends Array {
                 });
 
                 findCallBack.forEach((item) => {
-                    elem._buiEvents = _.without(elem._buiEvents, item);
+                    elem._buiEvents = Utils.without(elem._buiEvents, item);
                 });
 
                 if (findCallBack.length === 0) {
@@ -187,10 +187,10 @@ class BET extends Array {
      * @param params 事件参数 <...Array>
      */
     trigger(eventName, ...params) {
-        if (_.isStrEmpty(eventName)) return this;
+        if (Utils.isStrEmpty(eventName)) return this;
 
         this.each(function (elem) {
-            if (_.isFunction(elem[eventName])) {
+            if (Utils.isFunction(elem[eventName])) {
                 elem[eventName].call(elem, params);
             }
         });
@@ -299,10 +299,11 @@ class BET extends Array {
         let insertElem = new BET(content);
         this.each(function (elem) {
             let parent = elem.parentNode;
-
-            insertElem.each((item) => {
-                parent.insertBefore(item, elem);
-            }, true);
+            if (parent) {
+                insertElem.each((item) => {
+                    parent.insertBefore(item, elem);
+                }, true);
+            }
         });
         return returnInsert ? insertElem : this;
     }
@@ -313,10 +314,11 @@ class BET extends Array {
         let insertElem = new BET(content);
         this.each(function (elem) {
             let parent = elem.parentNode;
-
-            insertElem.each((item) => {
-                parent.insertBefore(item, elem.nextSibling);
-            }, true);
+            if (parent) {
+                insertElem.each((item) => {
+                    parent.insertBefore(item, elem.nextSibling);
+                }, true);
+            }
         });
 
         return returnInsert ? insertElem : this;
@@ -412,7 +414,7 @@ class BET extends Array {
             let elem = this[index];
             let isSpecial = special.indexOf(elem.type) > -1;
 
-            if (_.isStrEmpty(value) === false) {
+            if (Utils.isStrEmpty(value) === false) {
                 isSpecial ? elem.checked = !!value : elem.value = value;
             } else {
                 return isSpecial ? !!elem.checked : elem.value;

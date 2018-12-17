@@ -4,7 +4,6 @@ import Router from './router';
 import { BaseController } from './controller';
 import Region from './region';
 import { BaseView } from './view';
-import { debug } from 'util';
 
 const LOGTAG = "应用管理";
 /**
@@ -44,8 +43,6 @@ class Application extends EventHandler {
         /**视图管理操作把柄 */
         this.view = new BaseView(this);
 
-        this._initHandler();
-
         window.App = this;
         return this;
     }
@@ -54,6 +51,7 @@ class Application extends EventHandler {
     */
     start() {
         this.router.hasChange(location.hash);
+        return this;
     }
     /**
      * 跳转
@@ -80,10 +78,6 @@ class Application extends EventHandler {
     */
     goIndex() {
         this.go(this.option.indexPath);
-    }
-    //绑定基础事件
-    _initHandler() {
-
     }
 }
 

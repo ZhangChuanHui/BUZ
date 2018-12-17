@@ -8,9 +8,17 @@
 <p class="tip">
     跳转其他地址时，区域卸载时（teardown）时会移除当前视图所有监听，移除所有引用，交由GC回收
 </p>
-<table>
+<!-- <table>
     <tr b-for="item in listData">
         <td>{{item}}</td>
+        <td>{{demoStr}}</td>
+    </tr>
+</table> -->
+
+<h2>列表index 偶数列显示</h2>
+<table>
+    <tr b-for="(item,index) in listData" b-if="index%2===0">
+        <td>{{index}}</td>
         <td>{{demoStr}}</td>
     </tr>
 </table>

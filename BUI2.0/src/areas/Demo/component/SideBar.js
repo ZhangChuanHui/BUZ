@@ -4,7 +4,7 @@ export default Bui.View({
     templete: templete,
     onShow: function () {
         this._onAfterRouterChange = _.bind(this.onAfterRouterChange, this);
-        App.router.on("after:change", this._onAfterRouterChange);
+        App.router.on("after", this._onAfterRouterChange);
     },
     onAfterRouterChange: function (e, fragment) {
         let area = fragment.params.area;
@@ -23,6 +23,6 @@ export default Bui.View({
         }
     },
     onTeardown: function () {
-        App.router.off("after:change", this._onAfterRouterChange);
+        App.router.off("after", this._onAfterRouterChange);
     }
 });

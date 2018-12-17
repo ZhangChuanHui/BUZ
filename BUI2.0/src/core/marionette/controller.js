@@ -7,7 +7,7 @@
 */
 import log from '../common/log';
 import EventHandler from '../common/event';
-import _ from '../common/utils';
+import Utils from '../common/utils';
 
 const LOGTAG = "控制管理";
 
@@ -84,7 +84,7 @@ class BaseController extends EventHandler {
         }
 
         //只可返回function，过滤其他类型
-        if (_.isFunction(result)) {
+        if (Utils.isFunction(result)) {
             return result;
         }
     }

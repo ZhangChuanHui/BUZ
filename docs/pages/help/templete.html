@@ -21,7 +21,6 @@
         在底层我们会将模板变异成虚拟DOM渲染函数。结合<code>Object.defineProperty</code>进行双向相应，
         Bui能够智能的计算最少重新渲染的节点，并且当DOM移除时会做相应的接触监听依赖。
     </p>
-    <p>在本文最后会对模板渲染流程进行详细介绍。</p>
     <p><b>前提：</b>模板渲染时会依赖视图组件数据</p>
     <h2>插值</h2>
     <h3>文本</h3>
@@ -47,7 +46,7 @@
         直接将视图组件的值作为HTML进行渲染时非常危险的，因为它很容易导致<code>XSS</code>攻击。
         请只对可信内容使用插入HTML操作，<b>绝不要</b>对用户写入的数据进行渲染。
     </p>
-    <h3>Attributes（特性）</h3>
+    <h2>Attributes（特性）</h2>
     <p>
         Attributes中我们提供了三种使用方式：<code>设置属性</code>、<code>指令</code>、<code>事件</code>，
         指令、事件调用方式我们将在下一节详细介绍。
@@ -61,18 +60,7 @@
         <p href="http:www.braveos.com" class="show" customAttr="demo"></p>
     </pre>
 
-    <h3>Javascript表达式</h3>
-    <p>
-        在上面讲到的示例中我们都是采用简单的绑定一个属性值，但实际上，我们支持多属性绑定，也可以支持复杂的运算，
-        Bui.js提供Javascript表达式，支持自定义的渲染逻辑。
-    </p>
-    <pre class="brush: html;">
-        {{ 1+1 }}
-        {{ true?"1":"0" }}
-        {{ "Bui.js".split('').join('-') }}
 
-        <p :customAttribute="1+1" :id="'id'+Date.now()" ></p>
-    </pre>
     <p class="tip">
         在模板渲染时，模板引擎会第一时间对每个标记进行解析，因此<b>一定不要</b>在表达式中出现alert等语法，
         因为在模板尝试解析时会执行表达式，会对表达式内的语法进行执行。
@@ -119,13 +107,112 @@
     </pre>
     <p>渲染完毕后</p>
     <pre class="brush: html;">
-        <p>1</p>
+        <p class="">1</p>
     </pre>
     <p>
         在某些特殊场景下，可能需要通过异步请求服务器，通过服务器参数来作为展示/隐藏依据，
         为了防止在请求结束之前显示该标签，可以先设置为hide，然后通过show/hide指令实时监听异步返回结果，
         服务器返回结果后再做业务处理。可以防止闪烁。
     </p>
+    <h3>if/else-if/else（条件）</h3>
+    <p>条件指令依赖于标签进行展示和隐藏，它与<code>show/hide</code>唯一区别在于，条件指令在DOM树不展示节点
+        ，而<code>show/hide</code>则是对标签进行show、hide操作。</p>
+    <p>1.条件表达式在运行时会把结果强制转换为<code>BOOL</code>值进行判断。</p>
+    <p>2.在配合<code>else-if</code>/<code>else</code>一起使用时，<b>注意：</b>指令必须在是同级标签。</p>
+
+    <pre class="brush: html;">
+        <p b-if="false">测试节点</p>
+        <p b-if="true">测试节点1</p>
+    </pre>
+    <p>渲染完毕后</p>
+    <pre class="brush: html;">
+        <p>测试节点1</p>
+    </pre>
+
+    <h3>for（列表）</h3>
+    <p>for循环指令，支持数组、对象、字符串、数字的循环渲染，并可以配合if指令进行筛选渲染</p>
+    <p>for循环指令支持多种调用方式（全量参数分别代表-【value、key、index】）：</p>
+    <pre class="brush: html;">
+        <p b-for="value in 5">测试节点{{value}}</p>
+        <p b-for="(value,key,index) in demoObj">
+            key:{{key}}；value:{{value}}；index:{{index}}
+        </p>
+    </pre>
+    <h4>当for循环指令配合<code>if</code>指令一起使用时，for渲染的权重高于if指令</h4>
+    <pre class="brush: html;">
+        <p b-for="value in 5" b-if="value<2">测试节点{{value}}</p>
+    </pre>
+    <p>输出的结果为：</p>
+    <pre class="brush: html;">
+        <p>测试节点0</p>
+        <p>测试节点1</p>
+    </pre>
+
+    <h2>事件</h2>
+    <p>通过事件指令，可以完成对节点的事件注册或者切换，调用方式为：<code>on:事件名称="执行事件"</code></p>
+    <pre class="brush: html;">
+        <button on:click="function1" type="button">按钮</button>
+    </pre>
+
+    <h2>高级用法</h2>
+    <p>经过上面的简单介绍后，相信大家已经对模板引擎的用法有了基本的用法，接下来我们来介绍下模板引擎的高级用法。</p>
+    <p class="tip">对于刚刚接触BUI框架的童鞋，建议跳过本节内容，对整体架构有了初步认识后，再来阅读本节内容可能会更容易理解。</p>
+    <h3>Javascript表达式</h3>
+    <p>
+        在上面讲到的示例中我们都是采用简单的绑定一个属性值，但实际上，我们支持多属性绑定，也可以支持复杂的运算，
+        Bui.js提供Javascript表达式，支持自定义的渲染逻辑。
+    </p>
+    <pre class="brush: html;">
+        {{ 1+1 }}
+        {{ true?"1":"0" }}
+        {{ "Bui.js".split('').join('-') }}
+
+        <p :customAttribute="1+1" :id="'id'+Date.now()" ></p>
+    </pre>
+    <h4>Javascript表达式处理逻辑：</h4>
+    <p>1.尝试带入viewData运行表达式，并返回结果。</p>
+    <p>2.若运行时错误，则按照原表达式作为返回值进行返回。</p>
+
+    <h3>计算属性/视图方法</h3>
+    <p>计算属性是通过直接调用视图中的某个方法来实现视图渲染或事件绑定，最常见的是<code>Event</code>事件。</p>
+    <pre class="brush: html;">
+        <button type="button" on:click="viewFunction"></button>
+    </pre>
+    <p>
+        例如上面这个例子，通过上一小节<code>表达式</code>的说明，首先会尝试运行表达式，由于视图模型中未定义
+        viewFunction所以会直接抛出异常，表达式运行错误，然后直接将<b>viewFuntion</b>字符串作为返回值进行绑定。
+        在<code>事件</code>指令中，会尝试在view视图中寻找viewFunction方法，找到方法后进行事件注册。
+    </p>
+    <p>除了事件指令会尝试将返回值作为视图方法进行查询外，还有<code>text</code>指令也支持此操作。接下来看下面的例子：</p>
+
+    <pre class="brush: html;">
+        {{demo1+demo2}}
+    </pre>
+
+    <p>上面的例子可以看出是一个简单的加法运算，当存在复杂的计算，并且表达式中存在多个需要监听的视图模型数据时，在页面中
+        书写大量的JS语法会让人很头疼，这时我们可以通过计算属性来代替这个复杂的写法。
+    </p>
+
+    <pre class="brush: js;">
+        /**视图组件*/
+        ...{
+            data:{
+                demo1:1,
+                demo2:2
+            },
+            function1:funtion(){
+                return this.demo1+this.demo2;
+            }
+        }
+    </pre>
+    <pre class="brush: html;">
+        {{function1}}
+    </pre>
+    <p>这种写法和直接在HTML使用表达式运行的结果是一样的，并且都可以实现属性的监听绑定。</p>
+
+    <h3>指令权重</h3>
+    <p>指令权重是指指令在运行前会按照权重进行一次排序，权重越高的指令执行越早，目前自定义权重的指令有：</p>
+    <p>for权重200 ; if权重100，其余指令默认权重为0</p>
 </body>
 
 </html>

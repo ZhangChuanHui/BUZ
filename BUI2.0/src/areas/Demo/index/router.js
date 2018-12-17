@@ -6,6 +6,5 @@
         "index2": () => {
             App.regions.content.show("areas/Demo/index/Index2");
         }
-
     }
 });

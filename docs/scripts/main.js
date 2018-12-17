@@ -3,11 +3,12 @@ var menuDatas = {
         { title: "介绍", href: "pages/help/introduce.html" },
         { title: "使用说明", href: "pages/help/use.html" },
         { title: "加载流程", href: "pages/help/load.html" },
-        { title: "模板语法", href: "pages/help/templete.html" },
-        { title: "事件处理", href: "pages/help/event.html" },
-        { title: "混入", href: "pages/help/mixin.html" }
+        { title: "模板语法", href: "pages/help/templete.html" }
     ],
-    api: []
+    api: [
+        { title: "应用池", href: "pages/api/application.html" },
+        { title: "路由", href: "pages/api/router.html" }
+    ]
 }
 
 $(function () {

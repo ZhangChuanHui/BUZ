@@ -1,9 +1,11 @@
 ﻿import CompileOrder from '../order';
+import { compileNodes } from '../index';
 
 function getParent(option) {
-    if (option.token.parent === undefined)
-        option.token.parent = option.node.parentNode;
-    return option.token.parent;
+    if (option.$token.parent === undefined)
+        //优先选择父级，如果父级没有则用自己作为依据（cloneNode模式），不可污染其他节点
+        option.$token.parent = option.node.parentNode || option.node;
+    return option.$token.parent;
 }
 
 function ExecResultFlow(parent, option) {
@@ -15,21 +17,29 @@ function ExecResultFlow(parent, option) {
 
 CompileOrder.addOrder({
     name: "if",
+    weight: 100,
     exec: function (option, value) {
         let parentNode = getParent(option);
+        let token = option.$token;
         parentNode.conditionResult = false;
+        option.node.conditionResult = !!value;
+
+        //清空监听
+        this.clearWatchers(token);
 
         if (value) {
-            if (option.token.after) {
-                let afterTag = $(option.token.after);
+            if (token.after) {
+                let afterTag = $(token.after);
                 afterTag.before(option.$node);
                 afterTag.remove();
-                option.token.after = undefined;
+                token.after = undefined;
+                this.addWatchers(compileNodes(option.node, option));
             }
+
             parentNode.conditionResult = true;
         }
         else if (option.node.parentNode) {
-            option.token.after = option.$node.after(document.createTextNode(""), true);
+            token.after = option.$node.after(document.createTextNode(""), true);
             option.$node.remove();
         }
 
@@ -39,20 +49,28 @@ CompileOrder.addOrder({
 
 CompileOrder.addOrder({
     name: "else-if",
+    weight: 100,
     exec: function (option, value) {
         let parentNode = getParent(option);
+        let token = option.$token;
+        option.node.conditionResult = !!value;
+
+        //清空监听
+        this.clearWatchers(token);
 
         if (!parentNode.conditionResult && value) {
-            if (option.token.after) {
-                let afterTag = $(option.token.after);
+            if (token.after) {
+                let afterTag = $(token.after);
                 afterTag.before(option.$node);
                 afterTag.remove();
-                option.token.after = undefined;
+                token.after = undefined;
+                this.addWatchers(compileNodes(option.node, option));
             }
+
             parentNode.conditionResult = true;
         }
         else if (option.node.parentNode) {
-            option.token.after = option.$node.after(document.createTextNode(""), true);
+            token.after = option.$node.after(document.createTextNode(""), true);
             option.$node.remove();
         }
 
@@ -62,20 +80,27 @@ CompileOrder.addOrder({
 
 CompileOrder.addOrder({
     name: "else",
+    weight: 100,
     exec: function (option, value) {
         let parentNode = getParent(option);
+        let token = option.$token;
         parentNode.conditionElseOption = option;
+        option.node.conditionResult = !!value;
+
+        //清空监听
+        this.clearWatchers(token);
 
         if (!parentNode.conditionResult) {
-            if (option.token.after) {
-                let afterTag = $(option.token.after);
+            if (token.after) {
+                let afterTag = $(token.after);
                 afterTag.before(option.$node);
                 afterTag.remove();
-                option.token.after = undefined;
+                token.after = undefined;
+                this.addWatchers(compileNodes(option.node, option));
             }
         }
         else if (option.node.parentNode) {
-            option.token.after = option.$node.after(document.createTextNode(""), true);
+            token.after = option.$node.after(document.createTextNode(""), true);
             option.$node.remove();
         }
     }

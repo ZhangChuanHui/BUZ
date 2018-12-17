@@ -9,13 +9,12 @@
 import log from '../common/log';
 import EventHandler from '../common/event';
 import Compile from '../compile/index';
-import _ from '../common/utils';
 import { Observer, Watcher } from '../observer';
 import Utils from '../common/utils';
 const LOGTAG = "视图组件";
 
 function bmSet(target, key, value) {
-    if (Utils.hasOwn(target, _.toStr(key))) {
+    if (Utils.hasOwn(target, Utils.toStr(key))) {
         target[key] = value;
         new Observer(target[key]);
 
@@ -66,13 +65,13 @@ class BaseView extends EventHandler {
         //克隆一个基础版本，用于视图组件独立reload
         view.__baseView = Object.assign({}, view);
 
-        view._viewId = _.guid();
+        view._viewId = Utils.guid();
         view._app = this.app;
 
         view.$el = view.noTemplete ? view.$container
             : this.renderTemplete(view);
 
-        if (_.isFunction(view.onRender)) {
+        if (Utils.isFunction(view.onRender)) {
             await view.onRender.call(view);
         }
 
@@ -86,7 +85,7 @@ class BaseView extends EventHandler {
             new Compile(view.$el[0], view, view.data);
         }
 
-        if (_.isFunction(view.onShow)) {
+        if (Utils.isFunction(view.onShow)) {
             await view.onShow();
         }
 
@@ -150,7 +149,7 @@ class BaseView extends EventHandler {
 
         view.childrens = [];
 
-        if (_.isFunction(view.onTeardown)) {
+        if (Utils.isFunction(view.onTeardown)) {
             view.onTeardown();
         }
 
@@ -272,7 +271,7 @@ class View extends EventHandler {
             log.info(LOGTAG, `${name}:完成子视图卸载`);
         }
 
-        selector = _.$(selector);
+        selector = Utils.$(selector);
 
         if (selector.length === 0) {
             log.error(LOGTAG, `${name}:子视图加载失败，选择器为空`);
@@ -309,7 +308,7 @@ class View extends EventHandler {
         var children = this.childrens[name];
         if (children) {
             this._app.view.teardown(children);
-            this.childrens = _.without(this.childrens, children);
+            this.childrens = Utils.without(this.childrens, children);
         }
     }
 }
