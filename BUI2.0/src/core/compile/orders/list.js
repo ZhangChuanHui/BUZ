@@ -49,20 +49,11 @@ CompileOrder.addOrder({
         let viewData = this.tryRun(inMatch[2].trim(), scope) || "";
 
         let result = $();
-<<<<<<< HEAD
-=======
-        let index = 0;
->>>>>>> a74238957e0f95738478a5688900be6b112e545a
 
         token.forCloneNode =
             token.forCloneNode || token.node.cloneNode(true);
 
-<<<<<<< HEAD
         this.forDatas(viewData, function (key, index, value) {
-=======
-        for (let key in viewData) {
-            let value = viewData[key];
->>>>>>> a74238957e0f95738478a5688900be6b112e545a
             //再次clone防止污染
             let newTemplete = token.forCloneNode.cloneNode(true);
             let $scope = Object.create(scope);
@@ -76,7 +67,6 @@ CompileOrder.addOrder({
 
             newTemplete.forScope = $scope;
             result.add(newTemplete);
-<<<<<<< HEAD
         });
 
         return result;
@@ -101,11 +91,7 @@ CompileOrder.addOrder({
         }
         else {
             LogHandler.warn(LOGTAG, "for循环未识别此类型数据");
-=======
-            index++;
->>>>>>> a74238957e0f95738478a5688900be6b112e545a
         }
-
     },
     transformForParam: function (forParam) {
 
