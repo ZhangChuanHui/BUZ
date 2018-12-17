@@ -8,6 +8,11 @@ const FORRE = /([^]*?)\s+(?:in|of)\s+([^]*)/;
 const FORITERATORRE = /,([^,\}\]]*)(?:,([^,\}\]]*))?$/;
 const STRIPPARENTSRE = /^\(|\)$/g;
 
+/**
+ *  作者：张传辉
+ *  功能名称：
+ *  描述信息：
+*/
 CompileOrder.addOrder({
     name: "for",
     isSkipChildren: true,

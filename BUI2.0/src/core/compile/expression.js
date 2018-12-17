@@ -2,6 +2,12 @@ import LogHandler from "../common/log";
 import { LOGTAG } from "./index";
 import Utils from "../common/utils";
 
+/**
+ *  作者：张传辉
+ *  功能名称：
+ *  描述信息：
+*/
+
 const allowedKeywords =
     'Math,Date,this,true,false,null,undefined,Infinity,NaN,' +
     'isNaN,isFinite,decodeURI,decodeURIComponent,encodeURI,' +

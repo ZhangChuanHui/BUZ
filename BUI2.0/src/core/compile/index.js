@@ -5,6 +5,12 @@ import CompileOrder from './order';
 export const LOGTAG = "页面渲染";
 
 /**
+ *  作者：张传辉
+ *  功能名称：
+ *  描述信息：
+*/
+
+/**
  * 节点渲染
  * @param el 节点
  * @param option 配置信息
