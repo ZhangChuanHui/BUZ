@@ -32,8 +32,18 @@ class BaseView extends EventHandler {
             notifyChange(target);
         }
         else {
-            log.error(LOGTAG, `Buz.set传入Key值不在target中，请确认`);
+            log.error(LOGTAG, `Buz.setData传入Key值不在target中，请确认`);
         }
+    }
+    deleteData(target, key) {
+        if (Utils.isPlainObject(target)) {
+            delete target[key];
+            notifyChange(target);
+        }
+        else {
+            log.error(LOGTAG, `Buz.deleteData传入Key值不在target中或不被识别`);
+        }
+        notifyChange(target);
     }
     notifyDataChange(target) {
         target.__ob__
@@ -53,7 +63,7 @@ class BaseView extends EventHandler {
         });
 
         view.$container = selector;
-        view.pageParam = pageParam;
+        view.pageParam = view.pageParam || pageParam;
         view.data = view.data || {};
         view.watchers = [];
 
@@ -183,7 +193,6 @@ class View extends EventHandler {
         this.noTemplete = false;
         /**
          * 页面渲染时触发，在此方法内可以做DOM操作避免DOM挂载造成的内存占用问题
-         * 注意此方法内不允许使用异步，异步请放入onShow中执行
          */
         this.onRender = undefined;
         /**页面呈现后触发*/
@@ -225,7 +234,7 @@ class View extends EventHandler {
     }
     /**
      * 选择器，作用在于只在this.$el中查询
-     * @param selector jQuery Selector <String>
+     * @param selector BET Selector <String>
     */
     $(selector) {
         return this.$el.find(selector);
@@ -255,9 +264,9 @@ class View extends EventHandler {
     }
     /**
      * 添加子视图
-     * @param selector 选择器 <jQuerySelector,String>
+     * @param selector 选择器 <BET Selector,String>
      * @param name 子视图名称 <String>
-     * @param view 视图组件 <View类>
+     * @param view 视图组件 <View类/String>
      * @param pageParam 视图参数 <Any>
     */
     attachChild(selector, name, view, pageParam) {

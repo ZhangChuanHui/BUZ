@@ -16,8 +16,417 @@
 
 <body>
     <h1>View -- 视图组件</h1>
+    <p>View视图组件是一个页面展示的核心组件，具有完整的生命周期驱动和观察者模式。该章节主要介绍<code>BaseView</code>和<code>View</code>两大部分。</p>
 
+    <h2>BaseView</h2>
+    <p>BaseView在应用池初始化时挂载到App全局变量中，使用方法：<code>App.view</code>，负责整体视图组件的初始化、渲染、销毁等操作。</p>
 
+    <h3>广播事件</h3>
+    <table class="param">
+        <thead>
+            <tr>
+                <td>事件名称</td>
+                <td>作用</td>
+                <td>参数</td>
+                <td>备注</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>before:initView</td>
+                <td>初始化视图组件前</td>
+                <td>
+                    {
+                    selector: BET选择器,
+                    view: 视图组件
+                    }
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>after:initView</td>
+                <td>初始化视图组件后</td>
+                <td>
+                    {
+                    selector: BET选择器,
+                    view: 视图组件
+                    }
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>before:teardown</td>
+                <td>视图组件卸载前触发</td>
+                <td>View：视图组件</td>
+                <td>同时会触发当前视图组件的同名事件</td>
+            </tr>
+            <tr>
+                <td>after:teardown</td>
+                <td>视图组件卸载后触发</td>
+                <td>View：视图组件</td>
+                <td>同时会触发当前视图组件的同名事件</td>
+            </tr>
+        </tbody>
+    </table>
+    <h3>公开方法 </h3>
+    <h4>setData</h4>
+    <p>向响应式对象中添加一个属性，并确保这个新属性同样是响应式的，且触发视图更新。它必须用于向响应式对象上添加新属性，因为 Buz 无法探测普通的新增属性。</p>
+    <pre class="brush: js;">
+        App.view.setData(target,key,value);
+    </pre>
+    <table class="param">
+        <thead>
+            <tr>
+                <td>参数名</td>
+                <td>作用</td>
+                <td>类型</td>
+                <td>备注</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>target</td>
+                <td>需要设值的对象</td>
+                <td>Object | Array</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>key</td>
+                <td>name或index索引</td>
+                <td>String | Number</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>value</td>
+                <td>值</td>
+                <td>Any</td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+    <h4>deleteData</h4>
+    <p>删除对象的属性。如果对象是响应式的，确保删除能触发更新视图。这个方法主要用于避开 Buz 不能检测到属性被删除的限制，但是你应该很少会使用它。</p>
+    <pre class="brush: js;">
+        App.view.deleteData(target,key);
+    </pre>
+    <table class="param">
+        <thead>
+            <tr>
+                <td>参数名</td>
+                <td>作用</td>
+                <td>类型</td>
+                <td>备注</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>target</td>
+                <td>需要操作的对象</td>
+                <td>Object</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>key</td>
+                <td>name</td>
+                <td>String</td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+    <h4>notifyDataChange</h4>
+    <p>主动通知数据变更，参数为<code>target</code>，传入参数必须是响应式对象，一般都是由观察者自动完成变更广播，你应该很少会使用它。</p>
+    <pre class="brush: js;">
+        App.view.notifyDataChange(target);
+    </pre>
+
+    <h2>View</h2>
+    <p>View组件是最常用的核心组件，通过配置View参数来管理页面渲染流程和相关业务。使用方法：</p>
+    <pre class="brush: js;">
+        Buz.View({
+            //...
+        });
+    </pre>
+    <h3>配置属性</h3>
+    <h4>不可配置属性</h4>
+    <p>下面属性由BaseView初始化自动设置，无需配置，请勿与其重名，以免覆盖。</p>
+    <table class="param">
+        <thead>
+            <tr>
+                <td>参数名</td>
+                <td>作用</td>
+                <td>类型</td>
+                <td>备注</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>$container</td>
+                <td>当前区域选择器</td>
+                <td>BET Selector</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>pageParam</td>
+                <td>页面参数</td>
+                <td>Any</td>
+                <td>
+                    传入方式：
+                    <p>1.由区域装载视图时传入，详细请参考<b>RegionItem.show</b></p>
+                    <p>2.初始化视图时传入<code>new ViewPage(option,pageParam)</code></p>
+                </td>
+            </tr>
+            <tr>
+                <td>$el</td>
+                <td>当前视图选择器</td>
+                <td>BET Selector</td>
+                <td><b>在装载HTML模板时默认会在外层包裹一个div class="app-page"，方便统一操作和过滤。</b></td>
+            </tr>
+            <tr>
+                <td>watchers</td>
+                <td>当前视图所产生的响应式数据观察者操作把柄</td>
+                <td>Array</td>
+                <td>记录所有在当前内视图产生的相应数据观察者，在视图卸载时对其进行再次清理。</td>
+            </tr>
+            <tr>
+                <td>parent</td>
+                <td>当前视图的父视图</td>
+                <td>View</td>
+                <td>若当前视图为子视图，则该属性为父视图</td>
+            </tr>
+            <tr>
+                <td>childrens</td>
+                <td>当前视图的子视图</td>
+                <td>Array</td>
+                <td>当前视图内的所有子视图</td>
+            </tr>
+        </tbody>
+    </table>
+    <h4>可配置属性</h4>
+    <table class="param">
+        <thead>
+            <tr>
+                <td>参数名</td>
+                <td>作用</td>
+                <td>类型</td>
+                <td>默认值</td>
+                <td>备注</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>data</td>
+                <td>视图数据模型</td>
+                <td>Object</td>
+                <td>{}</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>noTemplete</td>
+                <td>是否没有模板</td>
+                <td>Boolean</td>
+                <td>false</td>
+                <td>若不适用模板则不会向区域装载HTML</td>
+            </tr>
+            <tr>
+                <td>templete</td>
+                <td>HTML模板</td>
+                <td>String</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>pageClassName</td>
+                <td>页面样式名称</td>
+                <td>String</td>
+                <td></td>
+                <td>配置后追加父层app-page样式之后作为当前视图样式根目录</td>
+            </tr>
+            <tr>
+                <td>noCompile</td>
+                <td>不适用响应式数据进行HTML数据绑定</td>
+                <td>Boolean</td>
+                <td>false</td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+    <h3>可配置方法</h3>
+    <table class="param">
+        <thead>
+            <tr>
+                <td>方法名</td>
+                <td>作用</td>
+                <td>参数</td>
+                <td>备注</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>onRender</td>
+                <td>页面渲染时触发</td>
+                <td></td>
+                <td>
+                    <p>
+                        页面渲染时触发，在此方法内可以做DOM操作避免DOM挂载造成的内存占用问题
+                    </p>
+                    <p>可返回promise，实现挂起等待</p>
+                    <p>一般适用于前期大量的DOM操作</p>
+                </td>
+            </tr>
+            <tr>
+                <td>onShow</td>
+                <td>页面呈现后触发</td>
+                <td></td>
+                <td>可返回promise，实现挂起等待L</td>
+            </tr>
+            <tr>
+                <td>onTeardown</td>
+                <td>当页面卸载时触发</td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+    <h3>默认提供调用方法</h3>
+    <h4>$watch</h4>
+    <p>主动监听属性变化</p>
+    <p><code>path</code> {String} 值索引地址</p>
+    <p><code>callBack</code> {Function} 变更时触发回调，并传入新值、旧值</p>
+    <pre class="brush: js;">
+        Buz.View({
+            data:{
+                obj:{
+                    name:"Buz"
+                },
+                ary:[
+                    {name:"Buz"}
+                ]
+            }
+            onShow:function(){
+                this.$watch("obj.name",(newVlaue,oldValue)=>{});
+                this.$watch("obj.ary[0].name",(newVlaue,oldValue)=>{});
+            }
+        });
+    </pre>
+
+    <h4>onGlobal</h4>
+    <p>注册全局观察者模式</p>
+    <p><code>eventName</code> {String} 事件名称</p>
+    <p><code>callBack</code> {Function} 回调事件</p>
+    <p><code>isOnce</code> {Boolean} 是否只执行一次，默认为false</p>
+    <pre class="brush: js;">
+        Buz.View({
+            onShow:function(){
+                this.onGlobal("loadMenu",function(){},true);
+            }
+        });
+    </pre>
+
+    <h4>triggerGlobal</h4>
+    <p>触发全局观察者事件</p>
+    <p><code>eventName</code> {String} 事件名称</p>
+    <p><code>params</code> {Any} 事件参数</p>
+    <pre class="brush: js;">
+        Buz.View({
+            onShow:function(){
+                this.triggerGlobal("loadMenu",{});
+            }
+        });
+    </pre>
+
+    <h4>$</h4>
+    <p>选择器，作用在于只在this.$el中查询</p>
+    <p><code>selector</code> {String} BET Selector</p>
+    <pre class="brush: js;">
+        Buz.View({
+            onShow:function(){
+                this.$(".className").remove();
+            }
+        });
+    </pre>
+
+    <h4>reload</h4>
+    <p>视图重载，<b>返回baseView，方便对其新功能操作交替转换</b></p>
+    <pre class="brush: js;">
+        Buz.View({
+            clickFuncton:function(){
+                this.reload();
+            }
+        });
+    </pre>
+
+    <h4>attachChild</h4>
+    <p>添加子视图</p>
+    <p><code>selector</code> {BET Selector,String} 选择器</p>
+    <p><code>name</code> {String} 子视图名称</p>
+    <p><code>view</code> {View,String} 视图组件/视图组件地址</p>
+    <p><code>pageParam</code> {Any} 视图参数</p>
+    <pre class="brush: js;">
+        Buz.View({
+            onShow:function(){
+                this.attachChild(".step1","step1","areas/Home/Index/Index2",{});
+
+                //或者
+                let view=new ViewItem();
+                this.attachChild(".step1","step1",view,{});
+            }
+        });
+    </pre>
+
+    <h4>teardownChild</h4>
+    <p>卸载子视图</p>
+    <p><code>name</code> {String} 子视图名称</p>
+    <pre class="brush: js;">
+        Buz.View({
+            onShow:function(){
+                this.teardownChild("step1");
+            }
+        });
+    </pre>
+    <h3>广播事件</h3>
+    <table class="param">
+        <thead>
+            <tr>
+                <td>事件名称</td>
+                <td>作用</td>
+                <td>参数</td>
+                <td>备注</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>before:teardown</td>
+                <td>视图组件卸载前触发</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>after:teardown</td>
+                <td>视图组件卸载后触发</td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+    <h2>生命周期</h2>
+    <img src="../../images/view.png" />
+    <h2>特别注意</h2>
+    <h3>混入</h3>
+    <p>Buz提供视图组件的拼装，对于公共部分可以抽离，并通过混入的方式在各组件内共同使用。</p>
+    <pre class="brush: js;">
+        Buz.View(viewOption1,viewOption2,...);
+    </pre>
+
+    <h3>不提供手动卸载主视图</h3>
+    <p class="tip">由于视图的卸载都是由内部核心驱动，不提供主动卸载主视图，以免出现不可控的错误，但是我们可以
+        监听<code>after:teardown</code>来实现相关的业务操作。
+    </p>
+    <h3>其他</h3>
+    <p>1.同一个name值只会执行一次attachChild，重复装载子视图会忽略操作，不会报错</p>
+    <p>2.在子视图中会自动扩展一个this.parent，可以操作父视图的方法。</p>
+    <p>3.在主视图卸载时，会先依次卸载子视图</p>
+    <p>4.attachChild可以传入视图地址，进行异步加载视图脚本，建议使用视图地址方式加载，减少不必要的请求</p>
+    <p>5.无需关注卸载执行逻辑，当视图卸载时，内部会对所有产生的操作把柄依次清除引用，例如：全局观察者、监听等等。</p>
+    <p>6.建议使用<b>onShow</b>作为程序主入口，<code>onRender</code>一般适用于前期大量的DOM操作</p>
 </body>
 
 </html>
