@@ -192,14 +192,20 @@ class Router extends EventHandler {
 
         if (this.areaConfig !== areaConfig) {
             this.trigger("before:initArea");
+            //执行原有区域配置文件卸载方法
+            if (this.areaConfig && Utils.isFunction(this.areaConfig.onTeardown)) {
+                this.areaConfig.onTeardown();
+            }
+            //执行区域自定义初始化方法，只触发一次
+            if (Utils.isFunction(areaConfig.onInit)) {
+                areaConfig.onInit();
+            }
+
             //卸载原有区域样式
             Utils.removeStyle(this.areaConfig.styles);
             //装载新区域样式
             Utils.insertStyle(areaConfig.styles);
-            //执行区域自定义初始化方法，只触发一次
-            if (Utils.isFunction(areaConfig.init)) {
-                areaConfig.init();
-            }
+
             this.trigger("after:initArea");
         }
 
@@ -216,7 +222,7 @@ class Router extends EventHandler {
         let layoutPath = this._getRoleParamPath(
             "layout",
             fragment,
-            `commonWeb/layouts/${areaConfig.layout || ""}`
+            `commonWeb/layouts/${areaConfig.layout || this.app.option.defaultLayout || ""}`
         );
 
         log.info(LOGTAG, `准备装载布局文件：${layoutPath}`);

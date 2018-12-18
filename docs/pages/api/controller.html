@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>BUZ帮助文档</title>
+    <meta charset="utf-8" />
+    <link href="../../resources/base.css" rel="stylesheet" />
+    <link href="../../resources/contentTheme.css" rel="stylesheet" />
+    <link href="../../resources/shCoreDefault.css" rel="stylesheet" />
+    <script src="../../scripts/shCore/shCore.js"></script>
+    <script src="../../scripts/shCore/extend/shBrushJScript.js"></script>
+    <script src="../../scripts/shCore/extend/shBrushXml.js"></script>
+    <script src="../../scripts/page.js"></script>
+</head>
+
+<body>
+    <h1>Controller -- 控制器</h1>
+    <p>
+        在路由跳转时，会根据地址碎片信息解析区域配置文件，若区域配置文件未发生改变，
+        则不需要重新加载和初始化。
+    </p>
+    <p class="tip">
+        做过MVC项目的童鞋对<b>区域</b>都有所了解，在项目规划期间会根据业务、功能划分
+        多个区域，例如：用户、产品、订单等等，各区域要尽可能的做到低耦合，互相独立存在。针对某一个特定区域
+        我们可能会存在很多通用的配置，例如：数据字典、广播事件等等，这时我们就可以通过对该区域的配置文件进行
+        相应的设置来实现整个区域的独立配置。</p>
+    <p>若想获取当前区域配置信息，使用<code>App.router.areaConfig</code>进行读取。</p>
+    <pre class="brush: js;">
+        export default {
+            //当前区域自定义布局方案
+            layout: "DefaultLayout",
+            //自定义当前区域自定义地址
+            defaultPath: "index",
+            //自定义当前区域公共样式
+            styles: [demoCss],
+            onInit:()=>{
+                //配置文件初始化时触发
+            },
+            onLayoutShow: () => {
+                //模板加载完毕后执行，可以处理一些当前模块公共事件
+            },
+            onTeardown:()=>{
+                //区域配置文件卸载监听方法
+            }
+            //自定义属性...
+        }
+    </pre>
+    <h2>执行逻辑</h2>
+    <pre class="brush: js">
+        if (this.areaConfig !== areaConfig) {
+            this.trigger("before:initArea");
+            //卸载原有区域样式
+            Utils.removeStyle(this.areaConfig.styles);
+            //装载新区域样式
+            Utils.insertStyle(areaConfig.styles);
+            //执行区域自定义初始化方法，只触发一次
+            if (Utils.isFunction(areaConfig.init)) {
+                areaConfig.init();
+            }
+            this.trigger("after:initArea");
+        }
+    </pre>
+    <p>
+        上面是<code>Router</code>中的执行逻辑，当地址栏解析完毕后，会优先去寻找区域配置文件，
+        若配置文件改变或者首次加载，则会广播App.router中的<code>before:initArea</code>事件，然后移除
+        原有的区域样式，接下来装在新的区域样式，最后执行广播App.router的<code>after:initArea</code>事件。</p>
+    <p>当前区域内跳转时，由于区域配置文件不会改变，则不会重复执行上述逻辑。</p>
+
+    <h2>属性</h2>
+
+    <table class="param">
+        <thead>
+            <tr>
+                <td>参数名</td>
+                <td>作用</td>
+                <td>类型</td>
+                <td>默认值</td>
+                <td>备注</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>layout</td>
+                <td>布局方案名称</td>
+                <td>String</td>
+                <td>App.option.defaultLayout</td>
+                <td>详见应用池属性介绍</td>
+            </tr>
+            <tr>
+                <td>defaultPath</td>
+                <td>默认地址</td>
+                <td>String</td>
+                <td></td>
+                <td>由于区域已确定，该值是Controller/Action/...</td>
+            </tr>
+            <tr>
+                <td>styles</td>
+                <td>当前区域自定义公共样式</td>
+                <td>Array</td>
+                <td></td>
+                <td>由于框架采用动态卸载、装载样式，所以<b>务必</b>在区域配置文件中先
+                    import导入样式，然后将样式作为参数写入styles数组中。
+                    <p>详见下面例子</p>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <h3>动态装载、卸载样式</h3>
+    <pre class="brush: js;">
+        import demoCss from "~/areas/Demo/resource/demo.less";
+        import demoCss1 from "~/areas/Demo/resource/demo.css";
+
+        export default {
+            styles: [demoCss,demoCss1]
+        }
+    </pre>
+    <p>当区域切换时，Router会自动根据styles数组去卸载原有样式，并装载新的样式文件。</p>
+    <p>由于本项目采用了<code>style-loader/useable</code>，所有样式都支持<code>use</code>装载和<code>unuse</code>卸载
+        例如下面这个例子：</p>
+    <pre class="brush: js;">
+        import demoCss from "~/areas/Demo/resource/demo.less";
+        import demoCss1 from "~/areas/Demo/resource/demo.css";
+        
+        //卸载样式
+        demoCss.unuse();
+
+        //装载样式
+        demoCss1.use();
+    </pre>
+    <p class="tip">若直接import样式文件，不会在页面中生效，必须执行<b>use</b>方可生效。</p>
+
+    <h2>公开方法</h2>
+    <table class="param">
+        <thead>
+            <tr>
+                <td>方法名</td>
+                <td>作用</td>
+                <td>参数</td>
+                <td>备注</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>onInit</td>
+                <td>初始化方法</td>
+                <td></td>
+                <td>初始化配置文件时触发，在不切换区域时，只会执行一次。</td>
+            </tr>
+            <tr>
+                <td>onTeardown</td>
+                <td>配置文件卸载方法</td>
+                <td></td>
+                <td>优先执行原配置文件卸载，后执行新配置文件<code>onInit</code></td>
+            </tr>
+            <tr>
+                <td>onLayoutShow</td>
+                <td>布局方案渲染完毕</td>
+                <td></td>
+                <td>布局方案渲染完成后执行，若新旧配置文件中的布局方案一致时，不会触发该事件，
+                    只有布局方案发生改变时执行一次。
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+
+</html>
