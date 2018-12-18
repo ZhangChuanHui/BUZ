@@ -84,6 +84,152 @@
         在全局观察者模式中进行销毁，若在非视图组件中使用，很容易忘记卸载事件，造成不必要的内存浪费。
     </p>
     <p class="tip">上面讲的驱动逻辑、全局观察者模式，这些核心方法都是由外部组件自动调用，在实际开发中几乎不会被用到，这里大家只是对其进行有个初步了解。</p>
+
+    <h2>RegionItem</h2>
+    <p>当我们执行<code>initRegions</code>后，区域操作把柄会在App.regions进行挂载，我们也是通过该操作把柄来实现区域的一系列操作的。</p>
+    <pre class="brush: js;">
+        App.initRegions(templete, {
+            top:"#top",
+            bottom:"#bottom"
+        });
+
+        //调用方式
+        App.regions.top;
+        App.regions.bottom;
+    </pre>
+
+    <h3>属性</h3>
+    <table class="param">
+        <thead>
+            <tr>
+                <td>属性名称</td>
+                <td>作用</td>
+                <td>类型</td>
+                <td>备注</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>selector</td>
+                <td>区域容器</td>
+                <td>BET Selector</td>
+                <td>BET选择对象</td>
+            </tr>
+            <tr>
+                <td>name</td>
+                <td>区域名称</td>
+                <td>String</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>view</td>
+                <td>当前区域挂载的视图组件</td>
+                <td>View</td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+    <h3>广播事件</h3>
+    <table class="param">
+        <thead>
+            <tr>
+                <td>事件名称</td>
+                <td>作用</td>
+                <td>参数</td>
+                <td>备注</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>before:loadView</td>
+                <td>区域装载视图前</td>
+                <td>
+                    {
+                    view: view,
+                    pageParam: pageParam
+                    }
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>after:loadView</td>
+                <td>区域装载视图后</td>
+                <td>view(视图组件)</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>break:loadView</td>
+                <td>视图装载时异常广播</td>
+                <td></td>
+                <td>触发条件：
+                    <p>1.视图组件加载失败</p>
+                    <p>2.区域已卸载或已装载其他组件，取消本次装载</p>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <p>举例：</p>
+    <pre class="brush: js;">
+        App.initRegions(templete, {
+            top:"#top"
+        });
+    
+        //监听方式
+        App.regions.top.on("before:loadView",function(){});
+        App.region.on("before:loadView",function(){});
+    </pre>
+    <p class="tip">由于对外操作把柄为App.region，但是对某一项区域也有独立的操作，所以广播事件在<code>Region</code>和<code>RegionItem</code>中分别进行触发。</p>
+
+    <h3>公开方法</h3>
+    <p>RegionItem 是我们比较常用的操作把柄，由它来控制区域的装载、卸载操作。</p>
+    <h4>show -常用 </h4>
+    <p>当我们执行<code>initRegions</code>后，区域操作把柄会在App.regions进行挂载，我们也是通过该操作把柄来实现区域的一系列操作的。</p>
+    <pre class="brush: js;">
+        App.initRegions(templete, {
+            top:"#top"
+        });
+
+        //调用方式
+        App.regions.top.show(view, pageParam);
+    </pre>
+
+    <table class="param">
+        <thead>
+            <tr>
+                <td>参数名</td>
+                <td>作用</td>
+                <td>类型</td>
+                <td>默认值</td>
+                <td>备注</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>view</td>
+                <td>视图组件/视图组件地址</td>
+                <td>View/String</td>
+                <td></td>
+                <td>可初始化视图组件后传入，也可以传入视图组件地址异步加载视图组件</td>
+            </tr>
+            <tr>
+                <td>pageParam</td>
+                <td>视图数据</td>
+                <td>Any</td>
+                <td></td>
+                <td>传入视图组件后可以在视图组件内进行使用，详见视图组件章节。</td>
+            </tr>
+        </tbody>
+    </table>
+    <h4>teardown</h4>
+    <pre class="brush: js;">
+        App.initRegions(templete, {
+            top:"#top"
+        });
+
+        //调用方式
+        App.regions.top.teardown();
+    </pre>
+    <p class="tip">卸载当前区域。内部使用，不建议对外主动调用。</p>
 </body>
 
 </html>

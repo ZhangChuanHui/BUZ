@@ -16,7 +16,7 @@ class RegionItem extends EventHandler {
      * 构造函数
      * @param region 区域参考Region类 <Class>
      * @param name 区域名称 <String>
-     * @param selector 区域选择器 <jQuery Selector>
+     * @param selector 区域选择器 <BET Selector>
     */
     constructor(region, name, selector) {
         super();
@@ -36,9 +36,9 @@ class RegionItem extends EventHandler {
     /**
      * 装载视图
      * @param view 视图组件
-     * @param viewData 视图数据
+     * @param pageParam 视图数据
     */
-    show(view, viewData) {
+    show(view, pageParam) {
         //若当前区域装载视图，先执行视图卸载
         if (this.view) {
             this.app.view.teardown(this.view);
@@ -49,7 +49,7 @@ class RegionItem extends EventHandler {
 
         this._beforeInit({
             view: view,
-            viewData: viewData
+            pageParam: pageParam
         });
 
         this._tempId = Utils.guid();
@@ -63,7 +63,7 @@ class RegionItem extends EventHandler {
                         if (self && self._tempId === tempId) {
                             view = viewHandler.default.call(viewHandler.default);
 
-                            self._afterInit(view, viewData);
+                            self._afterInit(view, pageParam);
                         }
                         else {
                             self._breakInit();
@@ -76,7 +76,7 @@ class RegionItem extends EventHandler {
             })(view, this._tempId);
         }
         else {
-            this._afterInit(view, viewData);
+            this._afterInit(view, pageParam);
         }
     }
     /**
@@ -94,26 +94,26 @@ class RegionItem extends EventHandler {
     }
     //初始化之前
     _beforeInit(params) {
-        this.region.trigger("before:init", params);
-        this.trigger("before:init", params);
+        this.region.trigger("before:loadView", params);
+        this.trigger("before:loadView", params);
     }
     //初始化之后
-    _afterInit(view, viewData) {
+    _afterInit(view, pageParam) {
         if (view) {
             this.view = view;
-            this.app.view.initView(this.selector, this.view, viewData);
+            this.app.view.initView(this.selector, this.view, pageParam);
         }
 
-        this.region.trigger("after:init", view);
-        this.trigger("after:init", view);
+        this.region.trigger("after:loadView", view);
+        this.trigger("after:loadView", view);
         log.info(LOGTAG, `${this.name}：区域已装载完毕`);
     }
     //初始化中断
     _breakInit() {
         log.warn(LOGTAG, `${this ? this.name : '未知'}：区域已卸载或已装载其他组件，取消本次装载`);
 
-        this.region.trigger("break:init");
-        this.trigger("break:init");
+        this.region.trigger("break:loadView");
+        this.trigger("break:loadView");
     }
 }
 
