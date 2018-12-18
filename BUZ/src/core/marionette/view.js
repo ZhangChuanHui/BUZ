@@ -13,27 +13,6 @@ import { Observer, Watcher } from '../observer';
 import Utils from '../common/utils';
 const LOGTAG = "视图组件";
 
-function bmSet(target, key, value) {
-    if (Utils.hasOwn(target, Utils.toStr(key))) {
-        target[key] = value;
-        new Observer(target[key]);
-
-        notifyChange(target);
-    }
-    else {
-        log.error(LOGTAG, `Buz.set传入Key值不在target中，请确认`);
-    }
-}
-
-function bmDelete(target, key) {
-
-}
-
-function notifyChange(target) {
-    target.__ob__
-        && target.__ob__.dep
-        && target.__ob__.dep.notify();
-}
 
 /**
  *  作者：张传辉
@@ -44,6 +23,22 @@ class BaseView extends EventHandler {
     constructor(app) {
         super();
         this.app = app;
+    }
+    setData(target, key, value) {
+        if (Utils.hasOwn(target, Utils.toStr(key))) {
+            target[key] = value;
+            new Observer(target[key]);
+
+            notifyChange(target);
+        }
+        else {
+            log.error(LOGTAG, `Buz.set传入Key值不在target中，请确认`);
+        }
+    }
+    notifyDataChange(target) {
+        target.__ob__
+            && target.__ob__.dep
+            && target.__ob__.dep.notify();
     }
     /**
      * 初始化视图组件
@@ -316,8 +311,5 @@ class View extends EventHandler {
 export {
     View,
     BaseView,
-    ViewHandler,
-    bmSet,
-    bmDelete,
-    notifyChange
+    ViewHandler
 }
