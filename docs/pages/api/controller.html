@@ -20,6 +20,7 @@
 
     <h2>Controller</h2>
     <p>使用方法：<code>Bui.Controller</code>。开发人员通过该方法来为模块配置Action，并控制视图装载逻辑。</p>
+    <p class="tip">该方法必须配置actions</p>
     <pre class="brush: js;">
         export default Buz.Controller({
             actions: {
@@ -28,12 +29,91 @@
                 },
                 "index2": () => {
                     App.regions.content.show("areas/Demo/index/Index2");
-                }
+                },
+                "index3":"commonFunction",
+                "index4":"commonFunction"
+            },
+            commonFunction:function(params){
+                App.regions.content.show("areas/Demo/index/Index3",params.id);
             }
         });
     </pre>
+    <p>action支持两种形式，通常是<code>Function</code>类型，也可以是<code>String</code>类型，若多个Action的逻辑基本相同，可以设置为方法名称（字符串），
+        在实际匹配时会在当前控制器中寻找该方法作为Action执行方法。</p>
+    <p>其中每个action执行时都会传入<code>fragment.params</code>，详见<b>Router</b>中的地址碎片信息。</p>
 
     <h2>BaseController</h2>
+    <p>BaseController挂载在App中，使用方式<code>App.controller</code>，详见应用池章节信息。</p>
+    <h3>公开方法</h3>
+    <h4>match</h4>
+    <p>该方法是内部方法，通过<b>Router</b>进行驱动，通过该方法来匹配对应的Action。</p>
+    <table class="param">
+        <thead>
+            <tr>
+                <td>参数名</td>
+                <td>作用</td>
+                <td>类型</td>
+                <td>默认值</td>
+                <td>备注</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>handler</td>
+                <td>当前控制器</td>
+                <td>Object</td>
+                <td></td>
+                <td>Buz.Controller传入配置信息</td>
+            </tr>
+            <tr>
+                <td>fragment</td>
+                <td>地址碎片</td>
+                <td>Object</td>
+                <td></td>
+                <td>详见<b>应用池</b>地址碎片</td>
+            </tr>
+        </tbody>
+    </table>
+    <h3>广播事件</h3>
+    <table class="param">
+        <thead>
+            <tr>
+                <td>事件名称</td>
+                <td>作用</td>
+                <td>参数</td>
+                <td>备注</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>before:match</td>
+                <td>匹配路由前执行</td>
+                <td>
+                    {
+                    fragment: 地址碎片,
+                    handler: 当前控制器配置信息
+                    }
+                </td>
+                <td>若该事件返回<code>false</code>则终止匹配</td>
+            </tr>
+            <tr>
+                <td>after:match</td>
+                <td>匹配路由后执行</td>
+                <td>{
+                    fragment: 地址碎片,
+                    handler: 当前控制器配置信息,
+                    isBreak: 是否是被终止
+                    }
+                </td>
+                <td>
+                    终止条件：
+                    <p>1.before:match强制终止</p>
+                    <p>2.控制器匹配失败，未找到Function类型的执行程序</p>
+                    <p>3.没有找到action</p>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </body>
 
 </html>

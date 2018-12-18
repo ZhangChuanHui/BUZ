@@ -43,7 +43,7 @@ class BaseController extends EventHandler {
                 this._afterMatch(handler, _fragment);
             }
             else {
-                log.error(LOGTAG, "控制器匹配失败，为找到Function类型的执行程序");
+                log.error(LOGTAG, "控制器匹配失败，未找到Function类型的执行程序");
                 this._afterMatch(handler, _fragment, true);
             }
         }
