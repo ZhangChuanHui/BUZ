@@ -23,11 +23,11 @@ function ExecResultFlow(parent, option) {
 CompileOrder.addOrder({
     name: "if",
     weight: 100,
-    exec: function (option, value) {
-        let parentNode = getParent(option);
-        let token = option.$token;
+    exec: function (target, value) {
+        let parentNode = getParent(target);
+        let token = target.$token;
         parentNode.conditionResult = false;
-        option.node.conditionResult = !!value;
+        target.node.conditionResult = !!value;
 
         //清空监听
         this.clearWatchers(token);
@@ -35,30 +35,30 @@ CompileOrder.addOrder({
         if (value) {
             if (token.after) {
                 let afterTag = $(token.after);
-                afterTag.before(option.$node);
+                afterTag.before(target.$node);
                 afterTag.remove();
                 token.after = undefined;
-                this.addWatchers(compileNodes(option.node, option));
+                this.addWatchers(compileNodes(target.node, target));
             }
 
             parentNode.conditionResult = true;
         }
-        else if (option.node.parentNode) {
-            token.after = option.$node.after(document.createTextNode(""), true);
-            option.$node.remove();
+        else if (target.node.parentNode) {
+            token.after = target.$node.after(document.createTextNode(""), true);
+            target.$node.remove();
         }
 
-        ExecResultFlow(parentNode, option);
+        ExecResultFlow(parentNode, target);
     }
 });
 
 CompileOrder.addOrder({
     name: "else-if",
     weight: 100,
-    exec: function (option, value) {
-        let parentNode = getParent(option);
-        let token = option.$token;
-        option.node.conditionResult = !!value;
+    exec: function (target, value) {
+        let parentNode = getParent(target);
+        let token = target.$token;
+        target.node.conditionResult = !!value;
 
         //清空监听
         this.clearWatchers(token);
@@ -66,31 +66,31 @@ CompileOrder.addOrder({
         if (!parentNode.conditionResult && value) {
             if (token.after) {
                 let afterTag = $(token.after);
-                afterTag.before(option.$node);
+                afterTag.before(target.$node);
                 afterTag.remove();
                 token.after = undefined;
-                this.addWatchers(compileNodes(option.node, option));
+                this.addWatchers(compileNodes(target.node, target));
             }
 
             parentNode.conditionResult = true;
         }
-        else if (option.node.parentNode) {
-            token.after = option.$node.after(document.createTextNode(""), true);
-            option.$node.remove();
+        else if (target.node.parentNode) {
+            token.after = target.$node.after(document.createTextNode(""), true);
+            target.$node.remove();
         }
 
-        ExecResultFlow(parentNode, option);
+        ExecResultFlow(parentNode, target);
     }
 });
 
 CompileOrder.addOrder({
     name: "else",
     weight: 100,
-    exec: function (option, value) {
-        let parentNode = getParent(option);
-        let token = option.$token;
-        parentNode.conditionElseOption = option;
-        option.node.conditionResult = !!value;
+    exec: function (target, value) {
+        let parentNode = getParent(target);
+        let token = target.$token;
+        parentNode.conditionElseOption = target;
+        target.node.conditionResult = !!value;
 
         //清空监听
         this.clearWatchers(token);
@@ -98,15 +98,15 @@ CompileOrder.addOrder({
         if (!parentNode.conditionResult) {
             if (token.after) {
                 let afterTag = $(token.after);
-                afterTag.before(option.$node);
+                afterTag.before(target.$node);
                 afterTag.remove();
                 token.after = undefined;
-                this.addWatchers(compileNodes(option.node, option));
+                this.addWatchers(compileNodes(target.node, target));
             }
         }
-        else if (option.node.parentNode) {
-            token.after = option.$node.after(document.createTextNode(""), true);
-            option.$node.remove();
+        else if (target.node.parentNode) {
+            token.after = target.$node.after(document.createTextNode(""), true);
+            target.$node.remove();
         }
     }
 });

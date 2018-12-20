@@ -6,16 +6,16 @@ import CompileOrder from '../order';
 */
 CompileOrder.addOrder({
     name: "html",
-    exec: function (option, nv, ov) {
+    exec: function (target, nv, ov) {
         //置空
-        option.node.textContent = "";
-        if (option.$token.after) {
-            option.$token.after.remove();
+        target.node.textContent = "";
+        if (target.$token.after) {
+            target.$token.after.remove();
         }
 
         if (nv) {
-            option.$token.after =
-                option.$node.after($.parseHTML(nv), true);
+            target.$token.after =
+                target.$node.after($.parseHTML(nv), true);
         }
     }
 })

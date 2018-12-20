@@ -6,20 +6,20 @@ import CompileOrder from '../order';
 */
 CompileOrder.addOrder({
     name: "event",
-    runExpress: function (token, option, scope) {
-        return this.tryRun(token.exp, scope, option) || token.exp;
+    runExpress: function (token, target, scope) {
+        return this.tryRun(token.exp, scope, target) || token.exp;
     },
-    exec: function (option, nv, ov) {
-        let token = option.$token;
-        if (token.eventFun && option.param) {
-            option.$node.off(option.param, token.eventFun);
+    exec: function (target, nv, ov) {
+        let token = target.$token;
+        if (token.eventFun && target.param) {
+            target.$node.off(target.param, token.eventFun);
         }
 
-        let eventFn = option.view[nv];
-        if (eventFn && option.param) {
-            token.eventFun = _.bind(eventFn, option.view);
-            option.$node.on({
-                [option.param]: token.eventFun
+        let eventFn = target.view[nv];
+        if (eventFn && target.param) {
+            token.eventFun = _.bind(eventFn, target.view);
+            target.$node.on({
+                [target.param]: token.eventFun
             });
         }
     }

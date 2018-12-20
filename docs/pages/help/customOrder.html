@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>BUZ帮助文档</title>
+    <meta charset="utf-8" />
+    <link href="../../resources/base.css" rel="stylesheet" />
+    <link href="../../resources/contentTheme.css" rel="stylesheet" />
+    <link href="../../resources/shCoreDefault.css" rel="stylesheet" />
+    <script src="../../scripts/shCore/shCore.js"></script>
+    <script src="../../scripts/shCore/extend/shBrushJScript.js"></script>
+    <script src="../../scripts/shCore/extend/shBrushXml.js"></script>
+    <script src="../../scripts/page.js"></script>
+</head>
+
+<body>
+    <h1>自定义指令/渲染</h1>
+    <p>在实际项目开发中，模板引擎默认提供的渲染逻辑肯定不会完全符合项目的设计需求，BUZ提供两种自定义功能，开发人员可以根据自身项目需求
+        自定义各种渲染方法。
+    </p>
+    <p>两种扩展方式都要依赖于<code>core/compile/order.js</code>（路径请根据自身脚本所在位置调整，建议在app.js中注入全局指令/渲染）</p>
+    <pre class="brush: js;">
+        import CompileOrder from 'core/compile/order.js';
+    </pre>
+
+    <h2>自定义渲染（常用）</h2>
+    <p>自定义渲染时比较常用的扩展，例如对时间格式化、读取字典数据、格式化金额等等操作，
+        如果没有自定义渲染的话，我们只能在页面中写重复的转换方法或者在每个视图组件中创建
+        相同的转换方法。有了自定义渲染我们既可以创建公共的渲染方法了。
+    </p>
+    <p>使用方式：</p>
+    <pre class="brush: js;">
+        import CompileOrder from 'core/compile/order.js';
+
+        CompileOrder.addHelp("reverse",function(value =""){
+            return value.split('').reverse().join('');
+        });
+    </pre>
+
+    <pre class="brush: html;">
+        {{reverse("BUZ帮助文档")}}
+    </pre>
+    <p>多参数：</p>
+    <pre class="brush: js;">
+            import CompileOrder from 'core/compile/order.js';
+    
+            CompileOrder.addHelp("sum",function(...param){
+                let result=0;
+
+                param.forEach(function(i){
+                    result+=i;
+                });
+
+                return result;
+            });
+        </pre>
+
+    <pre class="brush: html;">
+        {{sum(1,3,4,5,6,7)}}
+    </pre>
+    <p>addHelp方法提供两个参数，第一个参数为name值<b>（必填）</b>；第二个为执行方法<b>(可带参数)</b></p>
+    <p class="tip">详细内容请详看<b>模板语法</b>中的<b>计算属性</b></p>
+
+    <h2>自定义指令</h2>
+    <p>自定义指令一般适用于<code>Attributes</code>扩展，规则为<code>b-指令名称</code>，请看下面这个例子：</p>
+    <pre class="brush: js;">
+        import CompileOrder from 'core/compile/order.js';
+
+        CompileOrder.addOrder({
+            name: "focus",
+            exec: function (target, value) {
+                target.node.focus();
+            }
+        })
+    </pre>
+    <pre class="brush: html;">
+        <input b-focus type="text"  />
+    </pre>
+    <p class="tip">通过上面的写法，我们就可以实现默认焦点功能，当然默认焦点可以使用<code>autofocus</code>属性，这个例子仅供学习参考。
+        <b>注意：</b>指令名称尽量避免与公共指令重名，除非你想替换掉它。</p>
+    <p>接下来我们来看一下addOrder具体的参数介绍：</p>
+    <table class="param">
+        <thead>
+            <tr>
+                <td>参数</td>
+                <td>作用</td>
+                <td>类型</td>
+                <td>默认值</td>
+                <td>备注</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>name</td>
+                <td>指令名称</td>
+                <td>String</td>
+                <td></td>
+                <td><b>必填</b>。指令名称尽量避免与公共指令重名，除非你想替换掉它。</td>
+            </tr>
+            <tr>
+                <td>exec</td>
+                <td>执行方法</td>
+                <td>Funtion</td>
+                <td></td>
+                <td><b>必填</b>。在下面章节会详细介绍参数及参数属性。</td>
+            </tr>
+            <tr>
+                <td>isSkipChildren</td>
+                <td>是否跳过子集</td>
+                <td>Boolean</td>
+                <td>false</td>
+                <td>当Element渲染到该指令时，若该节点有子集，并且该属性为true时，
+                    则跳过该节点的子集渲染，统一交给指令统一处理。例如：<code>for</code>
+                    指令在循环时会跳过子集，交由for内部指令渲染子集。<b>该属性为高级属性，一般用不到。</b>
+                </td>
+            </tr>
+            <tr>
+                <td>weight</td>
+                <td>权重</td>
+                <td>Int</td>
+                <td>0</td>
+                <td>该属性属于高级属性，一般用于对指令执行顺序调整时会使用到该属性。
+                    目前<code>for</code>权重200，<code>if/else if/else</code>权重100，
+                    <b>请谨慎操作</b>。
+                </td>
+            </tr>
+            <tr>
+                <td>breforeExec</td>
+                <td>执行exec之前触发</td>
+                <td>Funtion</td>
+                <td></td>
+                <td><b>只会执行一次</b>，可在该方法中设置前后节点等操作。</td>
+            </tr>
+            <tr>
+                <td>runExpress</td>
+                <td>自定义表达式解析</td>
+                <td>Funtion</td>
+                <td>默认执行tryRun方法</td>
+                <td>若指令解析后复杂度高，需要二次转换时，可通过该方法进行相应处理后再尝试运行。
+                    <b>默认执行tryRun方法</b>
+                </td>
+            </tr>
+            <tr>
+                <td>tryRun</td>
+                <td>自定义运行方法</td>
+                <td>Funtion</td>
+                <td>默认使用<b>Expression</b>解析</td>
+                <td>
+                    该方法返回实际值，用于<code>exec</code>第二个参数。
+                    <b>该属性为高级属性，不建议重写。</b>
+                </td>
+            </tr>
+            <tr>
+                <td>addWatchers</td>
+                <td>添加响应式监听</td>
+                <td>Funtion</td>
+                <td></td>
+                <td><b>内部方法，禁止重写</b>，若该指令在实际编译时会创建出其他监听，
+                    则可以通过该方法进行收集，并在节点销毁时手动对其清除，已防止内存泄漏；例如
+                    for指令，在解析子集时会不断生成监听。
+                </td>
+            </tr>
+            <tr>
+                <td>clearWatchers</td>
+                <td>清除响应式监听</td>
+                <td>Funtion</td>
+                <td></td>
+                <td><b>内部方法，禁止重写</b>，例如for指令，若数组/对象发生改变时，
+                    会移除原节点，并重新解析新的节点，这时我们可以在清除源节点时手动清除
+                    废用的监听。
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <p class="tip">addWatchers/clearWatchers一般适用于高级指令的编写，建议合理使用该方法来管理动态生成
+        的响应式监听，当然你也不用担心，当视图组件卸载时会将该视图在展示期间所产生的所有监听全部移除。该方法
+        一般适用于<b>动态编译子集</b>或者<b>对内存消耗极度关心优化</b>时使用。
+    </p>
+    <p class="tip">一般情况下，大部分扩展指令只需要设置<code>name</code>和<code>exec</code>即可。</p>
+    <h3>exec （核心方法）</h3>
+    <pre class="brush: js;">
+        CompileOrder.addOrder({
+            name: "...",
+            exec: function (target, value, oldValue) {
+                //...
+            }
+        })
+    </pre>
+    <p>exec是指令的执行入口，必须进行设置。参考上面例子中的参数，
+        value/oldValue就不多说了，一个是新值，一个是旧值。接下来我们详细介绍下target参数</p>
+    <p>在指令进行执行时实际会产生两个属性操作把柄，分别是<code>token</code>、<code>option</code>。</p>
+    <p class="tip">此节内容比较长，请耐心看完。</p>
+    <h4>token</h4>
+    <p>指令相关信息</p>
+    <table class="param">
+        <thead>
+            <tr>
+                <td>参数名</td>
+                <td>作用</td>
+                <td>类型</td>
+                <td>备注</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>node</td>
+                <td>Node节点</td>
+                <td>NODE</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>$node</td>
+                <td>Node节点</td>
+                <td>BET Selector</td>
+                <td>详见Api-BET</td>
+            </tr>
+            <tr>
+                <td>exp</td>
+                <td>指令值</td>
+                <td>String</td>
+                <td>可以理解为待处理的表达式</td>
+            </tr>
+            <tr>
+                <td>cause</td>
+                <td>是通过谁来触发的/触发依据</td>
+                <td>String</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>order</td>
+                <td>解析后的指令名</td>
+                <td>String</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>param</td>
+                <td>指令参数</td>
+                <td>Array</td>
+                <td>对于多文本混合的指令会解析出多个参数。</td>
+            </tr>
+            <tr>
+                <td>removeAttr</td>
+                <td>移除解析后的特性</td>
+                <td>Function</td>
+                <td><b>内部执行，禁用</b></td>
+            </tr>
+        </tbody>
+    </table>
+    <h4>option</h4>
+    <p>当前Compile参数</p>
+    <table class="param">
+        <thead>
+            <tr>
+                <td>参数名</td>
+                <td>作用</td>
+                <td>类型</td>
+                <td>备注</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>data</td>
+                <td>响应式数据</td>
+                <td>Object</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>refNode</td>
+                <td>Node节点</td>
+                <td>NODE</td>
+                <td>当前触发Compile的容器（可理解为<b>当前视图</b>根节点）</td>
+            </tr>
+            <tr>
+                <td>view</td>
+                <td>当前视图组件</td>
+                <td>View</td>
+                <td>参考Api/视图组件</td>
+            </tr>
+        </tbody>
+    </table>
+    <h4>总结</h4>
+    <p>看完这两个属性后，我们接下来看下<code>target</code>的生成代码：</p>
+    <pre class="brush: js;">
+        Object.assign({
+            //保留token/option把柄作为后期oder存放依据
+            $token: token,
+            $option: option,
+
+            isFirst: isFirst,
+            scope: scope
+        }, token, option)
+    </pre>
+    <p>通过上面的语法，大家可以看出这一个对象的合并操作，他把<code>token</code>、<code>option</code>合并到了target中
+        接下来我们看下它本身自带的这些属性。</p>
+    <p>之所以进行合并操作是为了更方便的进行操作，大部分指令一般不会去操作原始token和option。</p>
+    <table class="param">
+        <thead>
+            <tr>
+                <td>参数名</td>
+                <td>作用</td>
+                <td>类型</td>
+                <td>备注</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>$token</td>
+                <td>即token</td>
+                <td>Object</td>
+                <td>由于合并后无法操作token，保留$token，可以在token中存储临时值。</td>
+            </tr>
+            <tr>
+                <td>$option</td>
+                <td>即option</td>
+                <td>Object</td>
+                <td>同上</td>
+            </tr>
+            <tr>
+                <td>isFirst</td>
+                <td>是否是首次执行</td>
+                <td>Boolean</td>
+                <td>详见下面注意事项</td>
+            </tr>
+            <tr>
+                <td>scope</td>
+                <td>当前指令触发时实际的模型数据</td>
+                <td>Boolean</td>
+                <td><b>注意：</b>该变量与option中的data不同，对于需要带入值的指令，
+                    例如for指令在运行时会带入(value,key,index)等值，都会临时
+                    存放到scope并向下个节点传递，不会污染传入的响应式数据。
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <p class="tip">exec一般在两种情况下触发执行：1.节点解析时默认执行一次；2.值发生改变时触发。
+        可通过isFrist区分是否是首次执行。</p>
+
+    <h3>breforeExec</h3>
+    <p><code>token</code> Object 指令相关信息，参考上文介绍</p>
+    <p><code>option</code> Object 当前Compile参数，参考上文介绍</p>
+    <p><code>scope</code> Object 当前指令触发时实际的模型数据，参考上文介绍</p>
+
+    <h3>runExpress</h3>
+    <p><code>token</code> Object 指令相关信息，参考上文介绍</p>
+    <p><code>option</code> Object 当前Compile参数，参考上文介绍</p>
+    <p><code>scope</code> Object 当前指令触发时实际的模型数据，参考上文介绍</p>
+
+    <h3>tryRun</h3>
+    <p><code>exp</code> String 当前指令内容/表达式</p>
+    <p><code>scope</code> Object 当前指令触发时实际的模型数据，参考上文介绍</p>
+    <p><code>option</code> Object 当前Compile参数，参考上文介绍</p>
+
+    <h3>clearWatchers</h3>
+    <p><code>token</code> Object 指令相关信息，参考上文介绍</p>
+
+    <h3>addWatchers</h3>
+    <p><code>token</code> Object 指令相关信息，参考上文介绍</p>
+    <p><code>watchers</code> Array 监听数组</p>
+
+</body>
+
+</html>

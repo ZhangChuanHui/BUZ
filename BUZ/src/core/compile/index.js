@@ -52,9 +52,7 @@ class Compile {
             let option = {
                 view: this.view,
                 data: this.data,
-                refNode: this.el,
-                //级联式指令数据存放处
-                orderDatas: {}
+                refNode: this.el
             };
 
             compileNodes(this.fragment, option);

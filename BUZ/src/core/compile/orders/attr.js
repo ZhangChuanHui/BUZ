@@ -6,7 +6,7 @@ import CompileOrder from '../order';
 */
 CompileOrder.addOrder({
     name: "attr",
-    exec: function (option, value) {
-        option.$node.attr({ [option.param]: value });
+    exec: function (target, value) {
+        target.$node.attr({ [target.param]: value });
     }
 })

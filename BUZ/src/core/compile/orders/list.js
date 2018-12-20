@@ -17,8 +17,8 @@ CompileOrder.addOrder({
     name: "for",
     isSkipChildren: true,
     weight: 200,
-    exec: function (option, nv, ov) {
-        var token = option.$token;
+    exec: function (target, nv, ov) {
+        var token = target.$token;
 
         if (token.forContent) {
             token.forContent.remove();
@@ -30,11 +30,11 @@ CompileOrder.addOrder({
         this.clearWatchers(token);
 
         if (nv) {
-            option.forTag.after(nv);
+            target.forTag.after(nv);
 
             nv.each((node) => {
                 let $scope = node.forScope;
-                this.addWatchers(compileNodes(node, option.$option, $scope));
+                this.addWatchers(compileNodes(node, target.$option, $scope));
             });
         }
     },

@@ -54,7 +54,7 @@ export default {
             }, param));
     },
     addHelp: function (name, func) {
-        helps[name] = func;
+        name && (helps[name] = func);
     },
     /**
      * 执行指令
@@ -94,14 +94,14 @@ export default {
                 //before Exec
                 order.breforeExec(token, option, scope);
 
-                let exec = (nv, ov, always) => {
+                let exec = (nv, ov, isFirst, always) => {
                     if (always !== true && nv === token.oldValue) return;
 
                     order.exec(Object.assign({
                         //保留token/option把柄作为后期oder存放依据
                         $token: token,
                         $option: option,
-
+                        isFirst: isFirst,
                         scope: scope
                     }, token, option), nv, token.oldValue);
 
@@ -114,13 +114,13 @@ export default {
                             return order.runExpress(token, option, scope);
                         }, exec, token);
 
-                    exec(watcher.value);
+                    exec(watcher.value, undefined, true);
 
                     option.view.watchers.push(watcher);
                     watchers.push(watcher);
                 }
                 else {
-                    exec(undefined, undefined, true);
+                    exec(undefined, undefined, true, true);
                 }
             }
         }

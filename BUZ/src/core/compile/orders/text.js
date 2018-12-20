@@ -7,8 +7,8 @@ import CompileOrder from '../order';
 */
 CompileOrder.addOrder({
     name: "text",
-    exec: function (option, value) {
-        option.node.textContent = value;
+    exec: function (target, value) {
+        target.node.textContent = value;
     },
     runExpress(token, option, scope) {
         var result = [];

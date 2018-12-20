@@ -6,8 +6,8 @@ import CompileOrder from '../order';
 */
 CompileOrder.addOrder({
     name: "class",
-    exec: function (option, nv, ov) {
-        let className = option.node.className;
+    exec: function (target, nv, ov) {
+        let className = target.node.className;
 
         className = className.replace(ov, "")
             .replace(/\s$/, "");
@@ -15,6 +15,6 @@ CompileOrder.addOrder({
         let space = className
             && _.isStrEmpty(nv) ? "" : " ";
 
-        option.node.className = className + space + nv;
+        target.node.className = className + space + nv;
     }
 })
