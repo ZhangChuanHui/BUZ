@@ -7,7 +7,7 @@ import CompileOrder from '../order';
 CompileOrder.addOrder({
     name: "event",
     runExpress: function (token, option, scope) {
-        return this.tryRun(token.exp, scope) || token.exp;
+        return this.tryRun(token.exp, scope, option) || token.exp;
     },
     exec: function (option, nv, ov) {
         let token = option.$token;

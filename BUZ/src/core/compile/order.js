@@ -12,6 +12,7 @@ import expression from './expression';
 */
 export default {
     orderList: {},
+    helps: {},
     addOrder: function (param = {
         name: undefined,
         exec: undefined
@@ -26,13 +27,13 @@ export default {
                 weight: 0,
                 breforeExec: function (token, option) { },
                 runExpress: function (token, option, scope) {
-                    return this.tryRun(token.exp, scope);
+                    return this.tryRun(token.exp, scope, option);
                 },
-                tryRun: function (exp, scope) {
+                tryRun: function (exp, scope, option) {
                     try {
-                        return expression(exp).call(scope, scope);
+                        return expression(exp, scope, option);
                     }
-                    catch (ex) {
+                    catch (e) {
                         return exp;
                     }
                 },
@@ -51,6 +52,9 @@ export default {
                     token.watchers.concat(watchers);
                 }
             }, param));
+    },
+    addHelp: function (name, func) {
+        helps[name] = func;
     },
     /**
      * 执行指令
@@ -90,8 +94,8 @@ export default {
                 //before Exec
                 order.breforeExec(token, option, scope);
 
-                let exec = (nv, ov) => {
-                    if (nv === token.oldValue) return;
+                let exec = (nv, ov, always) => {
+                    if (always !== true && nv === token.oldValue) return;
 
                     order.exec(Object.assign({
                         //保留token/option把柄作为后期oder存放依据
@@ -104,15 +108,20 @@ export default {
                     token.oldValue = nv;
                 }
 
-                let watcher = new Watcher(scope,
-                    function (scope) {
-                        return order.runExpress(token, option, scope);
-                    }, exec, token);
+                if (token.exp) {
+                    let watcher = new Watcher(scope,
+                        function (scope) {
+                            return order.runExpress(token, option, scope);
+                        }, exec, token);
 
-                exec(watcher.value);
+                    exec(watcher.value);
 
-                option.view.watchers.push(watcher);
-                watchers.push(watcher);
+                    option.view.watchers.push(watcher);
+                    watchers.push(watcher);
+                }
+                else {
+                    exec(undefined, undefined, true);
+                }
             }
         }
 

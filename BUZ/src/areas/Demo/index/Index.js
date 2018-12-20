@@ -31,6 +31,9 @@ export default Buz.View({
     ComputedMethed: function () {
         return this.data.demoText + this.data.demoStr;
     },
+    ComputedMethed1: function (a, b, c) {
+        return a + b + c;
+    },
     clickFun: function () {
         this.data.demoText++;
     },

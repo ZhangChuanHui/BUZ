@@ -22,8 +22,8 @@
 
 <h2>计算属性（复杂计算/对多属性监听）</h2>
 <p class="tip">禁止在计算属性时进行属性值更改，否则会出现循环监听</p>
-{{ComputedMethed}}
-
+{{ComputedMethed()}}
+{{ComputedMethed1(1,demoText,"b")}}
 <h2>if条件</h2>
 <p b-if="demoText%2===0">除2取余等于0 {{demoText}}</p>
 <p b-else-if="demoText%2!==0">除2取余不等于0 {{demoText}}</p>

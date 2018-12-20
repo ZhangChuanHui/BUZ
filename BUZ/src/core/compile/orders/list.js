@@ -51,7 +51,7 @@ CompileOrder.addOrder({
         }
 
         let runParam = this.transformForParam(inMatch[1].trim());
-        let viewData = this.tryRun(inMatch[2].trim(), scope) || "";
+        let viewData = this.tryRun(inMatch[2].trim(), scope, option) || "";
 
         let result = $();
 
