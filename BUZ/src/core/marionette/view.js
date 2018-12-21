@@ -24,32 +24,6 @@ class BaseView extends EventHandler {
         super();
         this.app = app;
     }
-    setData(target, key, value) {
-        if (Utils.hasOwn(target, Utils.toStr(key))) {
-            target[key] = value;
-            new Observer(target[key]);
-
-            notifyChange(target);
-        }
-        else {
-            log.error(LOGTAG, `Buz.setData传入Key值不在target中，请确认`);
-        }
-    }
-    deleteData(target, key) {
-        if (Utils.isPlainObject(target)) {
-            delete target[key];
-            notifyChange(target);
-        }
-        else {
-            log.error(LOGTAG, `Buz.deleteData传入Key值不在target中或不被识别`);
-        }
-        notifyChange(target);
-    }
-    notifyDataChange(target) {
-        target.__ob__
-            && target.__ob__.dep
-            && target.__ob__.dep.notify();
-    }
     /**
      * 初始化视图组件
      * @param selector 选择器 <jQuery Selector>

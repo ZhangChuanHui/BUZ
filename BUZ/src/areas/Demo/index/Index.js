@@ -81,7 +81,7 @@ export default Buz.View({
     click7: function () {
         //1.
         //this.data.listData[0].age = "22222";
-        //Buz.view.notifyDataChange(this.data.listData);
+        //Buz.notifyDataChange(this.data.listData);
 
         //2.
         //Buz.set(this.data.listData, 0, { name: "张2", age: 1011 });

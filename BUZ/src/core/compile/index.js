@@ -1,5 +1,5 @@
 import parser from './parser/index';
-import orders from './orders/index';
+import orders from './plugins/index';
 import CompileOrder from './order';
 
 export const LOGTAG = "页面渲染";

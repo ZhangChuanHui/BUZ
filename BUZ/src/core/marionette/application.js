@@ -4,6 +4,7 @@ import Router from './router';
 import { BaseController } from './controller';
 import Region from './region';
 import { BaseView } from './view';
+import Storage from "../storage/index";
 
 const LOGTAG = "应用管理";
 /**
@@ -42,7 +43,8 @@ class Application extends EventHandler {
         this.region = new Region(this);
         /**视图管理操作把柄 */
         this.view = new BaseView(this);
-
+        /**缓存管理器 */
+        this.storage = new Storage(this);
         window.App = this;
         return this;
     }

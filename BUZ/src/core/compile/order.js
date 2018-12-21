@@ -53,8 +53,8 @@ export default {
                 }
             }, param));
     },
-    addHelp: function (name, func) {
-        name && (helps[name] = func);
+    addHelper: function (name, func) {
+        name && (this.helps[name] = func);
     },
     /**
      * 执行指令

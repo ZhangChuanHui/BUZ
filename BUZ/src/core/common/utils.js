@@ -209,6 +209,22 @@ class Utils {
 
         return array;
     }
+    /**根据地址获取值 */
+    static getValueByPath(data, path) {
+        //过滤非正常属性
+        if (/[^\w.$]/.test(path)) return;
+
+        let exps = path.split('.');
+
+        let result = data;
+        exps.forEach((key) => {
+            if (!result) return;
+
+            result = result[key];
+        });
+
+        return result;
+    }
     static noop() { }
 }
 

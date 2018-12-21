@@ -7,6 +7,11 @@
 <p>{{demoText+"哈哈哈"+demoTip}}</p>
 <p>1+{{demoText}}={{demoText+1}}</p>
 
+<h2>读取缓存</h2>
+<p>{{storage('temp')}}</p>
+<p>{{storage('userInfo.name')}}</p>
+<p>{{storage('userInfo.age')}}</p>
+
 <h2>事件切换</h2>
 <button on:click="demoText%2===0?'click1':'click2'">计数器%2切换事件</button>
 

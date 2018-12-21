@@ -2,7 +2,16 @@ import templete from './templetes/side-bar.html';
 
 export default Buz.View({
     templete: templete,
+    onRender: function () {
+        //渲染前设置缓存信息，因为此时图也要展示响应缓存信息
+        App.storage.addWatcher("userInfo", {
+            name: '张三',
+            age: 1
+        });
+    },
     onShow: function () {
+        App.storage.add("temp", "我是非响应式缓存数据");
+
         this._onAfterRouterChange = _.bind(this.onAfterRouterChange, this);
         App.router.on("after", this._onAfterRouterChange);
     },
@@ -24,5 +33,10 @@ export default Buz.View({
     },
     onTeardown: function () {
         App.router.off("after", this._onAfterRouterChange);
+    },
+    changeStorage: function () {
+        let userInfo = App.storage.get("userInfo");
+        userInfo.age++;
+        userInfo.name = "张三" + userInfo.age;
     }
 });
