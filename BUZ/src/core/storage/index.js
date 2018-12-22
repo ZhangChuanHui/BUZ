@@ -36,7 +36,17 @@ class Storage extends EventHandler {
     save() {
         this.session.set(this._data);
     }
+    remove(key) {
+        delete this._data[key];
+        delete this.data[key];
+        save();
+    }
     add(key, value, param = {}) {
+        if (Utils.isPlainObject(item.value) === false) {
+            LogHandler.error(LOGTAG, `你设置的${key}不是一个对象类型，缓存管理只可保存对象类型。`);
+            return;
+        }
+
         if (Utils.isStrEmpty(key) === false) {
             let item = {
                 value: value,
@@ -58,12 +68,7 @@ class Storage extends EventHandler {
     addWatcher(key, value, param = {}) {
         let item = this.add(key, value, param);
 
-        if (Utils.isPlainObject(item.value)) {
-            new Observer(item.value);
-        }
-        else {
-            LogHandler.error(LOGTAG, `你设置的${key}不是一个对象类型，只有对象类型才可以启用监听。`);
-        }
+        item && new Observer(item.value);
     }
 }
 
