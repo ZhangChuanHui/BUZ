@@ -218,6 +218,77 @@
     <h3>指令权重</h3>
     <p>指令权重是指指令在运行前会按照权重进行一次排序，权重越高的指令执行越早，目前自定义权重的指令有：</p>
     <p>for权重200 ; if权重100，其余指令默认权重为0</p>
+
+    <h2>关于响应式</h2>
+    <h3>set</h3>
+    <p>向响应式对象中添加一个属性，并确保这个新属性同样是响应式的，且触发视图更新。它必须用于向响应式对象上添加新属性，因为 Buz 无法探测普通的新增属性。</p>
+    <pre class="brush: js;">
+        Buz.set(target,key,value);
+    </pre>
+    <table class="param">
+        <thead>
+            <tr>
+                <td>参数名</td>
+                <td>作用</td>
+                <td>类型</td>
+                <td>备注</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>target</td>
+                <td>需要设值的对象</td>
+                <td>Object | Array</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>key</td>
+                <td>name或index索引</td>
+                <td>String | Number</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>value</td>
+                <td>值</td>
+                <td>Any</td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+    <h3>delet</h3>
+    <p>删除对象的属性。如果对象是响应式的，确保删除能触发更新视图。这个方法主要用于避开 Buz 不能检测到属性被删除的限制，但是你应该很少会使用它。</p>
+    <pre class="brush: js;">
+        Buz.delete(target,key);
+    </pre>
+    <table class="param">
+        <thead>
+            <tr>
+                <td>参数名</td>
+                <td>作用</td>
+                <td>类型</td>
+                <td>备注</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>target</td>
+                <td>需要操作的对象</td>
+                <td>Object</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>key</td>
+                <td>name</td>
+                <td>String</td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+    <h3>notify</h3>
+    <p>主动通知数据变更，参数为<code>target</code>，传入参数必须是响应式对象，一般都是由观察者自动完成变更广播，你应该很少会使用它。</p>
+    <pre class="brush: js;">
+        Buz.notify(target);
+    </pre>
 </body>
 
 </html>

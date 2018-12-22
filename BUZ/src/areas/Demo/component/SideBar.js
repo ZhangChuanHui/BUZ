@@ -10,8 +10,6 @@ export default Buz.View({
         });
     },
     onShow: function () {
-        App.storage.add("temp", "我是非响应式缓存数据");
-
         this._onAfterRouterChange = _.bind(this.onAfterRouterChange, this);
         App.router.on("after", this._onAfterRouterChange);
     },
@@ -38,5 +36,7 @@ export default Buz.View({
         let userInfo = App.storage.get("userInfo");
         userInfo.age++;
         userInfo.name = "张三" + userInfo.age;
+
+        App.storage.save();
     }
 });

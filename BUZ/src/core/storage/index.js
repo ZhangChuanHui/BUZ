@@ -42,7 +42,7 @@ class Storage extends EventHandler {
         save();
     }
     add(key, value, param = {}) {
-        if (Utils.isPlainObject(item.value) === false) {
+        if (Utils.isPlainObject(value) === false) {
             LogHandler.error(LOGTAG, `你设置的${key}不是一个对象类型，缓存管理只可保存对象类型。`);
             return;
         }
