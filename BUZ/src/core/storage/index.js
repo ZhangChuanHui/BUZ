@@ -33,6 +33,9 @@ class Storage extends EventHandler {
     getByPath(path) {
         return Utils.getValueByPath(this.data, path);
     }
+    save() {
+        this.session.set(this._data);
+    }
     add(key, value, param = {}) {
         if (Utils.isStrEmpty(key) === false) {
             let item = {
@@ -44,7 +47,7 @@ class Storage extends EventHandler {
             this._data[key] = item;
             this.data[key] = value;
 
-            this.session.set(this._data);
+            this.save();
 
             return item;
         }
