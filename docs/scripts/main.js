@@ -12,7 +12,8 @@ var menuDatas = {
         { title: "视图区域", href: "pages/api/region.html" },
         { title: "区域配置", href: "pages/api/areaConfig.html" },
         { title: "控制器", href: "pages/api/controller.html" },
-        { title: "视图", href: "pages/api/view.html" }
+        { title: "视图", href: "pages/api/view.html" },
+        { title: "缓存管理", href: "pages/api/storage.html" }
     ]
 }
 

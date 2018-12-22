@@ -36,10 +36,16 @@ class Storage extends EventHandler {
     save() {
         this.session.set(this._data);
     }
-    remove(key) {
+    remove(key, notSave) {
         delete this._data[key];
         delete this.data[key];
-        save();
+        !notSave && save();
+    }
+    clear() {
+        this.data = {};
+        this._date = {};
+
+        this.session.clear();
     }
     add(key, value, param = {}) {
         if (Utils.isPlainObject(value) === false) {

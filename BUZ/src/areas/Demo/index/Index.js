@@ -29,7 +29,7 @@ export default Buz.View({
         });
     },
     ComputedMethed: function () {
-        return this.data.demoText + this.data.demoStr;
+        return this.data.demoText + this.data.demoStr + `年龄：${App.storage.get("userInfo").age}`;
     },
     ComputedMethed1: function (a, b, c) {
         return a + b + c;
