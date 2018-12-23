@@ -21,7 +21,7 @@
     <pre class="brush: js;">
         import Storage from 'core/storage/index';
 
-        new Storage("缓存仓库标识");
+        new Storage(App,"缓存仓库标识");
     </pre>
 
     <p class="tip">你可以在任意脚本内创建缓存仓库，但是应用池在启动时会默认创建一个默认缓存仓库，使用方式：App.storage，建议直接使用全局
@@ -33,7 +33,7 @@
     <p>应用池在启动时会初始化一个默认仓库，对于大部分项目已经可以满足日常开发，若想创建独立仓库则可以尝试此方法。</p>
     <p><b>注意：</b>请避免缓存仓库标识重名！</p>
     <pre class="brush: js;">
-        new Storage("缓存仓库标识");
+        new Storage(App,"缓存仓库标识");
     </pre>
 
     <h2>公开方法</h2>
