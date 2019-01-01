@@ -26,9 +26,9 @@ class BaseView extends EventHandler {
     }
     /**
      * 初始化视图组件
-     * @param selector 选择器 <jQuery Selector>
-     * @param view 视图组件 <View类>
-     * @param pageParam 视图参数 <Any>
+     * @param {BET} selector 选择器
+     * @param {View} view 视图组件 
+     * @param {Any} pageParam 视图参数 
     */
     async initView(selector, view, pageParam) {
         this.trigger("before:initView", {
@@ -75,7 +75,7 @@ class BaseView extends EventHandler {
     }
     /**
      * 渲染模板操作，可在外部通过原型链重写
-     * @param view 视图组件 <View类>
+     * @param {View} view 视图组件
     */
     renderTemplete(view) {
         return $(`
@@ -85,11 +85,11 @@ class BaseView extends EventHandler {
     }
     /**
      * 初始化子视图
-     * @param parentView 父视图组件 <View类>
-     * @param selector 选择器 <jQuerySelector>
-     * @param name 子视图名称 <String>
-     * @param View 子视图组件 <View类>
-     * @param pageParam 视图参数 <Any>
+     * @param {View} parentView 父视图组件
+     * @param {BET|String} selector 选择器 
+     * @param {String} name 子视图名称 
+     * @param {View} View 子视图组件 
+     * @param {Any} pageParam 视图参数
     */
     initChildrenView(parentView, selector, name, view, pageParam) {
         view.parent = parentView;
@@ -103,7 +103,7 @@ class BaseView extends EventHandler {
     }
     /**
      * 卸载视图组件
-     * @param view 视图组件 <View类>
+     * @param {View} view 视图组件
     */
     teardown(view) {
         this.trigger("before:teardown", view);
@@ -183,32 +183,32 @@ class View extends EventHandler {
     }
     /**
      * 主动监听属性变化
-     * @param path 属性地址
-     * @param callBack 回调处理事件
+     * @param {String} path 属性地址
+     * @param {Function} callBack 回调处理事件
     */
     $watch(path, callBack) {
         new Watcher(this.data, path, Utils.bind(callBack, this));
     }
     /**
      * 注册全局观察者模式
-     * @param eventName 事件名称 <String>
-     * @param callBack 回调事件 <Function>
-     * @param isOnce 是否只执行一次 <Boolean>
+     * @param {String} eventName 事件名称 
+     * @param {Function} callBack 回调事件 
+     * @param {Boolean} isOnce 是否只执行一次 
     */
     onGlobal(eventName, callBack, isOnce) {
         this._app.region.registerGlobalEvent(this, eventName, callBack, !!isOnce);
     }
     /**
      * 触发全局观察者事件
-     * @param eventName 事件名称 <String>
-     * @param params 事件参数 <Any>
+     * @param {String} eventName 事件名称
+     * @param {Any} params 事件参数
     */
     triggerGlobal(eventName, params) {
         this._app.region.triggerGlobalEvent(eventName, params, this);
     }
     /**
      * 选择器，作用在于只在this.$el中查询
-     * @param selector BET Selector <String>
+     * @param {String} selector
     */
     $(selector) {
         return this.$el.find(selector);
@@ -238,10 +238,10 @@ class View extends EventHandler {
     }
     /**
      * 添加子视图
-     * @param selector 选择器 <BET Selector,String>
-     * @param name 子视图名称 <String>
-     * @param view 视图组件 <View类/String>
-     * @param pageParam 视图参数 <Any>
+     * @param {BET|String} selector 选择器
+     * @param {String} name 子视图名称 
+     * @param {View|String} view 视图组件 
+     * @param {Any} pageParam 视图参数 
     */
     attachChild(selector, name, view, pageParam) {
         if (this.childrens[name]) {
@@ -280,7 +280,7 @@ class View extends EventHandler {
     }
     /**
      * 卸载子视图
-     * @param name 子视图名称
+     * @param {String} name 子视图名称
     */
     teardownChild(name) {
         var children = this.childrens[name];

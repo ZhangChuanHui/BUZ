@@ -8,7 +8,7 @@
     *   日志标志 <String>
     *   日志内容 <String，Object，Int，Boolean>
     */
-    writeLog: function (type, tag, content,error) {
+    writeLog: function (type, tag, content, error) {
         if (window.console && window.console[type]) {
 
             //若是分组标签等级保持和info平级
@@ -63,41 +63,41 @@
 class LogHandler {
     /**
     * 输出普通日志信息
-    * @param tag 日志标志 <String>
-    * @param content 日志内容 <String,Object,Int,Boolean>
+    * @param {String} tag 日志标志
+    * @param {Any} content 日志内容 
     */
     static info(tag, content) {
         LogOption.writeLog("info", tag, content);
     }
     /**
     * 输出错误日志信息
-    * @param tag 日志标志 <String>
-    * @param content 日志内容 <String,Object,Int,Boolean>
-    * @param error 错误堆栈 <Error>
+    * @param {String} tag 日志标志
+    * @param {Any} content 日志内容
+    * @param {Error} error 错误堆栈
     */
     static error(tag, content, error) {
         LogOption.writeLog("error", tag, content, error);
     }
     /**
     * 输出警告日志信息
-    * @param tag 日志标志 <String>
-    * @param content 日志内容 <String,Object,Int,Boolean>
+    * @param {String} tag 日志标志
+    * @param {Any} content 日志内容
     */
     static warn(tag, content) {
         LogOption.writeLog("warn", tag, content);
     }
     /**
     * 组合日志信息开始
-    * @param tag 日志标志 <String>
-    * @param content 日志内容 <String,Object,Int,Boolean>
+    * @param {String} tag 日志标志
+    * @param {Any} content 日志内容
     */
     static groupStart(tag, content) {
         LogOption.writeLog("groupCollapsed", tag, content);
     }
     /**
     * 组合日志信息结束
-    * @param tag 日志标志 <String>
-    * @param content 日志内容 <String,Object,Int,Boolean>
+    * @param {String} tag 日志标志
+    * @param {any} content 日志内容
     */
     static groupEnd(tag, content) {
         LogOption.writeLog("groupEnd", tag);

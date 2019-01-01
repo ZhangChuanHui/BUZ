@@ -12,8 +12,8 @@ export const LOGTAG = "页面渲染";
 
 /**
  * 节点渲染
- * @param el 节点
- * @param option 配置信息
+ * @param {Element|BET} el 节点
+ * @param {Object} option 配置信息
 */
 export function compileNodes(el, option, scope) {
     let tokens = new parser(el);

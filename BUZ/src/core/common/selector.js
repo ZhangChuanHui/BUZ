@@ -39,7 +39,7 @@ class BET extends Array {
     }
     /**
      * 遍历选择器
-     * @param callBack 回调 <Function> 传入Element
+     * @param {Function} callBack 回调 传入Element
      */
     each(callBack, desc) {
         if (desc) {
@@ -57,7 +57,7 @@ class BET extends Array {
     }
     /**
      * 追加Element
-     * @param strOrElement 追加对象 <Element/BETItem>
+     * @param {Element|BET} strOrElement 追加对象
      */
     add(strOrElement) {
         let addItems;
@@ -97,7 +97,7 @@ class BET extends Array {
     }
     /**
      * 在选择器下查找指定对象
-     * @param strFilter 筛选条件 <String>
+     * @param {string} strFilter 筛选条件
      */
     find(strFilter) {
         let result = new BET();
@@ -110,8 +110,8 @@ class BET extends Array {
     }
     /**
      * 注册事件
-     * @param events 事件集 <Object>
-     * @param agent 代理/委托 <String> 注意如果设置代理则事件被
+     * @param {Object} events 事件集
+     * @param {string} agent 代理/委托 注意如果设置代理则事件被
      * 重写，无法手动移除（off）,对于大范围的委托建议手动判断e.target
      */
     on(events, agent) {
@@ -148,8 +148,8 @@ class BET extends Array {
     }
     /**
      * 移除事件
-     * @param eventName 事件名称 <String>
-     * @param func  指定事件处理把柄 <Function> 可选
+     * @param {string} eventName 事件名称
+     * @param {Function} func  指定事件处理把柄 可选
      */
     off(eventName, func) {
         if (Utils.isStrEmpty(eventName)) return this;
@@ -183,8 +183,8 @@ class BET extends Array {
     }
     /**
      * 触发事件
-     * @param eventName 事件名称 <String>
-     * @param params 事件参数 <...Array>
+     * @param {string} eventName 事件名称
+     * @param {...Array} params 事件参数
      */
     trigger(eventName, ...params) {
         if (Utils.isStrEmpty(eventName)) return this;
@@ -199,7 +199,7 @@ class BET extends Array {
     }
     /**
      * 添加Class样式
-     * @param cssName 样式名称
+     * @param {string} cssName 样式名称
      */
     addClass(cssName) {
         this.each(function (elem) {
@@ -209,7 +209,7 @@ class BET extends Array {
     }
     /**
      * 移除Class样式
-     * @param cssName 样式名称
+     * @param {string} cssName 样式名称
      */
     removeClass(cssName) {
         this.each(function (elem) {
@@ -219,7 +219,7 @@ class BET extends Array {
     }
     /**
      * 设置或读取DOM属性
-     * @param strOrObject 字符串时读取属性，对象设置属性<String/Object>
+     * @param {string/Object} strOrObject 字符串时读取属性，对象设置属性
      */
     attr(strOrObject) {
         for (let index = 0; index < this.length; index++) {
@@ -238,7 +238,7 @@ class BET extends Array {
     }
     /**
      * 追加子集元素
-     * @param param 追加内容 <String/Element/BET>
+     * @param  {string/Element/BET} param 追加内容
      */
     append(param) {
         let $el;
@@ -261,7 +261,7 @@ class BET extends Array {
     }
     /**
      * 移除元素
-     * @param param 移除内容 参考BET <String,Element,BET>
+     * @param {string/Element/BET} param 移除内容 参考BET
      */
     remove(param) {
         if (param) {
@@ -381,8 +381,8 @@ class BET extends Array {
     }
     /**
      * 读取/设置HTML内容
-     * @param content 可选-内容 <String>
-     * @param isText 是否读取文本 <Boolean> 默认False
+     * @param {string} content 可选-内容
+     * @param {Boolean} isText 是否读取文本 默认False
      */
     html(content, isText) {
         for (let index = 0; index < this.length; index++) {
@@ -399,14 +399,14 @@ class BET extends Array {
     }
     /**
      * 读取/设置HTML文本
-     * @param content 可选-内容 <String>
+     * @param {string} content 可选-内容
      */
     text(content) {
         return this.html(content, true);
     }
     /**
      * 读取/设置值 -针对控件
-     * @param value 可选-值 <Any>
+     * @param {Any} value 可选-值
      */
     val(value) {
         var special = ["checkbox", "radio"];
@@ -443,7 +443,7 @@ class BET extends Array {
     }
     /**
      * 设置/读取宽度
-     * @param value 值
+     * @param {number|string} value 值
      */
     width(value) {
         for (let index = 0; index < this.length; index++) {
@@ -459,7 +459,7 @@ class BET extends Array {
     }
     /**
      * 设置/读取高度
-     * @param value 值
+     * @param {number|string} value 值
      */
     height(value) {
         for (let index = 0; index < this.length; index++) {
@@ -475,7 +475,7 @@ class BET extends Array {
     }
     /**
      * 读取整体高度 默认：height+padding+border
-     * @param containMargin 是否包含外边距 <Boolean>
+     * @param {Boolean} containMargin 是否包含外边距
      */
     outerHeight(containMargin) {
         for (let index = 0; index < this.length; index++) {
@@ -487,7 +487,7 @@ class BET extends Array {
     }
     /**
      * 读取整体宽度 默认：width+padding+border
-     * @param containMargin 是否包含外边距 <Boolean>
+     * @param {Boolean} containMargin 是否包含外边距
      */
     outerWidth(containMargin) {
         for (let index = 0; index < this.length; index++) {

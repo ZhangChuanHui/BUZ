@@ -58,9 +58,9 @@ export default {
     },
     /**
      * 执行指令
-     * @param node 节点 <Element>
-     * @param tokens 特征标记集 <Object> 
-     * @param option 执行配置信息 <Object>
+     * @param {Element} node 节点 
+     * @param {Object} tokens 特征标记集 
+     * @param {Object} option 执行配置信息 
     */
     exec: function (node, tokens, option = {
         view: undefined,

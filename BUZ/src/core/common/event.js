@@ -13,8 +13,8 @@ class EventHandler {
     }
     /**
      * 注册事件
-     * @param name 事件名称 <String>
-     * @param callBack 回调函数 <Function>
+     * @param {String} name 事件名称 
+     * @param {Function} callBack 回调函数 
      *      其中callBack中传递两个参数：
      *      1.event ：{
      *            target <Any> 触发事件对象
@@ -35,8 +35,8 @@ class EventHandler {
     }
     /**
     * 注册事件（只触发一次）
-    * @param name 事件名称 <String>
-    * @param callBack 回调函数 <Function>
+    * @param {String} name 事件名称
+    * @param {Function} callBack 回调函数 
     */
     once(name, callBack) {
         this._eventDatas[name] = this._eventDatas[name] || [];
@@ -48,8 +48,8 @@ class EventHandler {
     }
     /**
     * 卸载事件
-    * @param name 事件名称 <String>
-    * @param callBack 回调函数 <underfind/Function>
+    * @param {String} name 事件名称 
+    * @param {Function} callBack 回调函数
     *     若不传递callBack则直接卸载所有事件。
     */
     off(name, callBack) {
@@ -62,8 +62,8 @@ class EventHandler {
     }
     /**
     * 触发事件
-    * @param name  事件名称 <String>
-    * @param param 事件传递参数 <Any>
+    * @param {String} name  事件名称
+    * @param {Any} param 事件传递参数
     */
     trigger(name, param) {
         var delegates = this._eventDatas[name];

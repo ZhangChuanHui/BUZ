@@ -52,7 +52,7 @@ class Router extends EventHandler {
     }
     /**
      * 添加路由映射处理方法
-     * @param map 参考defaultRouterMap <Object>
+     * @param {Object} map 参考defaultRouterMap
     */
     addRouterMap(map) {
         map = Object.assign({}, defaultRouterMap, map);
@@ -69,7 +69,7 @@ class Router extends EventHandler {
     }
     /**
      * 移除路由映射处理方法
-     * @param roleName 参考defaultRouterMap.role <String>
+     * @param {string} roleName 参考defaultRouterMap.role 
     */
     removeRouterMap(roleName) {
         this.routerMaps = Utils.without(this.routerMaps, (item) => {
@@ -109,7 +109,7 @@ class Router extends EventHandler {
     }
     /**
      * hashChange方法，入口方法
-     * @param hash hashValue <String>
+     * @param {string} hash hashValue
     */
     hasChange(hash) {
         if (Utils.isStrEmpty(hash)) {
@@ -144,8 +144,8 @@ class Router extends EventHandler {
     }
     /**
      * 加载区域配置信息
-     * @param fragment 地址碎片 <Object>
-     * @param fragmentUrl 地址(Hash) <String>
+     * @param {Object} fragment 地址碎片
+     * @param {string} fragmentUrl 地址(Hash)
     */
     _loadAreaConfig(fragment, fragmentUrl) {
         let self = this;
@@ -180,9 +180,9 @@ class Router extends EventHandler {
     }
     /**
      * 初始化区域
-     * @param areaConfig 区域配置文件 <Object>
-     * @param fragment 地址碎片 <Object>
-     * @param fragmentUrl 地址(Hash)  <String>
+     * @param {Object} areaConfig 区域配置文件 
+     * @param {Object} fragment 地址碎片
+     * @param {string} fragmentUrl 地址(Hash)
     */
     _initArea(areaConfig, fragment, fragmentUrl) {
         let self = this;
@@ -246,8 +246,8 @@ class Router extends EventHandler {
     }
     /**
      * 开始执行路由加载，入口方法
-     * @param fragment 地址碎片 <Object>
-     * @param fragmentUrl 地址(hash) <String>
+     * @param {Object} fragment 地址碎片
+     * @param {string} fragmentUrl 地址(hash)
     */
     _startLoadRouter(fragment, fragmentUrl) {
         let self = this;
@@ -267,8 +267,8 @@ class Router extends EventHandler {
     }
     /**
      * 执行路由加载，主方法
-     * @param fragment 地址碎片 <Object>
-     * @param fragmentUrl 地址(hash) <String>
+     * @param {Object} fragment 地址碎片
+     * @param {String} fragmentUrl 地址(hash)
     */
     _loadRouter(fragment, fragmentUrl) {
         let self = this;
@@ -315,7 +315,7 @@ class Router extends EventHandler {
     }
     /**
      * 转换HashUrl
-     * @param hash hashValue <String>
+     * @param {string} hash hashValue
     */
     _transformHashUrl(hash = "") {
         if (hash.charAt(0) === "#") {
@@ -334,7 +334,7 @@ class Router extends EventHandler {
     }
     /**
      * 解析Hash
-     * @param hash hashValue <String>
+     * @param {string} hash hashValue
     */
     _analysHash(hash = "") {
         let hashArray = hash.split('/');
@@ -374,9 +374,9 @@ class Router extends EventHandler {
     }
     /**
      * 获取碎片中指定name的值，并判断是否取默认值
-     * @param name param名称 <String>
-     * @param fragment 地址碎片 <Object>
-     * @param defaultPath 默认地址 <String>
+     * @param {string} name param名称
+     * @param {Object} fragment 地址碎片 
+     * @param {string} defaultPath 默认地址 
     */
     _getRoleParamPath(name, fragment, defaultPath = "") {
         let routerMap = fragment.routerMap,

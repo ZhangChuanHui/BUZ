@@ -57,7 +57,7 @@ class Application extends EventHandler {
     }
     /**
      * 跳转
-     * @param hashPath 目标Hash值 
+     * @param {String} hashPath 目标Hash值 
      *     注意：开始位置不需要带'#'或'/'
     */
     go(hashPath) {

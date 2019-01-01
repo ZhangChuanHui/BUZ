@@ -14,9 +14,9 @@ const LOGTAG = "区域管理";
 class RegionItem extends EventHandler {
     /**
      * 构造函数
-     * @param region 区域参考Region类 <Class>
-     * @param name 区域名称 <String>
-     * @param selector 区域选择器 <BET Selector>
+     * @param {Class} region 区域参考Region类
+     * @param {String} name 区域名称
+     * @param {BET} selector 区域选择器
     */
     constructor(region, name, selector) {
         super();
@@ -35,8 +35,8 @@ class RegionItem extends EventHandler {
     }
     /**
      * 装载视图
-     * @param view 视图组件
-     * @param pageParam 视图数据
+     * @param {View} view 视图组件
+     * @param {Any} pageParam 视图数据
     */
     show(view, pageParam) {
         //若当前区域装载视图，先执行视图卸载
@@ -136,8 +136,8 @@ class Region extends EventHandler {
     }
     /**
      * 初始化页面视图区域，通常只在Layout中进行设置
-     * @param templete HTML模板 <String>
-     * @param selectors 区域规划方案 详见Layout布局方案 <Object>
+     * @param {String} templete HTML模板
+     * @param {object} selectors 区域规划方案 详见Layout布局方案
     */
     initRegions(templete, selectors = {}) {
         this.app.option.containerSelector.html(templete);
@@ -176,10 +176,10 @@ class Region extends EventHandler {
     }
     /**
      * 注册全局观察者，不对外使用，由view触发
-     * @param view 视图脚本 <Object> 参考View类
-     * @param eventName 事件名称 <String>
-     * @param callBack 事件处理方法 <Function>
-     * @param isOnce 是否只执行一次 <Boolean>
+     * @param {View} view 视图脚本  参考View类
+     * @param {String} eventName 事件名称 <
+     * @param {Function} callBack 事件处理方法
+     * @param {Boolean} isOnce 是否只执行一次
     */
     registerGlobalEvent(view, eventName, callBack, isOnce) {
         if (Utils.isStrEmpty(view._viewId)
@@ -204,9 +204,9 @@ class Region extends EventHandler {
     }
     /**
      * 触发全局观察者事件，通常由view触发，也可手动触发
-     * @param eventName 事件名称 <String>
-     * @param params 事件参数 <Any>
-     * @param fromView 执行事件来源视图 <Object> 参考View类
+     * @param {String} eventName 事件名称
+     * @param {Any} params 事件参数
+     * @param {View} fromView 执行事件来源视图 参考View类
     */
     triggerGlobalEvent(eventName, params, fromView) {
         let existEvent = false,
@@ -243,7 +243,7 @@ class Region extends EventHandler {
     }
     /**
      * 按viewId移除全局观察者模式
-     * @param viewId 视图ID <String>
+     * @param {String} viewId 视图ID
     */
     removeGlobalEventByViewId(viewId) {
         delete this.listener[viewId];

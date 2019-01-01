@@ -9,8 +9,8 @@ let _toString = Object.prototype.toString;
 class Utils {
     /**
      * 从列表中移除某一项
-     * @param  list 数据源 <Array>
-     * @param value 值 <Any,Function> 值；若为Function 则根据true/false作为依据
+     * @param {Array} list 数据源
+     * @param {Any|Function} value  值；若为Function 则根据true/false作为依据
      */
     static without(list = [], value) {
         let newList = [];
@@ -37,7 +37,7 @@ class Utils {
     }
     /**
      * 数组去重
-     * @param list 数组
+     * @param {Array} list 数组
      */
     static distinct(list = []) {
         let result = [];
@@ -53,14 +53,14 @@ class Utils {
     /**
      * 检查值是否是一个方法类型
      * 输出：Boolean
-     * @param func 值 <Any>
+     * @param {Any} func 值
      */
     static isFunction(func) {
         return func && typeof func === "function";
     }
     /**
      * 判断字符串是否为空
-     * @param value 值
+     * @param {Any} value 值
      */
     static isStrEmpty(value) {
         return value === undefined || value === "" || value === null;
@@ -70,7 +70,7 @@ class Utils {
     }
     /**
      * 插入样式文件
-     * @param styles 样式文件路径 <Array>
+     * @param {Array} styles 样式文件路径
      *      注意地址是根据index.html做相对路径设置
      */
     static insertStyle(styles = []) {
@@ -80,7 +80,7 @@ class Utils {
     }
     /**
      * 移除样式文件
-     * @param styles 样式文件路径 <Array>
+     * @param {Array} styles 样式文件路径
      */
     static removeStyle(styles = []) {
         styles.forEach((item) => {
@@ -95,8 +95,8 @@ class Utils {
     }
     /**
      * 执行方法，并指定this
-     * @param func 执行方法 <Function>
-     * @param ref this引用 <Any>
+     * @param {Function} func 执行方法
+     * @param {Array} ref this引用
      */
     static bind(fun, ref) {
         return function () {
@@ -105,7 +105,7 @@ class Utils {
     }
     /**
      * DOM加载完毕
-     * @param callBack 回调 <Function>
+     * @param {Function} callBack 回调
      */
     static docReady(callBack) {
         document.addEventListener("DOMContentLoaded", function () {
@@ -114,31 +114,31 @@ class Utils {
     }
     /**
      * 去除前后空格
-     * @param str 字符串 <String>
+     * @param {String} str 字符串
      */
     static trim(str = "") {
         return str.replace(/(^\s*)|(\s*$)/g, "");
     }
     /**
      * 判断是否已指定字符串开始
-     * @param str 字符串 <String>
-     * @param key 关键字 <String>
+     * @param {String} str 字符串
+     * @param {String} key 关键字
      */
     static startWith(str = "", key) {
         return str.indexOf(key) === 0;
     }
     /**
      * 判断是否已指定字符串结尾
-     * @param str 字符串 <String>
-     * @param key 关键字 <String>
+     * @param {String} str 字符串
+     * @param {String} key 关键字
      */
     static endWith(str = "", key = "") {
         return str.lastIndexOf(key) == str.length - key.length;
     }
     /**
      * 判断是否已包含指定字符串
-     * @param str 字符串 <String>
-     * @param key 关键字 <String>
+     * @param {String} str 字符串 
+     * @param {String} key 关键字 
      */
     static contains(str = "", key) {
         return str.indexOf(key) > -1;

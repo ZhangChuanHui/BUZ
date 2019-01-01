@@ -19,8 +19,8 @@ const LOGTAG = "控制管理";
 class BaseController extends EventHandler {
     /**
      * 控制器匹配程序
-     * @param handler 参考defaultController <Object>
-     * @param fragment 参考router中的碎片 <Object>
+     * @param {Object} handler 参考defaultController
+     * @param {Object} fragment 参考router中的碎片
     */
     match(handler, fragment) {
         //对外输出克隆后的fragment防止篡改碎片信息
