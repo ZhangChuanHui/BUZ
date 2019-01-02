@@ -275,6 +275,21 @@
         });
     </pre>
 
+    <h4>request</h4>
+    <p>请求接口，<b>详见Request</b>，与App.request不同的是，不需要传入第三个参数<code>View</code></p>
+    <pre class="brush: js;">
+        Buz.View({
+            clickFuncton:function(){
+                this.request(url,{
+                    data:{}
+                })
+                .then(function(rspData){
+
+                });
+            }
+        });
+    </pre>
+
     <h4>reload</h4>
     <p>视图重载，<b>返回baseView，方便对其新功能操作交替转换</b></p>
     <pre class="brush: js;">

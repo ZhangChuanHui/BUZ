@@ -5,6 +5,8 @@ import { BaseController } from './controller';
 import Region from './region';
 import { BaseView } from './view';
 import Storage from "../storage/index";
+import Requester from '../requester/index';
+import Utils from '../common/utils';
 
 const LOGTAG = "应用管理";
 /**
@@ -25,7 +27,9 @@ class Application extends EventHandler {
             /**主页地址（锚点）*/
             indexPath: "Home",
             /**默认布局方案*/
-            defaultLayout: "DefaultLayout"
+            defaultLayout: "DefaultLayout",
+            /**请求管理配置参数，详见Request */
+            requestOption: {}
         }, config);
 
         this.option.containerSelector = $(this.option.containerSelector);
@@ -45,6 +49,12 @@ class Application extends EventHandler {
         this.view = new BaseView(this);
         /**缓存管理器 */
         this.storage = new Storage(this);
+
+        /**请求管理器 */
+        this.requester = new Requester(this, this.option.requestOption);
+        /**代理requset方法 */
+        this.request = Utils.bind(this.requester.request, this.requester);
+
         window.App = this;
         return this;
     }

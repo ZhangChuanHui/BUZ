@@ -206,6 +206,9 @@ class View extends EventHandler {
     triggerGlobal(eventName, params) {
         this._app.region.triggerGlobalEvent(eventName, params, this);
     }
+    request(url, option) {
+        this._app.request(url, option, this);
+    }
     /**
      * 选择器，作用在于只在this.$el中查询
      * @param {String} selector

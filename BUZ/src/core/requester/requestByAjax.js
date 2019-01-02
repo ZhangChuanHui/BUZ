@@ -1,6 +1,8 @@
 import BaseRequester from './baseRequester';
 import axios from 'axios';
+import LogHandler from '../common/log';
 
+const LOGTAG = '请求管理';
 /**
  *  作者：张传辉
  *  功能名称：默认Ajax请求器
@@ -28,15 +30,20 @@ class RequestByAjax extends BaseRequester {
             })
             .catch(function (error) {
                 if (axios.isCancel(error)) {
-                    callBack('cancel');
+                    callBack('canceled');
+                    return;
                 }
-                else if (error.response) {
+
+                if (error.response) {
                     // 发送请求后，服务端返回的响应码不是 2xx   
-                    callBack(error.response.status, error.response.data);
+                    callBack('error', error.response.status);
+
                 }
                 else {
-                    callBack('error', error.message);
+                    callBack('error');
                 }
+
+                LogHandler.error(LOGTAG, '请求失败', error);
             });
 
 
