@@ -10,7 +10,8 @@ class BaseRequester {
      * @param {Object} option 参数
      */
     transformData(url, option = {}) { return option; }
-    /** 请求发起者 --必须重写
+    /** 
+     * 请求发起者 --必须重写
      *  @param {Object} config 配置参数-请参考当前项目请求器参数说明 
      *  @param {Function} callBack 回调处理集 
      *  @return {Function} Cancel取消处理
