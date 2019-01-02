@@ -50,18 +50,6 @@ class Requester extends EventHander {
         this.handlers.push(new handler());
     }
     /**
-     * 获取请求触发器（内部）
-     * @param {string} url 请求地址
-     * @param {Object} settings 请求参数配置
-     */
-    getHandler(settings) {
-        if (Utils.isFunction(this.config.getHandler)) {
-            return this.config.getHandler(settings, ...this.handlers) || this.handlers[0];
-        }
-
-        return this.handlers[0];
-    }
-    /**
      * 请求执行方法
      * @param {string} url 请求地址
      * @param {object} option 配置信息
@@ -86,7 +74,7 @@ class Requester extends EventHander {
         }, option);
 
         //获取请求触发器
-        let handler = this.getHandler(settings);
+        let handler = this._getHandler(settings);
 
         //请求触发器参数转换
         settings = handler.transformData(url, settings);
@@ -134,6 +122,18 @@ class Requester extends EventHander {
 
         if (this.requestList.length)
             log.warn("业务请求", "执行请求终止操作，共终止了" + this.requestList.length + "条未完成请求");
+    }
+    /**
+     * 获取请求触发器（内部）
+     * @param {string} url 请求地址
+     * @param {Object} settings 请求参数配置
+     */
+    _getHandler(settings) {
+        if (Utils.isFunction(this.config.getHandler)) {
+            return this.config.getHandler(settings, ...this.handlers) || this.handlers[0];
+        }
+
+        return this.handlers[0];
     }
     /**注册基础事件 */
     _initHandler(app) {

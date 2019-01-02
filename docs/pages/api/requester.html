@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>BUZ帮助文档</title>
+    <meta charset="utf-8" />
+    <link href="../../resources/base.css" rel="stylesheet" />
+    <link href="../../resources/contentTheme.css" rel="stylesheet" />
+    <link href="../../resources/shCoreDefault.css" rel="stylesheet" />
+    <script src="../../scripts/shCore/shCore.js"></script>
+    <script src="../../scripts/shCore/extend/shBrushJScript.js"></script>
+    <script src="../../scripts/shCore/extend/shBrushXml.js"></script>
+    <script src="../../scripts/page.js"></script>
+</head>
+
+<body>
+    <h1>Requester -- 请求管理</h1>
+    <p>请求管理，为项目提供接口访问，默认提供一个<code>ajax</code>请求器，采用<b>axios</b>进行封装，框架提供更改请求器，并可以根据不同请求参数使用
+        不同的请求触发器进行触发。</p>
+    <h2>使用方式</h2>
+    <h3>App.request</h3>
+    <p>应用池在初始化时，会将request方法绑定到App中，作为使用入口。</p>
+    <pre class="brush: js;">
+        App.request(url,{
+            data:{},
+            ...
+        },View);
+    </pre>
+    <h3>View.request</h3>
+    <pre class="brush: js;">
+        Buz.View({
+            onShow:function(){
+                this.request(url,{
+                    data:{},
+                    ...
+                });
+
+                //等同于
+
+                App.request(url,{
+                    data:{},
+                    ...
+                },this);
+            }
+        });
+    </pre>
+    <p class="tip">Requester默认提供两种使用方式，两种区别在于是否有第三个参数：<code>View(触发视图组件)</code>。
+        方法返回<b>Promise</b>对象，可使用<code>then</code>、<code>catch</code>、<code>all</code>、<code>race</code>方法进行相关操作。
+        不了解ES6的<code>Promise</code>同学建议先去了解下。
+    </p>
+    <h2>参数说明</h2>
+    <p>第一个参数为<code>URL</code>-请求路径，第三个参数为当前视图组件，接下来我们详细介绍下第二个参数</p>
+    <table class="param">
+        <thead>
+            <tr>
+                <td>参数名</td>
+                <td>作用</td>
+                <td>类型</td>
+                <td>默认值</td>
+                <td>备注</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>method</td>
+                <td>请求类型</td>
+                <td>String</td>
+                <td>post</td>
+                <td>具体参考所依赖的底层请求触发器</td>
+            </tr>
+            <tr>
+                <td>data</td>
+                <td>请求参数</td>
+                <td>Object</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>cache</td>
+                <td>是否要记录缓存</td>
+                <td>Boolean</td>
+                <td>false</td>
+                <td>若设置为记录缓存，在第一次请求成功后才会记录请求数据，并在
+                    以后的请求中使用缓存作为值进行返回，不再访问服务器
+                </td>
+            </tr>
+            <tr>
+                <td>cacheId</td>
+                <td>缓存标识</td>
+                <td>String</td>
+                <td></td>
+                <td>缓存记录标识=<code>url+|+cacheId</code></td>
+            </tr>
+            <tr>
+                <td>cancelWhenRouting</td>
+                <td>路由跳转时是否取消请求</td>
+                <td>Boolean</td>
+                <td>true</td>
+                <td>当路由发生改变时是否要清除当前未完成的请求，所设置为false，则永远不会被取消。</td>
+            </tr>
+        </tbody>
+    </table>
+    <h2>Requester-初始化</h2>
+    <p>Requester在应用池初始化时进行挂载，并传入<code>requestOption</code>进行全局配置</p>
+    <h3>requestOption-配置参数</h3>
+    <table class="param">
+        <thead>
+            <tr>
+                <td>参数名</td>
+                <td>作用</td>
+                <td>类型</td>
+                <td>默认值</td>
+                <td>备注</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>statusDict</td>
+                <td>自定义statusMessage</td>
+                <td>Object</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>getHandler</td>
+                <td>自定义获取请求触发器</td>
+                <td>Function</td>
+                <td></td>
+                <td>第一个参数为当前传入配置参数，后面依次为当前注入的触发器。
+                    高级用法，请详见<b>扩展请求触发器</b></td>
+            </tr>
+            <tr>
+                <td>resultTrasnform</td>
+                <td>自定义结果转换方法</td>
+                <td>Function</td>
+                <td></td>
+                <td>用于全局转换服务器相应数据</td>
+            </tr>
+        </tbody>
+    </table>
+    <h4>resultTrasnform</h4>
+    <p>对于成熟的项目而言，服务器相应数据通常分为响应报文头、响应报文数据，通过该方法可以
+        根据项目自身需要进行相应的逻辑判断，执行成功/失败。例如下面这个例子：
+    </p>
+    <pre class="brush: js;">
+        new Buz.Application({
+            requestOption:{
+                resultTrasnform:function(response, resolve, reject){
+                    //response -- 服务器原始相应数据
+                    //resolve -- 成功执行逻辑
+                    //reject -- 错误执行逻辑
+
+                    if(response.rspHead.state === 'success'){
+                        resolve(response);
+                    }
+                    else{
+                        reject(response.rspHead.state,response.rspHead.message);
+                    }
+                }
+            },
+            ...
+        }).start();
+    </pre>
+    <p class="tip">resolve成功逻辑执行方法，需要传入转换后的服务器数据；reject错误逻辑执行方法，需要传入错误状态和错误信息两个参数。</p>
+
+    <h3>公开方法</h3>
+    <p>由于Requester在应用池初始化时进行挂载，调用方法为：App.requester.方法名</p>
+    <table class="param">
+        <thead>
+            <tr>
+                <td>方法名</td>
+                <td>作用</td>
+                <td>参数</td>
+                <td>备注</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>addHandler</td>
+                <td>添加请求触发器</td>
+                <td>触发器</td>
+                <td>参考：<b>扩展请求触发器</b></td>
+            </tr>
+            <tr>
+                <td>request</td>
+                <td>请求接口</td>
+                <td></td>
+                <td>请参考本文第一节内容</td>
+            </tr>
+            <tr>
+                <td>cancelRequests</td>
+                <td>取消所有请求的回调函数</td>
+                <td>forceCancelAll 是否全部取消</td>
+                <td>若forceCancelAll=false则只取消<code>cancelWhenRouting=true</code>的请求，
+                    若forceCancelAll=true，则取消所有未完成的请求。</td>
+            </tr>
+        </tbody>
+    </table>
+    <p class="tip">Requester在初始化时，就已经对监听<code>Router</code>的<b>before</b>事件，
+        并在路由发生变化时，执行cancelRequests(false)；不需要再进行相应的扩展。</p>
+    <h3>事件</h3>
+    <table class="param">
+        <thead>
+            <tr>
+                <td>事件名称</td>
+                <td>作用</td>
+                <td>参数</td>
+                <td>备注</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>before</td>
+                <td>请求开始前触发</td>
+                <td>当前请求配置信息</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>after</td>
+                <td>请求结束后</td>
+                <td>当前请求配置信息</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>error</td>
+                <td>请求发生异常时触发</td>
+                <td>{
+                    code:错误码,
+                    settings:当前请求配置信息,
+                    message:错误信息
+                    }</td>
+                <td>除请求链接错误外，业务逻辑错误也会触发，具体参考<code>resultTrasnform</code>配置参数。
+                    若事件返回<b>false</b>时，则终止触发Promise的reject，不会向外层使用者响应，一般
+                    在错误时跳转登录等特殊需求下。</td>
+            </tr>
+        </tbody>
+    </table>
+    <p class="tip">提示：可以通过监听before和after事件实现请求等待效果。</p>
+    <h2>扩展请求触发器</h2>
+    <p>请求管理默认提供一种基于<code>axios</code>的ajax请求触发器，基本满足常用的业务需求，
+        若项目有更复杂的要求，可根据需要自行扩展，接下来我们先了解下<b>BaseRequester</b></p>
+
+    <h3>BaseRequester - 请求触发器基类</h3>
+    <p>请求接口类，用于规范底层处理类，所有触发器必须继承与BaseRequester类，并且必须实现<code>send</code>方法。</p>
+    <pre class="brush: js;">
+        /**
+        *  作者：张传辉
+        *  功能名称：请求接口类，用于规范底层处理类
+        *  描述信息：所有方法必须进行实现
+        *      对外不输出Promise对象，统一由Requester统一创建并管理Promise
+        */
+        class BaseRequester {
+            /**
+            * 参数转换方法
+            * @param {Object} option 参数
+            */
+            transformData(url, option = {}) { return option; }
+            /** 请求发起者 --必须重写
+            *  @param {Object} config 配置参数-请参考当前项目请求器参数说明 
+            *  @param {Function} callBack 回调处理集 
+            *  @return {Function} Cancel取消处理
+            */
+            send(config, callBack) { }
+        }
+
+        export default BaseRequester;
+    </pre>
+    <p class="tip">基类提供两个扩展方法，其中send是发起请求的执行入口，必须实现，<b>transformData</b>
+        为参数转换方法，由于不同的底层实现参数规范可能不同，通过此方法可以实现对外参数一致性，对底层参数差异化。</p>
+
+    <h3>扩展实践</h3>
+    <p>接下来我们通过一个实践代码来了解下具体运行逻辑，业务要求：针对某些特定的url做差异化，这些特定url请求，
+        不请求服务器，而是请求虚拟报文（.js）
+    </p>
+    <h4>创建触发器</h4>
+    <pre class="brush: js;">
+        class RequestByMock extends BaseRequester {
+            /** 请求发起者
+             *  @param {Object} config 配置参数-请参考当前项目请求器参数说明 
+             *  @param {Function} callBack 回调处理集
+             *  @return {Function} Cancel取消处理
+             */
+            send(config, callBack) {
+        
+                let canceled = false;
+        
+                import(`~/mock/${url}.js`)
+                    .then(function (response) {
+                        if (canceled) return;
+        
+                        callBack('connect', response);
+                    })
+                    .catch(function (error) {
+                        if (canceled) return;
+        
+                        callBack('error');
+                    });
+        
+        
+                return function () {
+                    canceled = true;
+                }
+            }
+        }
+        
+        export default RequestByMock;
+    </pre>
+    <h4>在应用池初始化进行注入</h4>
+    <pre class="brush: js;">
+        import RequestByMock from './plugins/requster/RequestByMock';
+        new Buz.Application(...);
+
+        App.requester.addHander(RequestByMock);
+
+        App.start();
+
+    </pre>
+
+    <h4>设置分支逻辑</h4>
+    <pre class="brush: js;">
+        App.new Buz.Application({
+            requestOption:{
+                getHandler:function(settings,requesterByAjax,requsterByMock){
+                    if(settings.url ==='xxxx'){
+                        return requsterByMock;
+                    }
+                    else{
+                        return requesterByAjax;
+                    }
+                }
+            },
+            ...
+        }).start();
+    </pre>
+
+</body>
+
+</html>

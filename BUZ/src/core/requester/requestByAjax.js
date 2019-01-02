@@ -16,7 +16,7 @@ class RequestByAjax extends BaseRequester {
      */
     send(config, callBack) {
 
-        let cancel, uncare = false;
+        let cancel;
 
         //创建cancel，强行覆盖，不可自定义
         config.cancelToken = new axios.CancelToken(function executor(exec) {
