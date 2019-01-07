@@ -59,7 +59,10 @@ class BaseView extends EventHandler {
             new Compile(view.$el[0], view, view.data);
         }
 
-        if (view.noTemplete === false) {
+        if (view.isComponent) {
+            selector.after(view.$el);
+        }
+        else if (view.noTemplete === false) {
             selector.empty();
             selector.append(view.$el);
         }
@@ -78,6 +81,9 @@ class BaseView extends EventHandler {
      * @param {View} view 视图组件
     */
     renderTemplete(view) {
+        if (view.noContainer)
+            return $(view.templete);
+
         return $(`
             <div class="app-page ${view.pageClassName}">
             ${view.templete}
@@ -90,15 +96,16 @@ class BaseView extends EventHandler {
      * @param {String} name 子视图名称 
      * @param {View} View 子视图组件 
      * @param {Any} pageParam 视图参数
+     * @param {Boolean} isComponent 是否是组件
     */
-    initChildrenView(parentView, selector, name, view, pageParam) {
+    async initChildrenView(parentView, selector, name, view, pageParam) {
         view.parent = parentView;
         view.__viewName = name;
 
-        this.initView(selector, view, pageParam);
+        await this.initView(selector, view, pageParam);
         parentView.childrens[name] = view;
 
-        selector.attr("data-view-name", name);
+        !view.isComponent && selector.attr("data-view-name", name);
         log.info(LOGTAG, `${name}子视图装载成功`);
     }
     /**
@@ -245,14 +252,15 @@ class View extends EventHandler {
      * @param {String} name 子视图名称 
      * @param {View|String} view 视图组件 
      * @param {Any} pageParam 视图参数 
+     * @param {Boolean} isComponent 是否是组件
     */
-    attachChild(selector, name, view, pageParam) {
+    attachChild(selector, name, view, pageParam, isComponent) {
         if (this.childrens[name]) {
             this.teardownChild(name);
             log.info(LOGTAG, `${name}:完成子视图卸载`);
         }
 
-        selector = Utils.$(selector);
+        selector = $(selector);
 
         if (selector.length === 0) {
             log.error(LOGTAG, `${name}:子视图加载失败，选择器为空`);
@@ -267,7 +275,7 @@ class View extends EventHandler {
                     //判断选择符是否仍挂载DOM中
                     if (selector.parent().length) {
                         self._app.view.initChildrenView(
-                            self, selector, name, new ViewHandler(), pageParam);
+                            self, selector, name, new ViewHandler(), pageParam, isComponent);
                     }
                     else {
                         log.warn(LOGTAG, `${name}: 子视图元素被卸载，终止异步加载子视图`);
@@ -277,8 +285,11 @@ class View extends EventHandler {
                     log.error(LOGTAG, `子视图脚本加载失败`, e);
                 });
         }
+        else if (Utils.isFunction(view)) {
+            this._app.view.initChildrenView(this, selector, name, new view(), pageParam, isComponent);
+        }
         else {
-            this._app.view.initChildrenView(this, selector, name, view, pageParam);
+            this._app.view.initChildrenView(this, selector, name, view, pageParam, isComponent);
         }
     }
     /**

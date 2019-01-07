@@ -16,7 +16,7 @@ export const LOGTAG = "页面渲染";
  * @param {Object} option 配置信息
 */
 export function compileNodes(el, option, scope) {
-    let tokens = new parser(el);
+    let tokens = new parser(el, option);
 
     let result = CompileOrder.exec(el, tokens, option, scope);
 

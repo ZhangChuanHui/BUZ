@@ -7,4 +7,5 @@ import './condition';
 import './display';
 import './list';
 import './storageHelper';
+import './component';
 

@@ -6,8 +6,9 @@
  *      2.务必实现接口方法
 */
 export default class BaseParser {
-    constructor(node) {
+    constructor(node, option) {
         this.node = node;
+        this.option = option;
         this.result = [];
 
         if (this.check()) {

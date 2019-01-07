@@ -100,6 +100,9 @@ class RegionItem extends EventHandler {
     //初始化之后
     _afterInit(view, pageParam) {
         if (view) {
+            if (Utils.isFunction(view)) {
+                view = new view();
+            }
             this.view = view;
             this.app.view.initView(this.selector, this.view, pageParam);
         }

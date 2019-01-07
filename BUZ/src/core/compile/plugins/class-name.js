@@ -17,4 +17,4 @@ CompileOrder.addOrder({
 
         target.node.className = className + space + nv;
     }
-})
+});
