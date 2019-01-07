@@ -54,14 +54,14 @@ class BaseView extends EventHandler {
             await view.onRender.call(view);
         }
 
-        if (view.noTemplete === false) {
-            selector.empty();
-            selector.append(view.$el);
-        }
-
         if (view.noCompile != true) {
             new Observer(view.data);
             new Compile(view.$el[0], view, view.data);
+        }
+
+        if (view.noTemplete === false) {
+            selector.empty();
+            selector.append(view.$el);
         }
 
         if (Utils.isFunction(view.onShow)) {
