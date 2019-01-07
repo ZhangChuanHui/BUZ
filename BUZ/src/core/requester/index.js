@@ -22,8 +22,16 @@ class Requester extends EventHander {
             statusDict: {},
             /**自定义获取请求触发器 {Funtion} */
             getHandler: undefined,
+            /**自定义请求数据转换方法 */
+            transformData: function (data) { return data; },
+            /**默认错误处理 */
+            defaultErrorFunc: function (error) {
+                alert(error.message);
+            },
             /**自定义结果转换方法 {Function} */
-            resultTrasnform: function (response, resolve, reject) { resolve(response); }
+            resultTrasnform: function (response, resolve, reject) {
+                resolve(response);
+            }
         }, config);
 
         this.handlers = [];
@@ -69,6 +77,8 @@ class Requester extends EventHander {
             cacheId: '',
             //路由跳转时是否取消请求
             cancelWhenRouting: true,
+            //是否采用默认错误处理
+            useDefaultError: true,
             //触发视图
             view: view
         }, option);
@@ -76,8 +86,12 @@ class Requester extends EventHander {
         //获取请求触发器
         let handler = this._getHandler(settings);
 
+        //转换请求数据
+        settings.data = this.config.transformData(settings.data) || settings.data;
+
         //请求触发器参数转换
         settings = handler.transformData(url, settings);
+
 
         //触发事件
         this.trigger("before", settings);
@@ -179,9 +193,13 @@ class Requester extends EventHander {
         }
 
         //触发事件
-        if (this.trigger("error", error) !== false) {
-            reject(error);
+        if (this.trigger("error", error) === false) return;
+
+        if (settings.useDefaultError && Utils.isFunction(this.config.defaultErrorFunc)) {
+            this.config.defaultErrorFunc(error);
         }
+
+        reject(error);
     }
 }
 

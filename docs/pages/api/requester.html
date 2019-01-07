@@ -99,6 +99,17 @@
                 <td>true</td>
                 <td>当路由发生改变时是否要清除当前未完成的请求，所设置为false，则永远不会被取消。</td>
             </tr>
+            <tr>
+                <td>useDefaultError</td>
+                <td>是否采用默认错误处理机制</td>
+                <td>Boolean</td>
+                <td>true</td>
+                <td>
+                    默认开启，当发生异常或者业务异常时，触发requestOption.defaultErrorFunc。
+                    重要：若触发<code>error</code>事件返回false时，不会执行默认错误处理方法，也不会
+                    执行reject！
+                </td>
+            </tr>
         </tbody>
     </table>
     <h2>Requester-初始化</h2>
@@ -129,6 +140,22 @@
                 <td></td>
                 <td>第一个参数为当前传入配置参数，后面依次为当前注入的触发器。
                     高级用法，请详见<b>扩展请求触发器</b></td>
+            </tr>
+            <tr>
+                <td>transformData</td>
+                <td>自定义请求数据转换方法</td>
+                <td>Function</td>
+                <td>默认原数据返回</td>
+                <td>在请求时会将settings.data传入该方法，并将返回值覆盖，通过该方法可实现
+                    请求前的请求数据格式转换
+                </td>
+            </tr>
+            <tr>
+                <td>defaultErrorFunc</td>
+                <td>自定义默认错误处理方法</td>
+                <td>Function</td>
+                <td>默认弹窗提示error.message</td>
+                <td>若请求参数配置useDefaultError=true时才启用该机制</td>
             </tr>
             <tr>
                 <td>resultTrasnform</td>
@@ -311,7 +338,7 @@
         import RequestByMock from './plugins/requster/RequestByMock';
         new Buz.Application(...);
 
-        App.requester.addHander(RequestByMock);
+        App.requester.addHandler(RequestByMock);
 
         App.start();
 
