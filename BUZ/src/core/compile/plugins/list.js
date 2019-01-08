@@ -16,7 +16,7 @@ const STRIPPARENTSRE = /^\(|\)$/g;
 CompileOrder.addOrder({
     name: "for",
     isSkipChildren: true,
-    weight: 200,
+    weight: 500,
     exec: function (target, nv, ov) {
         var token = target.$token;
 

@@ -20,7 +20,6 @@ export default Buz.View({
 
         let url = [area, controller, action].join('/');
 
-
         this.$("li.active").removeClass("active");
         this.$(`li[data-hash='${url}']`).addClass("active");
     },

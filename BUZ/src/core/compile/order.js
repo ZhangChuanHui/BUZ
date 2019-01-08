@@ -76,17 +76,17 @@ export default {
         for (let token of tokens) {
             let order = this.orderList[token.order];
 
-            if (order.isSkipChildren) isSkipChildren = true;
-
             if (order === undefined) {
                 log.warn(LOGTAG, `未找到${token.order}指令名`);
                 continue;
             }
 
+            if (order.isSkipChildren) isSkipChildren = true;
+
             if (node.parentNode) {
                 token.node = node;
                 token.$node = $(node);
-
+                token.hooks = {};
                 //移除标记
                 token.removeAttr && token.removeAttr();
 
@@ -97,13 +97,20 @@ export default {
                 let exec = (nv, ov, isFirst, always) => {
                     if (always !== true && nv === token.oldValue) return;
 
-                    order.exec(Object.assign({
+                    let execOption = Object.assign({
                         //保留token/option把柄作为后期oder存放依据
                         $token: token,
                         $option: option,
+                        $tokens: tokens,
                         isFirst: isFirst,
                         scope: scope
-                    }, token, option), nv, token.oldValue);
+                    }, token, option);
+
+                    order.exec(execOption, nv, token.oldValue);
+
+                    for (let item in token.hooks) {
+                        item(execOption, nv, token.oldValue);
+                    }
 
                     token.oldValue = nv;
                 }

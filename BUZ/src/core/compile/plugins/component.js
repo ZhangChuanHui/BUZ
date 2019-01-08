@@ -12,26 +12,29 @@ CompileOrder.addOrder({
     //权重 
     weight: -1000,
     exec: function (target, nv, ov) {
-        let token = target.$token;
+        debugger;
+    },
+    breforeExec: function (token, option, scope) {
+        token.componentId = token.component.name + '_' + Utils.guid();
+        token.after = token.$node.after(document.createTextNode(""), true);
+        token.$node.remove();
 
-        let childrenView = this.initChildrenView(token.component.parser);
+        token.componentView = this.initChildrenView(token.component.parser);
 
-        if (target.view) {
-            target.view.attachChild(token.after, token.componentId, new childrenView(), undefined, true);
+        if (option.view) {
+            option.view.attachChild(token.after, token.componentId, token.componentView, undefined, true);
         }
         else {
             LogHandler.error(LOGTAG, '装载组件时，未找到视图组件');
         }
     },
-    breforeExec: (token, option, scope) => {
-        token.componentId = token.component.name + '_' + Utils.guid();
-        token.after = token.$node.after(document.createTextNode(""), true);
-        token.$node.remove();
-    },
-    initChildrenView: (parser) => {
-        return Buz.View({
+    initChildrenView: function (parser) {
+        return new Buz.View({
             isComponent: true,
             noContainer: true
-        }, parser);
+        }, parser)();
+    },
+    checkProp: function (view, tokens) {
+
     }
-})
+});

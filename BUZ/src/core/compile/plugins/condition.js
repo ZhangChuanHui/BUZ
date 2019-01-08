@@ -22,7 +22,7 @@ function ExecResultFlow(parent, option) {
 */
 CompileOrder.addOrder({
     name: "if",
-    weight: 100,
+    weight: 400,
     exec: function (target, value) {
         let parentNode = getParent(target);
         let token = target.$token;
@@ -54,7 +54,7 @@ CompileOrder.addOrder({
 
 CompileOrder.addOrder({
     name: "else-if",
-    weight: 100,
+    weight: 400,
     exec: function (target, value) {
         let parentNode = getParent(target);
         let token = target.$token;
@@ -85,7 +85,7 @@ CompileOrder.addOrder({
 
 CompileOrder.addOrder({
     name: "else",
-    weight: 100,
+    weight: 400,
     exec: function (target, value) {
         let parentNode = getParent(target);
         let token = target.$token;

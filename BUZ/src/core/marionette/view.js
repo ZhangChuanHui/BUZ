@@ -56,7 +56,7 @@ class BaseView extends EventHandler {
 
         if (view.noCompile != true) {
             new Observer(view.data);
-            new Compile(view.$el[0], view, view.data);
+            new Compile(view.$el, view, view.data);
         }
 
         if (view.isComponent) {
@@ -81,13 +81,15 @@ class BaseView extends EventHandler {
      * @param {View} view 视图组件
     */
     renderTemplete(view) {
-        if (view.noContainer)
+        if (view.noContainer) {
             return $(view.templete);
-
-        return $(`
-            <div class="app-page ${view.pageClassName}">
-            ${view.templete}
-            </div>`);
+        }
+        else {
+            return $(`
+                <div class="app-page ${view.pageClassName}">
+                ${view.templete}
+                </div>`);
+        }
     }
     /**
      * 初始化子视图

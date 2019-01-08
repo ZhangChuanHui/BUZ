@@ -57,16 +57,15 @@ class Compile {
 
             compileNodes(this.fragment, option);
 
-            this.el.appendChild(this.fragment);
+            this.el = this.fragment;
         }
     }
     nodeFragment(el) {
         let fragment = document.createDocumentFragment();
-        let child;
 
-        while (child = el.firstChild) {
+        el.each(function (child) {
             fragment.appendChild(child);
-        }
+        });
 
         return fragment;
     }
