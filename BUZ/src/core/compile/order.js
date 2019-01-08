@@ -86,13 +86,13 @@ export default {
             if (node.parentNode) {
                 token.node = node;
                 token.$node = $(node);
-                token.hooks = {};
+                token.hooks = [];
                 //移除标记
                 token.removeAttr && token.removeAttr();
 
                 scope = scope || option.data;
                 //before Exec
-                order.breforeExec(token, option, scope);
+                order.breforeExec(token, option, scope, tokens);
 
                 let exec = (nv, ov, isFirst, always) => {
                     if (always !== true && nv === token.oldValue) return;
@@ -108,7 +108,7 @@ export default {
 
                     order.exec(execOption, nv, token.oldValue);
 
-                    for (let item in token.hooks) {
+                    for (let item of token.hooks) {
                         item(execOption, nv, token.oldValue);
                     }
 

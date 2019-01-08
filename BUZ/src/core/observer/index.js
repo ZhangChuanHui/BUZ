@@ -126,7 +126,7 @@ export function setData(target, key, value) {
         target[key] = value;
         new Observer(target[key]);
 
-        notifyChange(target);
+        notifyDataChange(target);
     }
     else {
         log.error(LOGTAG, `Buz.setData传入Key值不在target中，请确认`);
@@ -141,7 +141,7 @@ export function deleteData(target, key) {
     else {
         log.error(LOGTAG, `Buz.deleteData传入Key值不在target中或不被识别`);
     }
-    notifyChange(target);
+    notifyDataChange(target);
 }
 /** 通知响应值改变*/
 export function notifyDataChange(target) {
