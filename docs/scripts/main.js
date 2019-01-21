@@ -4,7 +4,8 @@ var menuDatas = {
         { title: "使用说明", href: "pages/help/use.html" },
         { title: "加载流程", href: "pages/help/load.html" },
         { title: "模板语法", href: "pages/help/templete.html" },
-        { title: "自定义指令", href: "pages/help/customOrder.html" }
+        { title: "自定义指令", href: "pages/help/customOrder.html" },
+        { title: "组件", href: "pages/help/component.html" }
     ],
     api: [
         { title: "应用池", href: "pages/api/application.html" },

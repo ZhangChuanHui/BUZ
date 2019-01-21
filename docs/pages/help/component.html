@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>BUZ帮助文档</title>
+    <meta charset="utf-8" />
+    <link href="../../resources/base.css" rel="stylesheet" />
+    <link href="../../resources/contentTheme.css" rel="stylesheet" />
+    <link href="../../resources/shCoreDefault.css" rel="stylesheet" />
+    <script src="../../scripts/shCore/shCore.js"></script>
+    <script src="../../scripts/shCore/extend/shBrushJScript.js"></script>
+    <script src="../../scripts/shCore/extend/shBrushXml.js"></script>
+    <script src="../../scripts/page.js"></script>
+</head>
+
+<body>
+    <h1>组件</h1>
+    <p>在BUZ中组件以子视图的形式存在，如果不了解子视图的童鞋，请先阅读View。</p>
+    <p>由于组件属于一种子视图，所以它的生命周期完全遵循视图生命周期，本文不再做详细介绍，主要讲解
+        视图的注册和使用。
+    </p>
+    <h2>注册组件</h2>
+    <p>注册组件分为两种注册方式，一种是全局组件，第二种是视图内私有组件。</p>
+    <pre class="brush: js;">
+        import demoButton from './commonWeb/components/demo-button';
+        //全局组件
+        Buz.component('demo-button', demoButton);
+    </pre>
+    <pre class="brush: js;">
+        import demoButton from './commonWeb/components/demo-button';
+        //私有组件
+        Buz.View({
+            //...
+            components:{
+                'demo-button':demoButton
+            }
+        });
+    </pre>
+    <p>Buz.component全局组件注册方法接受三个参数：name（组件名称）, parser（组件执行代码）, group（分组，可选）</p>
+    <p class="tip">其中分组参数可以通过第三个参数进行设置，也可以在组件执行代码中设置componentGroup，通过参数
+        设置优先于执行代码中的componentGroup。
+    </p>
+    <h2>开发组件</h2>
+    <p>组件以子视图的形式存在，除了视图组件中提供的默认参数外，以下参数是组件特殊属性：</p>
+    <table class="param">
+        <thead>
+            <tr>
+                <td>参数名</td>
+                <td>作用</td>
+                <td>类型</td>
+                <td>默认值</td>
+                <td>备注</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>componentGroup</td>
+                <td>组件分组</td>
+                <td>String</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>componentNode</td>
+                <td>组件BET元素</td>
+                <td>BET</td>
+                <td></td>
+                <td>可通过该元素来trigger外部事件。</td>
+            </tr>
+            <tr>
+                <td>componentChildNodes</td>
+                <td>组件子集</td>
+                <td>NodeList</td>
+                <td></td>
+                <td>通过自定义控制，可实现控件子集的定向插入</td>
+            </tr>
+        </tbody>
+    </table>
+    <h3>props 外部响应式数据</h3>
+    <p>通过设置props来接受外部响应式数据，实时响应视图渲染。</p>
+    <pre class="brush: js;">
+        /** 组件参数默认配置 */
+        const COMPONENTPROPDEFAULTDATA = {
+            //类型
+            type: undefined,
+            //默认值
+            default: undefined,
+            //是否必须设置
+            required: false,
+            //校验
+            validate: () => { return true }
+        }
+    </pre>
+    <p>以上参数是全量参数设置，当然也支持简单的设置方式</p>
+    <pre class="brush: js;">
+        export default {
+            //...
+            props: ['param1','param2']
+        };
+    </pre>
+    <pre class="brush: js;">
+        export default {
+            //...
+            props: {
+                'param1':Number,
+                'param2':Array,
+                'param3':{
+                    type:Object,
+                    required: true,
+                    validate:function(val){
+                        return [1,2,3].indexOf(val)>-1;
+                    }
+                }
+            }
+        };
+    </pre>
+    <p class="tip">如果不设置props，则所有数据都是一次性传递，不会实时响应</p>
+    <h3>子集定向插入</h3>
+    <p>对于组件标签内的子集，需要再组件渲染后定向插入，并实时响应，则需要手动操作，例如：</p>
+    <pre class="brush: html;">
+        <demo-button :btntext='demoStr' on:click='click4'>我是按钮{{demoStr}}</demo-button>
+    </pre>
+    <pre class="brush: js;">
+        export default {
+            templete: `<button type='button' on:click='demoClick'></button>`,
+            onRender: function () {
+                this.$el.append(this.componentChildNodes);
+            }
+        };
+    </pre>
+    <p>通过上面的例子可以看到，组件会把demo-button标签内的节点插入到<b>button</b>中。并且子节点仍然保持
+        响应数据的实时渲染操作。</p>
+</body>
+
+</html>

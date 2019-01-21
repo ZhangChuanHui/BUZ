@@ -1,6 +1,6 @@
 import CompileOrder from '../order';
 import LogHandler from '../../common/log';
-import { LOGTAG, compileNodes } from '../index';
+import { LOGTAG, compileNodes } from '..';
 import Utils from '../../common/utils';
 import { defineReactive } from '../../observer';
 

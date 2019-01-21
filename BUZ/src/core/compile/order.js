@@ -19,7 +19,6 @@ export default {
     }) {
         param
             && param.name
-            && param.exec
             && (this.orderList[param.name] = Object.assign({
                 //是否跳过子集
                 isSkipChildren: false,

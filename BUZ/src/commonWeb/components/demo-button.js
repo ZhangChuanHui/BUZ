@@ -1,10 +1,10 @@
 export default {
-    templete: `<button type='button' on:click='demoClick'>{{btntext}}</button>`,
+    templete: `<button type='button' on:click='demoClick'></button>`,
     props: ['btntext'],
     demoClick: function () {
-        alert(1);
+        this.componentNode.trigger("click");
     },
     onRender: function () {
-        debugger;
+        this.$el.append(this.componentChildNodes);
     }
 };

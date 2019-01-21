@@ -1,7 +1,7 @@
 import CompileOrder from '../order';
 import Utils from '../../common/utils';
 import LogHandler from '../../common/log';
-import { LOGTAG } from '..';
+import { LOGTAG, compileNodes } from '..';
 import { setData, notifyDataChange } from '../../observer/index'
 
 /** 组件参数默认配置 */
@@ -24,18 +24,30 @@ CompileOrder.addOrder({
     name: "component",
     //权重 
     weight: -1000,
+    isSkipChildren: true,
     exec: function (target, nv, ov) { },
     breforeExec: function (token, option, scope, tokens) {
-        token.componentId = token.component.name + '_' + Utils.guid();
+        token.exp = undefined;
+
+        if (token.node.componentLoaded) return;
+
+        //保证标签不会出现循环渲染。
+        token.node.componentLoaded = true;
+        token.componentId = token.$node.attr("id") || (token.component.name + '_' + Utils.guid());
         token.after = token.$node.after(document.createTextNode(""), true);
         token.$node.remove();
 
-        token.componentView = this.initChildrenView(token.component.parser);
+        token.componentView = this.initChildrenView(token.component.parser, token);
 
+        //设置组件分组
+        token.componentView.componentGroup = token.component.group
+            || token.componentView.componentGroup;
         if (option.view) {
             this.insertTokenPropMapping(token, token.componentView, tokens);
 
             this.setDefaultViewData(token.componentView, token.node, token.propsData, tokens);
+
+            this.renderChildren(token.componentView, token, option, scope);
 
             option.view.attachChild(token.after, token.componentId, token.componentView, undefined, true);
         }
@@ -54,10 +66,11 @@ CompileOrder.addOrder({
             this.responseViewData(view, name, propsData[name], propsData[name].value);
         }
     },
-    initChildrenView: function (parser) {
+    initChildrenView: function (parser, token) {
         return new Buz.View({
             isComponent: true,
             noContainer: true,
+            componentNode: token.$node,
             data: {}
         }, parser)();
     },
@@ -125,6 +138,18 @@ CompileOrder.addOrder({
         propItem.value = value;
 
         setData(view.data, name, result);
+    },
+    renderChildren: function (view, token, option, $scope) {
+        //清空监听
+        this.clearWatchers(token);
+
+        let childNodes = token.node.childNodes;
+
+        [...childNodes].forEach((node) => {
+            this.addWatchers(compileNodes(node, option, $scope));
+        });
+
+        view.componentChildNodes = childNodes;
     },
     _checkPropType: function (types, value) {
         let match = false, valueType = typeof value;
