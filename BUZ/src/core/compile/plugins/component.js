@@ -48,9 +48,13 @@ CompileOrder.addOrder({
 
             this.setDefaultViewData(token.componentView, token.node, token.propsData, tokens);
 
+            option.view.attachChild(token.after, token.componentId, token.componentView, undefined);
+
             this.renderChildren(token.componentView, token, option, scope);
 
-            option.view.attachChild(token.after, token.componentId, token.componentView, undefined);
+
+            Utils.isFunction(token.componentView.onChildrenRender)
+                && token.componentView.onChildrenRender(token.componentView.componentChildNodes);
         }
         else {
             LogHandler.error(LOGTAG, '装载组件时，未找到视图组件');

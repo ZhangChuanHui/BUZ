@@ -105,8 +105,10 @@ class BaseView extends EventHandler {
         await this.initView(selector, view, pageParam);
         parentView.childrens[name] = view;
 
-        !view.isComponent && selector.attr("data-view-name", name);
-        log.info(LOGTAG, `${name}子视图装载成功`);
+        if (!view.isComponent) {
+            selector.attr("data-view-name", name);
+            log.info(LOGTAG, `${name}子视图装载成功`);
+        }
     }
     /**
      * 卸载视图组件
@@ -121,9 +123,10 @@ class BaseView extends EventHandler {
         this.app.region.removeGlobalEventByViewId(view._viewId);
 
         let self = this;
-        view.childrens.forEach(item => {
-            self.teardown(item);
-        });
+
+        for (let children of view.childrens) {
+            self.teardown(children);
+        }
 
         //移除所有监听
         view.watchers.forEach((watcher) => {
@@ -133,7 +136,7 @@ class BaseView extends EventHandler {
 
         view.watchers.length = 0;
 
-        view.childrens = [];
+        view.childrens = {};
 
         if (Utils.isFunction(view.onTeardown)) {
             view.onTeardown();
@@ -181,7 +184,7 @@ class View extends EventHandler {
         /**当页面卸载时触发*/
         this.onTeardown = undefined;
         /**子视图集合*/
-        this.childrens = [];
+        this.childrens = {};
 
         //合并视图配置信息
         Object.assign(this, option);
@@ -299,7 +302,7 @@ class View extends EventHandler {
         var children = this.childrens[name];
         if (children) {
             this._app.view.teardown(children);
-            this.childrens = Utils.without(this.childrens, children);
+            delete this.childrens[name];
         }
     }
 }

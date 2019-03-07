@@ -57,7 +57,7 @@ ComponentParser.add("submitform", {
         'oncloseerror': Function
     },
     ctrls: {},
-    onRender: function () {
+    onChildrenRender: function () {
         this.$el.append(this.componentChildNodes);
     },
     onShow: function () {

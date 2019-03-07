@@ -15,22 +15,14 @@ const DEFAULTCTRL = {
     },
     base: function () {
         //尝试挂载FORM 具有name才符合form提交标准
-        this.attrDatas.name && this._mountForm(this.parent);
+        this.attrDatas.name && this._mountForm();
 
         if (Utils.isFunction(this.onInit)) {
             this.onInit();
         }
     },
-    _mountForm: function (parent) {
-        debugger;
-        if (Utils.isObjEmpty(parent) === false) {
-            if (parent.componentGroup === FROMGROUP) {
-                parent.addCtrl(this.data.name, this);
-            }
-            else {
-                this._mountForm(parent.parent);
-            }
-        }
+    _mountForm: function () {
+
     }
 };
 
