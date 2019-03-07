@@ -1,6 +1,5 @@
 import Buz from './core/buz';
 import baseCss from './commonWeb/resource/base.less';
-import demoButton from './commonWeb/components/demo-button';
 
 baseCss.use();
 
@@ -10,6 +9,4 @@ _.docReady(() => {
     new Buz.Application({
         indexPath: "Demo"
     }).start();
-
-    Buz.component('demo-button', demoButton);
 });

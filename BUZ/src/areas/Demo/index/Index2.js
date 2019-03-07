@@ -1,4 +1,7 @@
 import templete from './templetes/index2.html';
+import '../../../ui/form/form';
+import '../../../ui/form/formCtrls';
+import '../../../ui/form/ctrls/textBox';
 
 export default Buz.View({
     templete: templete,
@@ -15,7 +18,11 @@ export default Buz.View({
     click3: function () {
         this.data.demoStr = _.guid();
     },
-    click4: function () {
-        alert("123");
+    click4: function (e) {
+        debugger;
+        alert(this.data.demoStr);
+    },
+    onFormSubmit: function (e) {
+        return "1";
     }
 });

@@ -28,7 +28,7 @@ class BaseView extends EventHandler {
      * 初始化视图组件
      * @param {BET} selector 选择器
      * @param {View} view 视图组件 
-     * @param {Any} pageParam 视图参数 
+     * @param {*} pageParam 视图参数 
     */
     async initView(selector, view, pageParam) {
         this.trigger("before:initView", {
@@ -97,13 +97,11 @@ class BaseView extends EventHandler {
      * @param {BET|String} selector 选择器 
      * @param {String} name 子视图名称 
      * @param {View} View 子视图组件 
-     * @param {Any} pageParam 视图参数
-     * @param {Boolean} isComponent 是否是组件
+     * @param {*} pageParam 视图参数
     */
     async initChildrenView(parentView, selector, name, view, pageParam) {
         view.parent = parentView;
         view.__viewName = name;
-
         await this.initView(selector, view, pageParam);
         parentView.childrens[name] = view;
 
@@ -210,7 +208,7 @@ class View extends EventHandler {
     /**
      * 触发全局观察者事件
      * @param {String} eventName 事件名称
-     * @param {Any} params 事件参数
+     * @param {*} params 事件参数
     */
     triggerGlobal(eventName, params) {
         this._app.region.triggerGlobalEvent(eventName, params, this);
@@ -253,10 +251,9 @@ class View extends EventHandler {
      * @param {BET|String} selector 选择器
      * @param {String} name 子视图名称 
      * @param {View|String} view 视图组件 
-     * @param {Any} pageParam 视图参数 
-     * @param {Boolean} isComponent 是否是组件
+     * @param {*} pageParam 视图参数 
     */
-    attachChild(selector, name, view, pageParam, isComponent) {
+    attachChild(selector, name, view, pageParam) {
         if (this.childrens[name]) {
             this.teardownChild(name);
             log.info(LOGTAG, `${name}:完成子视图卸载`);
@@ -277,7 +274,7 @@ class View extends EventHandler {
                     //判断选择符是否仍挂载DOM中
                     if (selector.parent().length) {
                         self._app.view.initChildrenView(
-                            self, selector, name, new ViewHandler(), pageParam, isComponent);
+                            self, selector, name, new ViewHandler(), pageParam);
                     }
                     else {
                         log.warn(LOGTAG, `${name}: 子视图元素被卸载，终止异步加载子视图`);
@@ -288,10 +285,10 @@ class View extends EventHandler {
                 });
         }
         else if (Utils.isFunction(view)) {
-            this._app.view.initChildrenView(this, selector, name, new view(), pageParam, isComponent);
+            this._app.view.initChildrenView(this, selector, name, new view(), pageParam);
         }
         else {
-            this._app.view.initChildrenView(this, selector, name, view, pageParam, isComponent);
+            this._app.view.initChildrenView(this, selector, name, view, pageParam);
         }
     }
     /**

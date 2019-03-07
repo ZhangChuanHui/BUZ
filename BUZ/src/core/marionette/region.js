@@ -36,7 +36,7 @@ class RegionItem extends EventHandler {
     /**
      * 装载视图
      * @param {View} view 视图组件
-     * @param {Any} pageParam 视图数据
+     * @param {*} pageParam 视图数据
     */
     show(view, pageParam) {
         //若当前区域装载视图，先执行视图卸载
@@ -208,7 +208,7 @@ class Region extends EventHandler {
     /**
      * 触发全局观察者事件，通常由view触发，也可手动触发
      * @param {String} eventName 事件名称
-     * @param {Any} params 事件参数
+     * @param {*} params 事件参数
      * @param {View} fromView 执行事件来源视图 参考View类
     */
     triggerGlobalEvent(eventName, params, fromView) {

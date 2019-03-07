@@ -63,7 +63,7 @@ class EventHandler {
     /**
     * 触发事件
     * @param {String} name  事件名称
-    * @param {Any} param 事件传递参数
+    * @param {*} param 事件传递参数
     */
     trigger(name, param) {
         var delegates = this._eventDatas[name];

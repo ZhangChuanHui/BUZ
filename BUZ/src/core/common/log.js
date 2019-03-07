@@ -64,7 +64,7 @@ class LogHandler {
     /**
     * 输出普通日志信息
     * @param {String} tag 日志标志
-    * @param {Any} content 日志内容 
+    * @param {*} content 日志内容 
     */
     static info(tag, content) {
         LogOption.writeLog("info", tag, content);
@@ -72,7 +72,7 @@ class LogHandler {
     /**
     * 输出错误日志信息
     * @param {String} tag 日志标志
-    * @param {Any} content 日志内容
+    * @param {*} content 日志内容
     * @param {Error} error 错误堆栈
     */
     static error(tag, content, error) {
@@ -81,7 +81,7 @@ class LogHandler {
     /**
     * 输出警告日志信息
     * @param {String} tag 日志标志
-    * @param {Any} content 日志内容
+    * @param {*} content 日志内容
     */
     static warn(tag, content) {
         LogOption.writeLog("warn", tag, content);
@@ -89,7 +89,7 @@ class LogHandler {
     /**
     * 组合日志信息开始
     * @param {String} tag 日志标志
-    * @param {Any} content 日志内容
+    * @param {*} content 日志内容
     */
     static groupStart(tag, content) {
         LogOption.writeLog("groupCollapsed", tag, content);
@@ -97,7 +97,7 @@ class LogHandler {
     /**
     * 组合日志信息结束
     * @param {String} tag 日志标志
-    * @param {any} content 日志内容
+    * @param {*} content 日志内容
     */
     static groupEnd(tag, content) {
         LogOption.writeLog("groupEnd", tag);

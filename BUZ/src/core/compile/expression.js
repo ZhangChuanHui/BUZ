@@ -72,6 +72,7 @@ function compileGetter(exp) {
 function getFnBody(exp) {
     if (improperKeywordsRE.test(exp)) {
         LogHandler.error(LOGTAG, "表达式中不得出现关键字");
+        return function () { }
     }
 
     saved.length = 0

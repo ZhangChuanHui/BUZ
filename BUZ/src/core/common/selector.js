@@ -129,7 +129,7 @@ class BET extends Array {
                 if (agent) {
                     _callBack = function (e) {
                         var range = elem.querySelectorAll(agent);
-                        if (range.indexOf(e.target) > -1) {
+                        if (Array.from(range).indexOf(e.target) > -1) {
                             callBack(e);
                         }
                     }
@@ -186,13 +186,14 @@ class BET extends Array {
      * @param {string} eventName 事件名称
      * @param {...Array} params 事件参数
      */
-    trigger(eventName, ...params) {
+    trigger(eventName, params) {
         if (Utils.isStrEmpty(eventName)) return this;
 
         this.each(function (elem) {
-            if (Utils.isFunction(elem[eventName])) {
-                elem[eventName].call(elem, params);
-            }
+            let event = document.createEvent("HTMLEvents");
+            event.initEvent(eventName, false, false);
+            event.data = params;
+            elem.dispatchEvent(event, params);
         });
 
         return this;
@@ -382,16 +383,16 @@ class BET extends Array {
     /**
      * 读取/设置HTML内容
      * @param {string} content 可选-内容
-     * @param {Boolean} isText 是否读取文本 默认False
      */
-    html(content, isText) {
+    html(content) {
         for (let index = 0; index < this.length; index++) {
             let elem = this[index];
 
-            if (typeof content === "string") {
-                isText ? (elem.textContent = content) : (elem.innerHTML = content);
-            } else if (content === undefined) {
-                return isText ? elem.textContent : elem.innerHTML;
+            if (arguments.length > 0) {
+                elem.innerHTML = content;
+            }
+            else {
+                return elem.innerHTML;
             }
         }
 
@@ -402,11 +403,20 @@ class BET extends Array {
      * @param {string} content 可选-内容
      */
     text(content) {
-        return this.html(content, true);
+        for (let index = 0; index < this.length; index++) {
+            let elem = this[index];
+
+            if (arguments.length > 0) {
+                elem.textContent = content;
+            }
+            else {
+                return elem.textContent;
+            }
+        }
     }
     /**
      * 读取/设置值 -针对控件
-     * @param {Any} value 可选-值
+     * @param {*} value 可选-值
      */
     val(value) {
         var special = ["checkbox", "radio"];
@@ -414,7 +424,7 @@ class BET extends Array {
             let elem = this[index];
             let isSpecial = special.indexOf(elem.type) > -1;
 
-            if (Utils.isStrEmpty(value) === false) {
+            if (arguments.length > 0) {
                 isSpecial ? elem.checked = !!value : elem.value = value;
             } else {
                 return isSpecial ? !!elem.checked : elem.value;

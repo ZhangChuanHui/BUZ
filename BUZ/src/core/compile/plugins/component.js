@@ -43,13 +43,14 @@ CompileOrder.addOrder({
         token.componentView.componentGroup = token.component.group
             || token.componentView.componentGroup;
         if (option.view) {
+
             this.insertTokenPropMapping(token, token.componentView, tokens);
 
             this.setDefaultViewData(token.componentView, token.node, token.propsData, tokens);
 
             this.renderChildren(token.componentView, token, option, scope);
 
-            option.view.attachChild(token.after, token.componentId, token.componentView, undefined, true);
+            option.view.attachChild(token.after, token.componentId, token.componentView, undefined);
         }
         else {
             LogHandler.error(LOGTAG, '装载组件时，未找到视图组件');
@@ -58,12 +59,16 @@ CompileOrder.addOrder({
     setDefaultViewData: function (view, node, propsData, tokens) {
         let attributes = node.attributes;
 
-        for (let attr of Array.from(attributes)) {
-            view.data[attr.name] = attr.value;
-        }
+        view.attrDatas = attributes;
 
         for (let name in propsData) {
-            this.responseViewData(view, name, propsData[name], propsData[name].value);
+            let item = propsData[name];
+            if (item.token) {
+                this.responseViewData(view, name, item, item.value);
+            }
+            else {
+                this.responseViewData(view, name, item, attributes[name] ? attributes[name].value : undefined);
+            }
         }
     },
     initChildrenView: function (parser, token) {
@@ -109,8 +114,10 @@ CompileOrder.addOrder({
         let self = this;
         tokens.forEach((token) => {
             let propItem = propsData[token.param];
+
             if (token.order === 'attr' && propItem) {
                 propItem.value = token.oldValue;
+                propItem.token = token;
                 token.hooks.push(function (option, nv, ov) {
                     self.responseViewData(view, token.param, propItem, nv);
                 });
@@ -152,10 +159,12 @@ CompileOrder.addOrder({
         view.componentChildNodes = childNodes;
     },
     _checkPropType: function (types, value) {
-        let match = false, valueType = typeof value;
+        let match = false, valueType = Utils.isArray(value) ? "array" : typeof (value);
+
+        if (Utils.isArray(types) === false) types = [types];
 
         for (let type of types) {
-            PropTypes[type] = PropTypes[type] || this._getPropType();
+            PropTypes[type] = PropTypes[type] || this._getPropType(type.toString());
 
             if (valueType === PropTypes[type]) {
                 match = true;

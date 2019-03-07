@@ -53,14 +53,14 @@ class Utils {
     /**
      * 检查值是否是一个方法类型
      * 输出：Boolean
-     * @param {Any} func 值
+     * @param {*} func 值
      */
     static isFunction(func) {
         return func && typeof func === "function";
     }
     /**
      * 判断字符串是否为空
-     * @param {Any} value 值
+     * @param {*} value 值
      */
     static isStrEmpty(value) {
         return value === undefined || value === "" || value === null;
@@ -191,6 +191,9 @@ class Utils {
     static isPlainObject(obj) {
         return _toString.call(obj) === '[object Object]'
     }
+    /**
+     * 获取值类型
+     */
     static getType(obj) {
         return _toString.call(obj);
     }
@@ -224,6 +227,10 @@ class Utils {
         });
 
         return result;
+    }
+    static stopAndPreventDefault(e) {
+        e.stopPropagation();
+        e.preventDefault();
     }
     static noop() { }
 }
