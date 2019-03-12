@@ -112,15 +112,29 @@ var FormHandler = {
         else {
             //TODO:
         }
+    },
+    getFormData: function (view, ctrls) {
+        ctrls = ctrls || this.getCtrls(this);
+
+        let formData = {};
+
+        ctrls.forEach((ctrl) => {
+            ctrl.checkEnableSubmit()
+                && (formData[ctrl.attrDatas.name] = ctrl.val());
+        });
+
+        Object.assign({}, view.data.formdata, formData);
+
+        return formData;
     }
 };
 
 ComponentParser.add("submitform", {
-    templete: `<form :class="classname" :id="id" :style="style"><TextBox></TextBox></form>`,
+    templete: `<form :class="classname" :id="id" :style="style"></form>`,
     props: {
         'classname': String,
         'url': String,
-        'data': { type: Object, default: {} },
+        'formdata': { type: Object, default: {} },
         'stoponerror': { type: Boolean, default: false },
         'entersubmit': { type: Boolean, default: true },
         'validateonblur': { type: Boolean, default: true },
@@ -163,6 +177,33 @@ ComponentParser.add("submitform", {
         else {
             return await FormHandler.validate(this);
         }
+    },
+    showErrorMessage: function (name, message) {
+        let ctrls = FormHandler.getCtrls(this, function (ctrl) {
+            return ctrl.attrDatas.name === name;
+        });
+
+        if (ctrls.length === 0) return;
+
+        FormHandler.showErrorMessage(this, ctrls[0], message);
+    },
+    closeErrorMessage: function (name, message) {
+        let ctrls = FormHandler.getCtrls(this, function (ctrl) {
+            return ctrl.attrDatas.name === name;
+        });
+
+        if (ctrls.length === 0) return;
+
+        FormHandler.closeErrorMessage(this, ctrls[0], message);
+    },
+    clearErrorMessage: function () {
+        FormHandler.clearErrorMessage(this);
+    },
+    submit: function () {
+        FormHandler.submit(this, true);
+    },
+    getFormData: function () {
+        return FormHandler.getFormData(this);
     }
 }, FROMGROUP);
 
