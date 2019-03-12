@@ -7,6 +7,15 @@ export default Buz.View({
     templete: templete,
     data: {
         listData: [1, 2],
+        users: [{
+            name: "张1",
+            age: 10
+        },
+        {
+            name: "李四",
+            age: 16
+        }],
+        selectIndex: -1,
         demoStr: "123213"
     },
     click1: function () {
@@ -19,10 +28,14 @@ export default Buz.View({
         this.data.demoStr = _.guid();
     },
     click4: function (e) {
-        debugger;
         alert(this.data.demoStr);
     },
-    onFormSubmit: function (e) {
-        return "1";
+    trClick: function (e, item, index) {
+        alert(index);
+    },
+    userClick: function (e, item, index) {
+        this.data.selectIndex = index;
+    },
+    onFormSubmit: function () {
     }
 });

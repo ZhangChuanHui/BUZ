@@ -507,6 +507,18 @@ class BET extends Array {
                 (containMargin ? parseFloat(computeStyle.marginLeft) + parseFloat(computeStyle.marginRight) : 0);
         }
     }
+    getCss() {
+        let elem = this[0];
+        return window.computeStyle(elem);
+    }
+    hidden() {
+        let elem = this[0];
+        return elem.offsetWidth <= 0 && elem.offsetHeight <= 0 ||
+            ((elem.style && elem.style.display) || this.getCss().display) === "none";
+    }
+    visible() {
+        return !this.hidden();
+    }
 }
 
 export default Selector;

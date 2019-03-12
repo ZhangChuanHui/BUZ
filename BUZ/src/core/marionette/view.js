@@ -102,8 +102,9 @@ class BaseView extends EventHandler {
     async initChildrenView(parentView, selector, name, view, pageParam) {
         view.parent = parentView;
         view.__viewName = name;
-        await this.initView(selector, view, pageParam);
         parentView.childrens[name] = view;
+
+        await this.initView(selector, view, pageParam);
 
         if (!view.isComponent) {
             selector.attr("data-view-name", name);
@@ -122,10 +123,8 @@ class BaseView extends EventHandler {
         //移除观察者模式监听
         this.app.region.removeGlobalEventByViewId(view._viewId);
 
-        let self = this;
-
-        for (let children of view.childrens) {
-            self.teardown(children);
+        for (let name in view.childrens) {
+            this.teardown(view.childrens[name]);
         }
 
         //移除所有监听
@@ -146,6 +145,10 @@ class BaseView extends EventHandler {
         view.trigger("after:teardown");
 
         view.clearListening();
+
+        if (view.parent) {
+            delete view.parent.childrens[view.__viewName];
+        }
     }
 }
 
@@ -296,10 +299,14 @@ class View extends EventHandler {
     }
     /**
      * 卸载子视图
-     * @param {String} name 子视图名称
+     * @param {*} name 子视图名称/子视图
     */
     teardownChild(name) {
-        var children = this.childrens[name];
+        let children = name;
+        if (typeof name === 'string') {
+            children = this.childrens[name];
+        }
+
         if (children) {
             this._app.view.teardown(children);
             delete this.childrens[name];

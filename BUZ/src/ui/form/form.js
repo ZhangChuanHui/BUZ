@@ -3,6 +3,7 @@ import Utils from '../../core/common/utils';
 import LogHandler from '../../core/common/log';
 
 export const FROMGROUP = "BUZFORM";
+export const FORMCTRLGROUP = "BUZFORMCTRL";
 export const LOGTAG = '表单控件';
 
 var FormHandler = {
@@ -32,15 +33,92 @@ var FormHandler = {
             }
         });
     },
+    getCtrls: function (view, filter) {
+        let ctrls = ComponentParser.findComponentByGourp(view.$el, FORMCTRLGROUP);
+        let result = [], names = [];
+        ctrls.forEach((ctrl) => {
+            if (ctrl.attrDatas.name && names.indexOf(ctrl.attrDatas.name) === -1) {
+
+                if (filter === undefined || filter(ctrl)) {
+                    result.push(ctrl);
+                    names.push(ctrl.attrDatas.name);
+                }
+            }
+        });
+
+        return result;
+    },
     submit: function (view, fromJs) {
-        debugger;
+
+    },
+    reset: function (view) {
+        let ctrls = this.getCtrls(view);
+        ctrls.forEach((ctrl) => {
+            ctrl.checkEnableSetDefaultValue()
+                && ctrl.setDefaultValue();
+        });
+
+        clearErrorMessage();
+    },
+    validate: async function (view, ctrls) {
+        let validatePromise = [];
+        let self = this;
+        ctrls = ctrls || this.getCtrls(view);
+
+        ctrls.forEach((ctrl) => {
+            if (ctrl.checkEnableValidate()) {
+
+                let promiseItem = ctrl.validate()
+                    .then((message) => {
+                        message && self.showErrorMessage(view, message);
+                    })
+
+                if (view.data.stoponerror) {
+                    if (await promiseItem) {
+                        return false;
+                    }
+                }
+                else {
+                    validatePromise.push(promiseItem);
+                }
+            }
+        });
+
+        let result = await Promise.all(validatePromise);
+        (result || []).forEach((message) => {
+            if (message) return false;
+        });
+
+        return true;
+    },
+    clearErrorMessage: function (view, ctrls) {
+        ctrls = ctrls || this.getCtrls(view);
+        ctrls.forEach((item) => {
+            this.closeErrorMessage(view, item);
+        });
+    },
+    closeErrorMessage: function (view, ctrl) {
+        if (view.data.oncloseerror) {
+            view.data.oncloseerror(ctrl);
+        }
+        else {
+            //TODO:
+        }
+    },
+    showErrorMessage: function (view, ctrl, message) {
+        if (view.data.onshowerror) {
+            view.data.onshowerror(ctrl, message);
+        }
+        else {
+            //TODO:
+        }
     }
 };
 
 ComponentParser.add("submitform", {
-    templete: `<form :class="className" :id="id" :style="style"></form>`,
+    templete: `<form :class="classname" :id="id" :style="style"><TextBox></TextBox></form>`,
     props: {
-        'className': String,
+        'classname': String,
         'url': String,
         'data': { type: Object, default: {} },
         'stoponerror': { type: Boolean, default: false },
@@ -56,19 +134,35 @@ ComponentParser.add("submitform", {
         'onshowerror': Function,
         'oncloseerror': Function
     },
-    ctrls: {},
     onChildrenRender: function () {
         this.$el.append(this.componentChildNodes);
     },
     onShow: function () {
         FormHandler.init(this);
     },
-    addCtrl: function (name, ctrl) {
-        if (this.ctrls[name]) {
-            LogHandler.warn(LOGTAG, `${name}已存在，将强制覆盖`);
-        }
+    reset: function () {
+        FormHandler.reset(this);
+    },
+    validate: async function () {
+        if (arguments.length === 1) {
+            let param = arguments[0];
+            let ctrls = [];
+            if (typeof param === "string") {
+                let ctrls = FormHandler.getCtrls(this, function (ctrl) {
+                    return ctrl.attrDatas.name === param;
+                });
+            }
+            else if (Utils.isArray(param)) {
+                let ctrls = FormHandler.getCtrls(this, function (ctrl) {
+                    return param.indexOf(ctrl.attrDatas.name) > -1;
+                });
+            }
 
-        this.ctrls[name] = ctrl;
+            return await FormHandler.validate(this, ctrls);
+        }
+        else {
+            return await FormHandler.validate(this);
+        }
     }
 }, FROMGROUP);
 

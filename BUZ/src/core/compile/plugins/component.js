@@ -28,20 +28,41 @@ CompileOrder.addOrder({
     exec: function (target, nv, ov) { },
     breforeExec: function (token, option, scope, tokens) {
         token.exp = undefined;
-
+        let id = token.$node.attr("id");
         if (token.node.componentLoaded) return;
 
         //保证标签不会出现循环渲染。
         token.node.componentLoaded = true;
-        token.componentId = token.$node.attr("id") || (token.component.name + '_' + Utils.guid());
+        token.componentId = id || token.component.name + '_' + Utils.guid();
         token.after = token.$node.after(document.createTextNode(""), true);
+
         token.$node.remove();
 
-        token.componentView = this.initChildrenView(token.component.parser, token);
+        token.after[0].componentView =
+            token.componentView =
+            this.initChildrenView(token.component.parser, token);
 
         //设置组件分组
         token.componentView.componentGroup = token.component.group
             || token.componentView.componentGroup;
+
+        //移除token.after挂载
+        token.componentView.on('after:teardown', function () {
+            token.after.componentView = undefined;
+        });
+
+        //绑定控件id 自定义id的才挂载操作把柄  否则无意义
+        if (Utils.isStrEmpty(id) == false) {
+            if (option.view[id]) {
+                LogHandler.warn(LOGTAG, `在绑定组件时发现父视图已存在${id}变量`);
+            }
+            else {
+                option.view[id] = token.componentView;
+                token.componentView.on('after:teardown', function () {
+                    delete option.view[id];
+                });
+            }
+        }
         if (option.view) {
 
             this.insertTokenPropMapping(token, token.componentView, tokens);
@@ -51,7 +72,6 @@ CompileOrder.addOrder({
             option.view.attachChild(token.after, token.componentId, token.componentView, undefined);
 
             this.renderChildren(token.componentView, token, option, scope);
-
 
             Utils.isFunction(token.componentView.onChildrenRender)
                 && token.componentView.onChildrenRender(token.componentView.componentChildNodes);
@@ -80,7 +100,7 @@ CompileOrder.addOrder({
             isComponent: true,
             noContainer: true,
             componentNode: token.$node,
-            data: {}
+            data: {},
         }, parser)();
     },
     insertTokenPropMapping: function (token, view, tokens) {
@@ -129,7 +149,6 @@ CompileOrder.addOrder({
         });
     },
     responseViewData: function (view, name, propItem, value) {
-
         if (Utils.isStrEmpty(value) && propItem.required) {
             LogHandler.error(LOGTAG, `组件未设置${name}参数，此项为必填项`);
             return;

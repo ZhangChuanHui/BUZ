@@ -1,6 +1,7 @@
 import Base from './base';
 import LogHandler from '../../common/log';
 import { LOGTAG } from '..';
+import $ from '../../common/selector';
 
 /**
  * 组件转换数据处理中心
@@ -21,8 +22,35 @@ export let ComponentParser = {
     },
     remove: function (name) {
         delete this.parsers[name];
+    },
+    findComponent: function (container) {
+        let result = [];
+        $(container).each((elem) => {
+            if (elem.nodeType === 3 && elem.componentView) {
+                result.push(elem.componentView);
+            }
+            else if (elem.childNodes && elem.childNodes.length) {
+                result = result.concat(this.findComponent(elem.childNodes));
+            }
+        });
+
+        return result;
+    },
+    findComponentByGourp: function (container, groupName) {
+        let components = this.findComponent(container);
+        let result = [];
+
+        components.forEach((item) => {
+            if (item.componentGroup === groupName) {
+                result.push(item);
+            }
+        });
+
+        return result;
     }
+
 }
+
 
 /**
  *  作者：张传辉

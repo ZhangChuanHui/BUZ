@@ -18,7 +18,7 @@ CompileOrder.addOrder({
 
         //在组件扩展时，可能会传入视图内的方法参数
         if (value === undefined && Utils.isFunction(option.view[token.exp])) {
-            value = option.view[token.exp];
+            value = Utils.bind(option.view[token.exp], option.view);
         }
         return value;
     },

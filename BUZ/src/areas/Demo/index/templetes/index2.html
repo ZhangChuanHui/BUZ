@@ -1,6 +1,6 @@
 <h1>性能测试-订阅与取消订阅</h1>
 
-<button on:click="click1">追加一条</button>
+<button on:click="click1()">追加一条</button>
 <button on:click="click2">移除一条</button>
 <button on:click="click3">更改demoStr</button>
 <p class="tip">直接点击更改demoStr后，会通知两次（两行）demoStr监听</p>
@@ -17,7 +17,7 @@
 
 <h2>列表index 偶数列显示</h2>
 <table>
-    <tr b-for="(item,index) in listData" b-if="index%2===0">
+    <tr b-for="(item,index) in listData" b-if="index%2===0" on:click="trClick(item,index)">
         <td>{{index}}</td>
         <td>{{demoStr}}</td>
     </tr>
@@ -27,7 +27,20 @@
 <button on:click="click4">点击</button>
 <p>{{demoStr}}</p>
 
-<submitForm :onSubmit="onFormSubmit" url="http://www.baidu.com">
-    <TextBox name="field1"></TextBox>
+<table>
+    <tr b-for="(item,index) in users" :class="(selectIndex===index?'selected':'')" on:click="userClick(item,index)">
+        <td>{{item.name}}</td>
+        <td>{{item.age}}</td>
+    </tr>
+</table>
+
+<submitForm id="submitForm" :onSubmit="onFormSubmit" url="http://www.baidu.com">
+
+    <TextBox name="field1" id="userName"></TextBox>
+    <TextBox name="field2"></TextBox>
+    <TextBox name="field3"></TextBox>
+    <TextBox name="field4"></TextBox>
+
+
     <button type="submit">提交</button>
 </submitForm>
