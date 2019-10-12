@@ -65,7 +65,7 @@ var FormHandler = {
         let self = this;
         ctrls = ctrls || this.getCtrls(view);
 
-        ctrls.forEach((ctrl) => {
+        await ctrls.forEach(async (ctrl) => {
             if (ctrl.checkEnableValidate()) {
 
                 let promiseItem = ctrl.validate()
