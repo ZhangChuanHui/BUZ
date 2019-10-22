@@ -27,6 +27,13 @@ module.exports = {
         staticDir: "static",
         /**资源目录/输出目录 */
         assetsRoot: path.resolve(__dirname, '../dist')
+    },
+    prod: {
+        devtool: false,
+        /**静态资源目录*/
+        staticDir: "static",
+        /**资源目录/输出目录 */
+        assetsRoot: path.resolve(__dirname, '../dist')
 
     }
 };
