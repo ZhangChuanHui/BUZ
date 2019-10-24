@@ -1,5 +1,7 @@
 import templete from './templetes/index.html';
-
+import '../../../ui/form/form';
+import '../../../ui/form/formCtrls';
+import '../../../ui/form/ctrls/textBox';
 export default Buz.View({
     templete: templete,
     data: {
@@ -9,13 +11,13 @@ export default Buz.View({
         eventName: "click1",
         htmlcard: "",
         listData: [{
-            name: "张1",
-            age: 10
-        },
-        {
-            name: "张1",
-            age: 10
-        }
+                name: "张1",
+                age: 10
+            },
+            {
+                name: "张1",
+                age: 10
+            }
         ],
         demoObj: {
             name: "张2",
@@ -61,21 +63,21 @@ export default Buz.View({
     },
     click6: function () {
         this.data.listData = [{
-            name: "李1",
-            age: 12
-        },
-        {
-            name: "李2",
-            age: 13
-        },
-        {
-            name: "李3",
-            age: 14
-        },
-        {
-            name: "李4",
-            age: 15
-        }
+                name: "李1",
+                age: 12
+            },
+            {
+                name: "李2",
+                age: 13
+            },
+            {
+                name: "李3",
+                age: 14
+            },
+            {
+                name: "李4",
+                age: 15
+            }
         ];
     },
     click7: function () {

@@ -8,7 +8,7 @@ function resolve(dir) {
 module.exports = {
     context: path.resolve(__dirname, '../src'),
     entry: {
-        app:['./app.js', './core/buz.js']
+        app: ['./app.js', './core/buz.js']
     },
     resolve: {
         extensions: ['.js', '.css'],
@@ -16,7 +16,7 @@ module.exports = {
             "~": resolve("src")
         }
     },
-    optimization:{
+    optimization: {
         runtimeChunk: {
             name: 'manifest',
         },
@@ -24,26 +24,24 @@ module.exports = {
             chunks: "all",
             name: true,
             cacheGroups: {
-                default:false,
-                vendor:false,
+                default: false,
                 vendors: {
                     test: /[\\/]node_modules[\\/]/,
-                    name:"vendors"
+                    name: "vendors"
                 },
-                buz:{
-                    test:/[\\/]src[\\/]core[\\/]/,
-                    name:"buz"
+                buz: {
+                    test: /[\\/]src[\\/]core[\\/]/,
+                    name: "buz"
                 },
-                bui:{
-                    test:/[\\/]src[\\/]ui[\\/]/,
-                    name:"bui"
+                bui: {
+                    test: /[\\/]src[\\/]ui[\\/]/,
+                    name: "bui"
                 }
             }
         }
     },
     module: {
-        rules: [
-            {
+        rules: [{
                 test: /\.html$/,
                 loader: "html-loader"
             },
@@ -55,17 +53,45 @@ module.exports = {
                 test: "/\.css$/",
                 use: [
                     'style-loader/useable',
-                    { loader: 'css-loader', options: { sourceMap: true } },
-                    { loader: 'postcss-loader', options: { sourceMap: true, plugins: [require("autoprefixer")("last 100 versions")] } },
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            sourceMap: true
+                        }
+                    },
+                    {
+                        loader: 'postcss-loader',
+                        options: {
+                            sourceMap: true,
+                            plugins: [require("autoprefixer")("last 100 versions")]
+                        }
+                    },
                 ]
             },
             {
                 test: /\.less$/,
                 use: [
                     'style-loader/useable',
-                    { loader: 'css-loader', options: { sourceMap: true, importLoaders: 1 } },
-                    { loader: 'postcss-loader', options: { sourceMap: true, plugins: [require("autoprefixer")("last 100 versions")] } },
-                    { loader: 'less-loader', options: { sourceMap: true } }
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            sourceMap: true,
+                            importLoaders: 1
+                        }
+                    },
+                    {
+                        loader: 'postcss-loader',
+                        options: {
+                            sourceMap: true,
+                            plugins: [require("autoprefixer")("last 100 versions")]
+                        }
+                    },
+                    {
+                        loader: 'less-loader',
+                        options: {
+                            sourceMap: true
+                        }
+                    }
                 ]
             },
             {
