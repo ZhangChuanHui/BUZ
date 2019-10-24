@@ -9,9 +9,7 @@ let defaultRouterMap = {
     /**路由规则*/
     role: "",
     /**执行规则*/
-    exec: undefined,
-    /**地址*/
-    path: {}
+    exec: undefined
 }
 
 /**
@@ -147,14 +145,10 @@ class Router extends EventHandler {
      */
     _loadAreaConfig(fragment, fragmentUrl) {
         let self = this;
-        let areaPath = this._getRoleParamPath(
-            "area",
-            fragment,
-            `areas/${fragment.params.area || ""}/config`
-        );
+        let areaName = fragment.params.area || "";
 
-        log.info(LOGTAG, `准备装载区域配置文件：${areaPath}`);
-        import(`~/${areaPath}`)
+        log.info(LOGTAG, `准备装载区域配置文件：${areaName}`);
+        import( /* webpackChunkName: "areas/[request]" */ `~/areas/${areaName}/config`)
             .then(areaConfig => {
                 if (fragment.params.area !== self.fragment.params.area) {
                     log.warn(LOGTAG, "检测到区域加载变更，终止加载");
@@ -217,14 +211,10 @@ class Router extends EventHandler {
         this.areaConfig = areaConfig;
 
         this.app.region.teardownAll();
-        let layoutPath = this._getRoleParamPath(
-            "layout",
-            fragment,
-            `commonWeb/layouts/${areaConfig.layout || this.app.option.defaultLayout || ""}`
-        );
+        let layoutName = areaConfig.layout || this.app.option.defaultLayout || "";
 
-        log.info(LOGTAG, `准备装载布局文件：${layoutPath}`);
-        import(`~/${layoutPath}`)
+        log.info(LOGTAG, `准备装载布局文件：${layoutName}`);
+        import( /* webpackChunkName: "commonWeb/layouts/[request]" */ `~/commonWeb/layouts/${layoutName}`)
             .then(Layout => {
                 if (self.fragmentUrl !== fragmentUrl) {
                     log.warn(LOGTAG, "检测到地址变更，终止本次加载");
@@ -284,30 +274,35 @@ class Router extends EventHandler {
             return;
         }
 
-        let routerPath = this._getRoleParamPath(
-            "router",
-            fragment,
-            `areas/${this.fragment.params.area}/${this.fragment.params.controller}/router`
-        );
+        this.areaConfig.routers = this.areaConfig.routers || {};
+        let router = this.areaConfig.routers[this.fragment.params.controller];
+        debugger;
+        log.info(LOGTAG, `准备装载路由文件：${router}`);
 
-        log.info(LOGTAG, `准备装载路由文件：${routerPath}`);
+        if (Utils.isFunction(router)) {
+            router()
+                .then(controller => {
+                    if (fragmentUrl !== self.fragmentUrl) {
+                        log.warn(LOGTAG, "检测到地址变更，终止本次加载");
+                        return;
+                    }
 
-        import(`~/${routerPath}`)
-            .then(controller => {
-                if (fragmentUrl !== self.fragmentUrl) {
-                    log.warn(LOGTAG, "检测到地址变更，终止本次加载");
-                    return;
-                }
+                    log.info(LOGTAG, "路由加载完毕，准备进入action匹配");
 
-                log.info(LOGTAG, "路由加载完毕，准备进入action匹配");
-
-                self.app.controller.match(controller.default, fragment);
-                self.trigger("after", fragment);
-            })
-            .catch(e => {
-                self.trigger("break");
-                log.error(LOGTAG, `路由文件加载失败`, e);
-            });
+                    self.app.controller.match(controller.default, fragment);
+                    self.trigger("after", fragment);
+                })
+                .catch(e => {
+                    self.trigger("break");
+                    log.error(LOGTAG, `路由文件加载失败`, e);
+                });
+        } else if (typeof router === "object") {
+            self.app.controller.match(router.default, fragment);
+            self.trigger("after", fragment);
+        } else {
+            self.trigger("break");
+            log.error(LOGTAG, `路由文件加载失败`, e);
+        }
     }
     /**
      * 转换HashUrl
@@ -365,25 +360,6 @@ class Router extends EventHandler {
                 return roleParam;
             }
         };
-    }
-    /**
-     * 获取碎片中指定name的值，并判断是否取默认值
-     * @param {string} name param名称
-     * @param {Object} fragment 地址碎片 
-     * @param {string} defaultPath 默认地址 
-     */
-    _getRoleParamPath(name, fragment, defaultPath = "") {
-        let routerMap = fragment.routerMap,
-            path = routerMap.path[name],
-            result = "";
-
-        if (Utils.isFunction(path)) {
-            result = path(fragment);
-        } else {
-            result = path;
-        }
-
-        return result || defaultPath;
     }
 }
 
