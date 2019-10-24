@@ -37,14 +37,15 @@ const devWebpackConfig = merge(baseWebpackConfig, {
             poll: false
         }
     },
+    optimization:{
+        moduleIds: 'named'
+    },
     plugins: [
         new webpack.DefinePlugin({
             "process": require('./options/devConfig')
         }),
         //模块热替换
         new webpack.HotModuleReplacementPlugin(),
-        //当开启 HMR 的时候使用该插件会显示模块的相对路径，建议用于开发环境
-        new webpack.NamedModulesPlugin(),
         //在编译出现错误时，使用 NoEmitOnErrorsPlugin 来跳过输出阶段。这样可以确保输出资源不会包含错误
         new webpack.NoEmitOnErrorsPlugin(),
         // https://github.com/ampedandwired/html-webpack-plugin

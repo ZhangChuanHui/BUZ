@@ -12,15 +12,17 @@ module.exports = merge(baseWebpackConfig, {
     output: {
         path: config.prod.assetsRoot,
         filename: '[name].js',
+        chunkFilename: '[name].js',
         publicPath: "/"
     },
     devtool: config.prod.devtool,
+    optimization:{
+        moduleIds: 'hashed'
+    },
     plugins: [
         new webpack.DefinePlugin({
             "process": require('./options/devConfig')
         }),
-        //当开启 HMR 的时候使用该插件会显示模块的相对路径，建议用于开发环境
-        new webpack.NamedModulesPlugin(),
         //在编译出现错误时，使用 NoEmitOnErrorsPlugin 来跳过输出阶段。这样可以确保输出资源不会包含错误
         new webpack.NoEmitOnErrorsPlugin(),
         // 清理文件

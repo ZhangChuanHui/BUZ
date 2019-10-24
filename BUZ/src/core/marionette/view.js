@@ -4,12 +4,15 @@
  *  描述信息：
  *      1.视图组件基类： 负责全局视图组件管理
  *      2.视图组件操作类：负责规范视图组件，并提供对外操作把柄
-*/
+ */
 
 import log from '../common/log';
 import EventHandler from '../common/event';
 import Compile from '../compile/index';
-import { Observer, Watcher } from '../observer';
+import {
+    Observer,
+    Watcher
+} from '../observer';
 import Utils from '../common/utils';
 const LOGTAG = "视图组件";
 
@@ -18,7 +21,7 @@ const LOGTAG = "视图组件";
  *  作者：张传辉
  *  功能名称：视图组件基类，用于Application中集体控制
  *  描述信息：
-*/
+ */
 class BaseView extends EventHandler {
     constructor(app) {
         super();
@@ -29,7 +32,7 @@ class BaseView extends EventHandler {
      * @param {BET} selector 选择器
      * @param {View} view 视图组件 
      * @param {*} pageParam 视图参数 
-    */
+     */
     async initView(selector, view, pageParam) {
         this.trigger("before:initView", {
             selector: selector,
@@ -47,8 +50,8 @@ class BaseView extends EventHandler {
         view._viewId = Utils.guid();
         view._app = this.app;
 
-        view.$el = view.noTemplete ? view.$container
-            : this.renderTemplete(view);
+        view.$el = view.noTemplete ? view.$container :
+            this.renderTemplete(view);
 
         if (Utils.isFunction(view.onRender)) {
             await view.onRender.call(view);
@@ -61,8 +64,7 @@ class BaseView extends EventHandler {
 
         if (view.isComponent) {
             selector.after(view.$el);
-        }
-        else if (view.noTemplete === false) {
+        } else if (view.noTemplete === false) {
             selector.empty();
             selector.append(view.$el);
         }
@@ -79,12 +81,11 @@ class BaseView extends EventHandler {
     /**
      * 渲染模板操作，可在外部通过原型链重写
      * @param {View} view 视图组件
-    */
+     */
     renderTemplete(view) {
         if (view.noContainer) {
             return $(view.templete);
-        }
-        else {
+        } else {
             return $(`
                 <div class="app-page ${view.pageClassName}">
                 ${view.templete}
@@ -98,7 +99,7 @@ class BaseView extends EventHandler {
      * @param {String} name 子视图名称 
      * @param {View} View 子视图组件 
      * @param {*} pageParam 视图参数
-    */
+     */
     async initChildrenView(parentView, selector, name, view, pageParam) {
         view.parent = parentView;
         view.__viewName = name;
@@ -114,7 +115,7 @@ class BaseView extends EventHandler {
     /**
      * 卸载视图组件
      * @param {View} view 视图组件
-    */
+     */
     teardown(view) {
         this.trigger("before:teardown", view);
         view.trigger("before:teardown");
@@ -156,7 +157,7 @@ class BaseView extends EventHandler {
  *  作者：张传辉
  *  功能名称：视图调用把柄
  *  描述信息：
-*/
+ */
 function ViewHandler(option, ...args) {
     if (args && args.length) {
         args.forEach(item => {
@@ -198,7 +199,7 @@ class View extends EventHandler {
      * 主动监听属性变化
      * @param {String} path 属性地址
      * @param {Function} callBack 回调处理事件
-    */
+     */
     $watch(path, callBack) {
         new Watcher(this.data, path, Utils.bind(callBack, this));
     }
@@ -207,7 +208,7 @@ class View extends EventHandler {
      * @param {String} eventName 事件名称 
      * @param {Function} callBack 回调事件 
      * @param {Boolean} isOnce 是否只执行一次 
-    */
+     */
     onGlobal(eventName, callBack, isOnce) {
         this._app.region.registerGlobalEvent(this, eventName, callBack, !!isOnce);
     }
@@ -215,7 +216,7 @@ class View extends EventHandler {
      * 触发全局观察者事件
      * @param {String} eventName 事件名称
      * @param {*} params 事件参数
-    */
+     */
     triggerGlobal(eventName, params) {
         this._app.region.triggerGlobalEvent(eventName, params, this);
     }
@@ -225,7 +226,7 @@ class View extends EventHandler {
     /**
      * 选择器，作用在于只在this.$el中查询
      * @param {String} selector
-    */
+     */
     $(selector) {
         return this.$el.find(selector);
     }
@@ -244,8 +245,7 @@ class View extends EventHandler {
         if (baseView.parent) {
             baseView.parent.attachChild(baseView.$container,
                 baseView.__viewName, baseView, baseView.pageParam);
-        }
-        else {
+        } else {
             this._app.baseView.initView(baseView.$container, baseView.pageParam);
         }
 
@@ -258,7 +258,7 @@ class View extends EventHandler {
      * @param {String} name 子视图名称 
      * @param {View|String} view 视图组件 
      * @param {*} pageParam 视图参数 
-    */
+     */
     attachChild(selector, name, view, pageParam) {
         if (this.childrens[name]) {
             this.teardownChild(name);
@@ -272,35 +272,32 @@ class View extends EventHandler {
             return;
         }
 
-        if (typeof view === "string") {
+
+        if (view instanceof Promise) {
             let self = this;
 
-            import('~/' + view)
-                .then(ViewHandler => {
+            view.then(ViewHandler => {
                     //判断选择符是否仍挂载DOM中
                     if (selector.parent().length) {
                         self._app.view.initChildrenView(
                             self, selector, name, new ViewHandler(), pageParam);
-                    }
-                    else {
+                    } else {
                         log.warn(LOGTAG, `${name}: 子视图元素被卸载，终止异步加载子视图`);
                     }
                 })
                 .catch(e => {
                     log.error(LOGTAG, `子视图脚本加载失败`, e);
                 });
-        }
-        else if (Utils.isFunction(view)) {
+        } else if (Utils.isFunction(view)) {
             this._app.view.initChildrenView(this, selector, name, new view(), pageParam);
-        }
-        else {
+        } else {
             this._app.view.initChildrenView(this, selector, name, view, pageParam);
         }
     }
     /**
      * 卸载子视图
      * @param {*} name 子视图名称/子视图
-    */
+     */
     teardownChild(name) {
         let children = name;
         if (typeof name === 'string') {

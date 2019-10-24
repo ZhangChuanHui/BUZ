@@ -10,14 +10,14 @@ const LOGTAG = "区域管理";
  *  描述信息：
  *      内置全局观察者模式，提供注册和触发，不提供卸载（卸载不符合全局观察者理念）。
  *      主要功能：提供区域的注册、销毁及页面区域的视图装载
-*/
+ */
 class RegionItem extends EventHandler {
     /**
      * 构造函数
      * @param {Class} region 区域参考Region类
      * @param {String} name 区域名称
      * @param {BET} selector 区域选择器
-    */
+     */
     constructor(region, name, selector) {
         super();
         /**区域操作把柄 */
@@ -37,7 +37,7 @@ class RegionItem extends EventHandler {
      * 装载视图
      * @param {View} view 视图组件
      * @param {*} pageParam 视图数据
-    */
+     */
     show(view, pageParam) {
         //若当前区域装载视图，先执行视图卸载
         if (this.view) {
@@ -54,18 +54,16 @@ class RegionItem extends EventHandler {
 
         this._tempId = Utils.guid();
 
-        if (typeof view === "string") {
+        if (view instanceof Promise) {
             let self = this;
 
-            (function (viewPath, tempId) {
-                import('~/' + viewPath)
-                    .then(viewHandler => {
+            (function (viewPromise, tempId) {
+                viewPromise.then(viewHandler => {
                         if (self && self._tempId === tempId) {
                             view = viewHandler.default.call(viewHandler.default);
 
                             self._afterInit(view, pageParam);
-                        }
-                        else {
+                        } else {
                             self._breakInit();
                         }
                     })
@@ -74,14 +72,13 @@ class RegionItem extends EventHandler {
                         self._breakInit();
                     });
             })(view, this._tempId);
-        }
-        else {
+        } else {
             this._afterInit(view, pageParam);
         }
     }
     /**
      * 卸载当前区域
-    */
+     */
     teardown() {
         this.clearListening();
 
@@ -124,7 +121,7 @@ class RegionItem extends EventHandler {
  *  作者：张传辉
  *  功能名称：页面区域管理类
  *  描述信息：
-*/
+ */
 class Region extends EventHandler {
     constructor(app) {
         super();
@@ -141,7 +138,7 @@ class Region extends EventHandler {
      * 初始化页面视图区域，通常只在Layout中进行设置
      * @param {String} templete HTML模板
      * @param {object} selectors 区域规划方案 详见Layout布局方案
-    */
+     */
     initRegions(templete, selectors = {}) {
         this.app.option.containerSelector.html(templete);
 
@@ -156,7 +153,7 @@ class Region extends EventHandler {
     }
     /**
      * 卸载所有区域
-    */
+     */
     teardownAll() {
         log.info(LOGTAG, "准备卸载所有页面区域");
         this.trigger("before:teardownAll");
@@ -183,11 +180,11 @@ class Region extends EventHandler {
      * @param {String} eventName 事件名称 <
      * @param {Function} callBack 事件处理方法
      * @param {Boolean} isOnce 是否只执行一次
-    */
+     */
     registerGlobalEvent(view, eventName, callBack, isOnce) {
-        if (Utils.isStrEmpty(view._viewId)
-            || Utils.isStrEmpty(eventName)
-            || !callBack) {
+        if (Utils.isStrEmpty(view._viewId) ||
+            Utils.isStrEmpty(eventName) ||
+            !callBack) {
             log.error(LOGTAG, "注册全局观察者失败，存在不完整的配置参数");
             return;
         }
@@ -210,7 +207,7 @@ class Region extends EventHandler {
      * @param {String} eventName 事件名称
      * @param {*} params 事件参数
      * @param {View} fromView 执行事件来源视图 参考View类
-    */
+     */
     triggerGlobalEvent(eventName, params, fromView) {
         let existEvent = false,
             time = 0,
@@ -235,8 +232,7 @@ class Region extends EventHandler {
 
                 if (item.isOnce) {
                     delegates = Utils.without(delegates, item);
-                }
-                else {
+                } else {
                     i++;
                 }
 
@@ -247,7 +243,7 @@ class Region extends EventHandler {
     /**
      * 按viewId移除全局观察者模式
      * @param {String} viewId 视图ID
-    */
+     */
     removeGlobalEventByViewId(viewId) {
         delete this.listener[viewId];
     }

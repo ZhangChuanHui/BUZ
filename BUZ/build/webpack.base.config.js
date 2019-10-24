@@ -7,11 +7,38 @@ function resolve(dir) {
 
 module.exports = {
     context: path.resolve(__dirname, '../src'),
-    entry: ['./app.js', './core/buz.js'],
+    entry: {
+        app:['./app.js', './core/buz.js']
+    },
     resolve: {
         extensions: ['.js', '.css'],
         alias: {
             "~": resolve("src")
+        }
+    },
+    optimization:{
+        runtimeChunk: {
+            name: 'manifest',
+        },
+        splitChunks: {
+            chunks: "all",
+            name: true,
+            cacheGroups: {
+                default:false,
+                vendor:false,
+                vendors: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name:"vendors"
+                },
+                buz:{
+                    test:/[\\/]src[\\/]core[\\/]/,
+                    name:"buz"
+                },
+                bui:{
+                    test:/[\\/]src[\\/]ui[\\/]/,
+                    name:"bui"
+                }
+            }
         }
     },
     module: {

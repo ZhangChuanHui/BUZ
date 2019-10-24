@@ -15,15 +15,15 @@ let defaultRouterMap = {
 }
 
 /**
-*  作者：张传辉
-*  功能名称：路由管理类
-*  描述信息：
-*      1.此类负责监听和触发hash跳转
-*      2.routerMaps 是整个应用池的跳转映射处理机制，按数组的先后顺序进行匹配，
-*          匹配成功后进入处理方法，必须包含area区域信息。
-*      3.{area}、{controller}、{action}必须被指定
-*      4.地址碎片中必须包含area区域信息
-*/
+ *  作者：张传辉
+ *  功能名称：路由管理类
+ *  描述信息：
+ *      1.此类负责监听和触发hash跳转
+ *      2.routerMaps 是整个应用池的跳转映射处理机制，按数组的先后顺序进行匹配，
+ *          匹配成功后进入处理方法，必须包含area区域信息。
+ *      3.{area}、{controller}、{action}必须被指定
+ *      4.地址碎片中必须包含area区域信息
+ */
 class Router extends EventHandler {
     constructor(application) {
         super();
@@ -53,7 +53,7 @@ class Router extends EventHandler {
     /**
      * 添加路由映射处理方法
      * @param {Object} map 参考defaultRouterMap
-    */
+     */
     addRouterMap(map) {
         map = Object.assign({}, defaultRouterMap, map);
         if (map.role) {
@@ -62,15 +62,14 @@ class Router extends EventHandler {
             });
 
             this.routerMaps.push(map);
-        }
-        else {
+        } else {
             log.error(LOGTAG, "无效的路由映射关系，缺少role信息");
         }
     }
     /**
      * 移除路由映射处理方法
      * @param {string} roleName 参考defaultRouterMap.role 
-    */
+     */
     removeRouterMap(roleName) {
         this.routerMaps = Utils.without(this.routerMaps, (item) => {
             return item.role === roleName;
@@ -78,7 +77,7 @@ class Router extends EventHandler {
     }
     /**
      * 初始化方法，注册监听事件，内部方法
-    */
+     */
     _main() {
         let self = this;
 
@@ -110,7 +109,7 @@ class Router extends EventHandler {
     /**
      * hashChange方法，入口方法
      * @param {string} hash hashValue
-    */
+     */
     hasChange(hash) {
         if (Utils.isStrEmpty(hash)) {
             this.app.goIndex();
@@ -124,11 +123,11 @@ class Router extends EventHandler {
         //地址碎片中必须包含area区域信息
         if (fragment && fragment.params.area) {
             if (this.trigger("before", {
-                newFragment: fragment,
-                newFragmentUrl: hash,
-                oldFragment: this.fragment,
-                oldFragmentUrl: this.fragmentUrl
-            }) === false) {
+                    newFragment: fragment,
+                    newFragmentUrl: hash,
+                    oldFragment: this.fragment,
+                    oldFragmentUrl: this.fragmentUrl
+                }) === false) {
                 this.trigger("break");
                 return;
             }
@@ -137,8 +136,7 @@ class Router extends EventHandler {
             this.fragmentUrl = hash;
 
             this._loadAreaConfig(fragment, hash);
-        }
-        else {
+        } else {
             log.error(LOGTAG, `路由${hash}未能匹配或返回的数据不完整，请参考routerMaps`);
         }
     }
@@ -146,7 +144,7 @@ class Router extends EventHandler {
      * 加载区域配置信息
      * @param {Object} fragment 地址碎片
      * @param {string} fragmentUrl 地址(Hash)
-    */
+     */
     _loadAreaConfig(fragment, fragmentUrl) {
         let self = this;
         let areaPath = this._getRoleParamPath(
@@ -156,7 +154,7 @@ class Router extends EventHandler {
         );
 
         log.info(LOGTAG, `准备装载区域配置文件：${areaPath}`);
-        import('~/' + areaPath)
+        import(`~/${areaPath}`)
             .then(areaConfig => {
                 if (fragment.params.area !== self.fragment.params.area) {
                     log.warn(LOGTAG, "检测到区域加载变更，终止加载");
@@ -183,7 +181,7 @@ class Router extends EventHandler {
      * @param {Object} areaConfig 区域配置文件 
      * @param {Object} fragment 地址碎片
      * @param {string} fragmentUrl 地址(Hash)
-    */
+     */
     _initArea(areaConfig, fragment, fragmentUrl) {
         let self = this;
 
@@ -226,7 +224,7 @@ class Router extends EventHandler {
         );
 
         log.info(LOGTAG, `准备装载布局文件：${layoutPath}`);
-        import('~/' + layoutPath)
+        import(`~/${layoutPath}`)
             .then(Layout => {
                 if (self.fragmentUrl !== fragmentUrl) {
                     log.warn(LOGTAG, "检测到地址变更，终止本次加载");
@@ -248,7 +246,7 @@ class Router extends EventHandler {
      * 开始执行路由加载，入口方法
      * @param {Object} fragment 地址碎片
      * @param {string} fragmentUrl 地址(hash)
-    */
+     */
     _startLoadRouter(fragment, fragmentUrl) {
         let self = this;
 
@@ -260,8 +258,7 @@ class Router extends EventHandler {
             this.once("continue", () => {
                 self._loadRouter(fragment, fragmentUrl);
             });
-        }
-        else {
+        } else {
             this._loadRouter(fragment, fragmentUrl);
         }
     }
@@ -269,7 +266,7 @@ class Router extends EventHandler {
      * 执行路由加载，主方法
      * @param {Object} fragment 地址碎片
      * @param {String} fragmentUrl 地址(hash)
-    */
+     */
     _loadRouter(fragment, fragmentUrl) {
         let self = this;
 
@@ -280,8 +277,7 @@ class Router extends EventHandler {
 
             if (Utils.isStrEmpty(this.areaConfig.defaultPath) || fragmentUrl === defaultPath) {
                 log.error(LOGTAG, `未解析正确的Contoller，地址为：${fragmentUrl}`);
-            }
-            else {
+            } else {
                 this.app.go(defaultPath);
             }
 
@@ -296,7 +292,7 @@ class Router extends EventHandler {
 
         log.info(LOGTAG, `准备装载路由文件：${routerPath}`);
 
-        import('~/' + routerPath)
+        import(`~/${routerPath}`)
             .then(controller => {
                 if (fragmentUrl !== self.fragmentUrl) {
                     log.warn(LOGTAG, "检测到地址变更，终止本次加载");
@@ -316,7 +312,7 @@ class Router extends EventHandler {
     /**
      * 转换HashUrl
      * @param {string} hash hashValue
-    */
+     */
     _transformHashUrl(hash = "") {
         if (hash.charAt(0) === "#") {
             hash = hash.substring(1);
@@ -335,7 +331,7 @@ class Router extends EventHandler {
     /**
      * 解析Hash
      * @param {string} hash hashValue
-    */
+     */
     _analysHash(hash = "") {
         let hashArray = hash.split('/');
 
@@ -354,8 +350,7 @@ class Router extends EventHandler {
                 if (/^{\S+}$/.test(roleItem)) {
                     let roleName = roleItem.substring(1, roleItem.length - 1);
                     roleParam.params[roleName] = hashArray[index];
-                }
-                else if (role !== hashArray[index]) {
+                } else if (role !== hashArray[index]) {
                     isMatch = false;
                     break;
                 }
@@ -366,8 +361,7 @@ class Router extends EventHandler {
             roleParam.routerMap = item;
             if (Utils.isFunction(item.exec)) {
                 return item.exec(roleParam) || roleParam;
-            }
-            else {
+            } else {
                 return roleParam;
             }
         };
@@ -377,7 +371,7 @@ class Router extends EventHandler {
      * @param {string} name param名称
      * @param {Object} fragment 地址碎片 
      * @param {string} defaultPath 默认地址 
-    */
+     */
     _getRoleParamPath(name, fragment, defaultPath = "") {
         let routerMap = fragment.routerMap,
             path = routerMap.path[name],
@@ -385,8 +379,7 @@ class Router extends EventHandler {
 
         if (Utils.isFunction(path)) {
             result = path(fragment);
-        }
-        else {
+        } else {
             result = path;
         }
 
