@@ -1,9 +1,13 @@
 ﻿import log from '../common/log';
 import EventHandler from '../common/event';
 import Router from './router';
-import { BaseController } from './controller';
+import {
+    BaseController
+} from './controller';
 import Region from './region';
-import { BaseView } from './view';
+import {
+    BaseView
+} from './view';
 import Storage from "../storage/index";
 import Requester from '../requester/index';
 import Utils from '../common/utils';
@@ -16,7 +20,7 @@ const LOGTAG = "应用管理";
  *      一个项目只会初始化一次
  *      初始化后应按照个性化需求处理后执行start方法，开启应用池
  *      对外输出App，如不指定对外输出物，则默认生成App
-*/
+ */
 class Application extends EventHandler {
     constructor(config) {
         super();
@@ -26,8 +30,12 @@ class Application extends EventHandler {
             containerSelector: "#layout",
             /**主页地址（锚点）*/
             indexPath: "Home",
+            /**布局方案集 */
+            layouts: {},
             /**默认布局方案*/
             defaultLayout: "DefaultLayout",
+            /**区域集 */
+            areas: {},
             /**请求管理配置参数，详见Request */
             requestOption: {}
         }, config);
@@ -60,7 +68,7 @@ class Application extends EventHandler {
     }
     /**
      * App开始方法
-    */
+     */
     start() {
         this.router.start();
         return this;
@@ -69,25 +77,24 @@ class Application extends EventHandler {
      * 跳转
      * @param {String} hashPath 目标Hash值 
      *     注意：开始位置不需要带'#'或'/'
-    */
+     */
     go(hashPath) {
         if (hashPath === this.router.fragmentUrl) {
             this.reload();
-        }
-        else {
+        } else {
             location.hash = hashPath;
         }
     }
     /**
      * 重载当前Hash
-    */
+     */
     reload() {
         this.router.trigger("reload");
     }
     /**
      * 跳转首页地址
      * 首页地址：option.indexPath
-    */
+     */
     goIndex() {
         this.go(this.option.indexPath);
     }

@@ -148,27 +148,32 @@ class Router extends EventHandler {
         let areaName = fragment.params.area || "";
 
         log.info(LOGTAG, `准备装载区域配置文件：${areaName}`);
-        import( /* webpackChunkName: "areas/[request]" */ `~/areas/${areaName}/config`)
-            .then(areaConfig => {
-                if (fragment.params.area !== self.fragment.params.area) {
-                    log.warn(LOGTAG, "检测到区域加载变更，终止加载");
-                    return;
-                }
+        if (this.app.areas[areaName]) {
+            this.app.areas[areaName]
+                .then(areaConfig => {
+                    if (fragment.params.area !== self.fragment.params.area) {
+                        log.warn(LOGTAG, "检测到区域加载变更，终止加载");
+                        return;
+                    }
 
-                self._initArea(areaConfig.default, fragment, fragmentUrl);
-            })
-            .catch(e => {
-                //延迟加载异常不阻塞，不进行反馈
-                if (fragment.params.area !== self.fragment.params.area) return;
+                    self._initArea(areaConfig.default, fragment, fragmentUrl);
+                })
+                .catch(e => {
+                    //延迟加载异常不阻塞，不进行反馈
+                    if (fragment.params.area !== self.fragment.params.area) return;
 
-                log.error(LOGTAG, `区域配置文件未成功加载：${areaPath}`, e);
-                self.trigger("break");
+                    log.error(LOGTAG, `区域配置文件未成功加载：${areaPath}`, e);
+                    self.trigger("break");
 
-                //跳转首页，判断是否当前所在是否是首页，如果不是则跳转，防止死循环
-                if (fragmentUrl !== self.app.indexPath) {
-                    self.app.goIndex();
-                }
-            });
+                    //跳转首页，判断是否当前所在是否是首页，如果不是则跳转，防止死循环
+                    if (fragmentUrl !== self.app.indexPath) {
+                        self.app.goIndex();
+                    }
+                });
+        } else {
+            log.error(LOGTAG, `区域配置文件未成功加载：${areaName}`);
+            self.trigger("break");
+        }
     }
     /**
      * 初始化区域
@@ -214,23 +219,28 @@ class Router extends EventHandler {
         let layoutName = areaConfig.layout || this.app.option.defaultLayout || "";
 
         log.info(LOGTAG, `准备装载布局文件：${layoutName}`);
-        import( /* webpackChunkName: "commonWeb/layouts/[request]" */ `~/commonWeb/layouts/${layoutName}`)
-            .then(Layout => {
-                if (self.fragmentUrl !== fragmentUrl) {
-                    log.warn(LOGTAG, "检测到地址变更，终止本次加载");
-                    return;
-                }
+        if (this.app.layouts[layoutName]) {
+            this.app.layouts[layoutName]
+                .then(Layout => {
+                    if (self.fragmentUrl !== fragmentUrl) {
+                        log.warn(LOGTAG, "检测到地址变更，终止本次加载");
+                        return;
+                    }
 
-                if (Utils.isFunction(areaConfig.onLayoutShow)) {
-                    areaConfig.onLayoutShow();
-                }
+                    if (Utils.isFunction(areaConfig.onLayoutShow)) {
+                        areaConfig.onLayoutShow();
+                    }
 
-                self._startLoadRouter(fragment, fragmentUrl);
-            })
-            .catch(e => {
-                self.trigger("break");
-                log.error(LOGTAG, `${areaConfig.layout}未能加载成功;`, e);
-            });
+                    self._startLoadRouter(fragment, fragmentUrl);
+                })
+                .catch(e => {
+                    self.trigger("break");
+                    log.error(LOGTAG, `${areaConfig.layout}未能加载成功;`, e);
+                });
+        } else {
+            self.trigger("break");
+            log.error(LOGTAG, `${areaConfig.layout}未能加载成功;`, e);
+        }
     }
     /**
      * 开始执行路由加载，入口方法

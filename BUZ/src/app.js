@@ -7,6 +7,12 @@ _.docReady(() => {
     Buz.log.info("核心组件", "开始初始化Application");
 
     new Buz.Application({
-        indexPath: "Demo"
+        indexPath: "Demo",
+        layouts: {
+            DefaultLayout: () => import( /* webpackChunkName: "layouts/DefaultLayout" */ "./commonWeb/layouts/DefaultLayout")
+        },
+        areas: {
+            Demo: () => import( /* webpackChunkName: "areas/Demo/config" */ "./areas/Demo/config")
+        }
     }).start();
 });
