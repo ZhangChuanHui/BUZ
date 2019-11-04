@@ -5,7 +5,7 @@ export default Buz.View({
     onRender: function () {
         //渲染前设置缓存信息，因为此时图也要展示响应缓存信息
         App.storage.addWatcher("userInfo", {
-            name: '张三',
+            name: '张三1',
             age: 1
         });
     },
