@@ -148,8 +148,8 @@ class Router extends EventHandler {
         let areaName = fragment.params.area || "";
 
         log.info(LOGTAG, `准备装载区域配置文件：${areaName}`);
-        if (this.app.areas[areaName]) {
-            this.app.areas[areaName]
+        if (this.app.option.areas[areaName]) {
+            this.app.option.areas[areaName]()
                 .then(areaConfig => {
                     if (fragment.params.area !== self.fragment.params.area) {
                         log.warn(LOGTAG, "检测到区域加载变更，终止加载");
@@ -162,7 +162,7 @@ class Router extends EventHandler {
                     //延迟加载异常不阻塞，不进行反馈
                     if (fragment.params.area !== self.fragment.params.area) return;
 
-                    log.error(LOGTAG, `区域配置文件未成功加载：${areaPath}`, e);
+                    log.error(LOGTAG, `区域配置文件未成功加载：${areaName}`, e);
                     self.trigger("break");
 
                     //跳转首页，判断是否当前所在是否是首页，如果不是则跳转，防止死循环
@@ -219,8 +219,8 @@ class Router extends EventHandler {
         let layoutName = areaConfig.layout || this.app.option.defaultLayout || "";
 
         log.info(LOGTAG, `准备装载布局文件：${layoutName}`);
-        if (this.app.layouts[layoutName]) {
-            this.app.layouts[layoutName]
+        if (this.app.option.layouts[layoutName]) {
+            this.app.option.layouts[layoutName]()
                 .then(Layout => {
                     if (self.fragmentUrl !== fragmentUrl) {
                         log.warn(LOGTAG, "检测到地址变更，终止本次加载");
@@ -286,7 +286,7 @@ class Router extends EventHandler {
 
         this.areaConfig.routers = this.areaConfig.routers || {};
         let router = this.areaConfig.routers[this.fragment.params.controller];
-        debugger;
+
         log.info(LOGTAG, `准备装载路由文件：${router}`);
 
         if (Utils.isFunction(router)) {
