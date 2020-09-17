@@ -1,6 +1,8 @@
 <p align="center"><img width="60" src="docs/images/logo.png" alt="Vue logo" /></p>
 
-# BUZ
+# BUZ1.0 停止更新，BUZ-NEXT可视化框架封闭开发中，敬请期待
+
+# BUZ1.0
 
 BUZ是一套整体前端实施框架，它包含了页面生命管理、模板引擎、表单控件、请求管理等。
 我们建议使用此框架来搭建整体前端框架，当然我们也支持自底向上逐层应用。
